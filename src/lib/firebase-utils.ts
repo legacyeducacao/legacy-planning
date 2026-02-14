@@ -1,23 +1,9 @@
-import { initializeApp, FirebaseApp } from "firebase/app";
 import {
-  getStorage,
   ref,
   uploadBytes,
   getDownloadURL,
-  FirebaseStorage,
-} from "firebase/storage";
-import { getFirebaseConfig } from "@/lib/firebase";
-
-let storage: FirebaseStorage; // Cache storage instance
-
-const initializeFirebase = (): FirebaseStorage => {
-  if (!storage) {
-    const firebaseApp: FirebaseApp = initializeApp(getFirebaseConfig());
-    storage = getStorage(firebaseApp);
-    console.log("Firebase initialized for utils.");
-  }
-  return storage;
-};
+} from "firebase/storage"
+import { getStorage } from "@/lib/firebase"
 
 const generateUniqueFilename = (originalName: string): string => {
   const timestamp = Date.now();
@@ -36,7 +22,7 @@ export async function uploadBase64ToFirebase(
   base64Data: string,
   mimeType: string = "audio/mpeg",
 ): Promise<{ url: string; path: string }> {
-  const storageInstance = initializeFirebase();
+  const storageInstance = getStorage()
   try {
     const base64WithoutPrefix = base64Data.replace(/^data:.*;base64,/, "");
 

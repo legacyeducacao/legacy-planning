@@ -76,3 +76,27 @@ export interface TranscriptionOutput {
   detected_language: string | null
   intelligence?: TranscriptionIntelligence
 }
+
+export interface AIFeatures {
+  autoChapters: boolean
+  summarization: boolean
+  sentimentAnalysis: boolean
+  entityDetection: boolean
+  keyPhrases: boolean
+  contentModeration: boolean
+  topicDetection: boolean
+}
+
+export interface TranscriptionOptions {
+  language: string
+  diarize: boolean
+  aiFeatures: AIFeatures
+}
+
+export interface AudioSource {
+  name?: string
+  url?: string
+  duration?: number
+  size?: number
+  type: "file" | "url"
+}
