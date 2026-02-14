@@ -25,22 +25,16 @@ export const uploadLargeFile = async (
     const filePath = `temp_audio/${filename}`;
     const storageRef = ref(getStorage(), filePath);
 
-    console.log("Starting Firebase upload for:", filePath);
-
-    // Upload file to Firebase Storage
     try {
-      const snapshot = await uploadBytes(storageRef, file);
-      console.log("File uploaded successfully:", snapshot.metadata.name);
+      await uploadBytes(storageRef, file);
     } catch (uploadError) {
       console.error("Firebase uploadBytes error:", uploadError);
       throw uploadError;
     }
 
-    // Get the download URL
     let downloadURL;
     try {
       downloadURL = await getDownloadURL(storageRef);
-      console.log("Got download URL:", downloadURL);
     } catch (urlError) {
       console.error("Firebase getDownloadURL error:", urlError);
       throw urlError;
@@ -79,7 +73,6 @@ export const deleteFile = async (path: string): Promise<void> => {
 
     // Delete the file
     await deleteObject(fileRef);
-    console.log("File deleted successfully:", filePath);
   } catch (error) {
     console.error("Error deleting file from Firebase:", error);
     // Continue even if deletion fails (we'll rely on Firebase lifecycle rules as backup)

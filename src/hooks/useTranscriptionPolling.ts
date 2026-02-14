@@ -48,9 +48,7 @@ export function useTranscriptionPolling({
   }, [predictionId])
 
   const startPolling = (id: string) => {
-    // Clear any existing polling interval
     if (pollIntervalRef.current) {
-      console.log("Polling: Clearing previous interval.")
       clearInterval(pollIntervalRef.current)
     }
 
@@ -60,12 +58,9 @@ export function useTranscriptionPolling({
     const maxConsecutiveErrors = 5
     const pollIntervalMs = 5000
 
-    console.log(`Polling: Starting for prediction ID: ${id}`)
-
     // Create poll function that uses the closure over id
     const poll = async () => {
       attempts++
-      console.log(`Polling: Attempt #${attempts} for ${id}`)
 
       try {
         const response = await fetch(getApiUrl(`prediction/${id}`))
@@ -82,8 +77,7 @@ export function useTranscriptionPolling({
         }
 
         const data = await response.json()
-        consecutiveErrors = 0 // reset on success
-        console.log(`Prediction status (attempt ${attempts}):`, data)
+        consecutiveErrors = 0
         onApiResponse({ timestamp: new Date(), data })
 
         // Update progress based on status
@@ -107,10 +101,6 @@ export function useTranscriptionPolling({
           onProgress(newProgress)
         } else if (data.status === "succeeded") {
           onProgress(100)
-          console.log(
-            "Transcription succeeded, handling output:",
-            data.output,
-          )
           stopPolling()
           onSuccess(data.output)
         } else if (data.status === "failed") {
@@ -141,7 +131,6 @@ export function useTranscriptionPolling({
           attempts >= maxAttempts &&
           (data.status === "starting" || data.status === "processing")
         ) {
-          console.error(`Polling timeout after ${attempts} attempts`)
           stopPolling()
           onError("Transcription timed out after several minutes.")
           onStatusChange("failed")
@@ -169,7 +158,6 @@ export function useTranscriptionPolling({
             },
           })
         } else {
-          console.log(`Polling: Retrying... (${consecutiveErrors}/${maxConsecutiveErrors})`)
           onApiResponse({
             timestamp: new Date(),
             data: {
@@ -183,11 +171,7 @@ export function useTranscriptionPolling({
     // Set up the interval
     pollIntervalRef.current = setInterval(poll, pollIntervalMs)
 
-    // First poll after a short delay to let React settle
-    setTimeout(() => {
-      console.log(`Executing first poll for ${id}`)
-      poll()
-    }, 500)
+    setTimeout(() => poll(), 500)
   }
 
   const stopPolling = () => {
