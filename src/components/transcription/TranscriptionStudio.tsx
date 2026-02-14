@@ -29,37 +29,14 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
-import type { TranscriptionSegment, TranscriptionWord, TranscriptionIntelligence } from "@/types/transcription";
+import type { TranscriptionSegment, TranscriptionWord, TranscriptionIntelligence, AudioSource } from "@/types/transcription";
 import { ChaptersPanel } from "../studio/ChaptersPanel";
 import { SummaryPanel } from "../studio/SummaryPanel";
 import { SentimentPanel } from "../studio/SentimentPanel";
 import { EntitiesPanel } from "../studio/EntitiesPanel";
 import { KeyPhrasesPanel } from "../studio/KeyPhrasesPanel";
-
-// Types
-interface AudioSource {
-  name?: string;
-  url?: string;
-  duration?: number;
-  size?: number;
-  type: "file" | "url";
-}
-
-// Speaker color schemes
-const SPEAKER_COLORS = [
-  { border: "border-l-blue-500", badge: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
-  { border: "border-l-green-500", badge: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
-  { border: "border-l-purple-500", badge: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
-  { border: "border-l-orange-500", badge: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
-  { border: "border-l-pink-500", badge: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200" },
-  { border: "border-l-teal-500", badge: "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200" },
-];
-
-const getSpeakerColor = (speaker: string) => {
-  // Speaker labels from AssemblyAI are "A", "B", "C" etc.
-  const index = speaker.charCodeAt(0) - "A".charCodeAt(0);
-  return SPEAKER_COLORS[index % SPEAKER_COLORS.length];
-};
+import { getSpeakerColor } from "@/lib/speaker-colors";
+import { formatDuration, formatFileSize } from "@/lib/format-utils";
 
 // Binary search to find active word index
 const findActiveWordIndex = (words: TranscriptionWord[], currentTime: number): number => {
@@ -86,21 +63,6 @@ interface TranscriptionStudioProps {
   intelligence?: TranscriptionIntelligence;
   onNewTranscription: () => void;
 }
-
-// Format duration from seconds to MM:SS
-const formatDuration = (seconds?: number): string => {
-  if (!seconds) return "--:--";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-};
-
-// Format file size
-const formatFileSize = (bytes?: number): string => {
-  if (!bytes) return "--";
-  const mb = bytes / (1024 * 1024);
-  return `${mb.toFixed(1)} MB`;
-};
 
 // Audio Player Component
 interface AudioPlayerProps {

@@ -1,203 +1,159 @@
-"use client";
+"use client"
 
-import { Suspense, useState, useEffect, lazy } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent } from "../components/ui/card";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
-import { TranscriptionForm } from "../components/transcription/TranscriptionForm";
-import { Toaster } from "sonner";
-import { FeedbackModals } from "../components/feedback/FeedbackModals";
-import { ChangelogModal } from "../components/ChangelogModal";
-import { V3AnnouncementModal } from "../components/V3AnnouncementModal";
-import TranscriptionHistory from "../components/transcription/TranscriptionHistory";
-import { fadeInUp, expandCenter } from "../lib/animations";
-import { TranscriptionSession } from "@/lib/persistence-service";
+import { useState, useCallback, Suspense } from "react"
+import { useRouter } from "next/navigation"
+import { UploadAudio } from "@/components/UploadAudio"
+import { Header } from "@/components/layout/Header"
+import { Footer } from "@/components/layout/Footer"
+import { Toaster, toast } from "sonner"
+import { FeedbackModals } from "@/components/feedback/FeedbackModals"
+import { uploadLargeFile } from "@/lib/storage-service"
+import { getApiUrl } from "@/services/transcription"
+import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
+import { useHistoryStore } from "@/stores/history-store"
+import type { AIFeatures } from "@/types/transcription"
 
-const TranscriptionResult = lazy(
-  () => import("../components/transcription/TranscriptionResult"),
-);
-const TranscriptionError = lazy(() =>
-  import("../components/transcription/TranscriptionError").then((module) => ({
-    default: module.TranscriptionError,
-  })),
-);
+export default function UploadPage() {
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const addToHistory = useHistoryStore((s) => s.add)
 
-export default function Page() {
-  const [showResult] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [showChangelogModal, setShowChangelogModal] = useState(false);
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [showV3Modal, setShowV3Modal] = useState(false);
-  const [formKey, setFormKey] = useState(Date.now()); // Key to force re-render TranscriptionForm when needed
+  const handleUpload = useCallback(
+    async (
+      data: FormData | { audioUrl: string },
+      options: { language: string; diarize: boolean; aiFeatures: AIFeatures },
+    ) => {
+      setIsSubmitting(true)
 
-  // For handling session selection from history
-  const [selectedSession, setSelectedSession] =
-    useState<TranscriptionSession | null>(null);
-  const [transcriptionResult] = useState<string | null>(null);
+      try {
+        const requestBody: {
+          options: { language?: string; diarize?: boolean; aiFeatures?: AIFeatures } | null
+          audioUrl?: string
+        } = { options: null }
 
-  // Auto-show V3.2 announcement for users who haven't seen it
-  useEffect(() => {
-    const hasSeen = localStorage.getItem("v3.2SAW")
-    if (!hasSeen) {
-      setShowV3Modal(true)
-    }
-  }, [])
+        let audioSourceName = "Audio"
+        let audioSourceSize: number | undefined
+        let audioSourceType: "file" | "url" = "url"
+        let audioUrl: string | undefined
 
-  // Updated to use the new window method instead of direct DOM manipulation
-  const openFeedbackModal = (type: "general" | "issue" | "feature") => {
-    if (window.openFeedbackModal) {
-      window.openFeedbackModal(type);
-    }
-  };
+        if (data instanceof FormData) {
+          const file = data.get("file") as File
+          if (!file) throw new Error("No file found")
 
-  const openChangelogModal = () => {
-    setShowChangelogModal(true);
-  };
+          audioSourceName = file.name
+          audioSourceSize = file.size
+          audioSourceType = "file"
 
-  const closeChangelogModal = () => {
-    setShowChangelogModal(false);
-  };
+          toast.info("Uploading file...")
+          const uploadResult = await uploadLargeFile(file)
+          requestBody.audioUrl = uploadResult.url
+          audioUrl = uploadResult.url
+          localStorage.setItem("studioAudioUrl", uploadResult.url)
+        } else {
+          requestBody.audioUrl = data.audioUrl
+          audioUrl = data.audioUrl
+          audioSourceName = data.audioUrl
+          audioSourceType = "url"
+          localStorage.setItem("studioAudioUrl", data.audioUrl)
+        }
 
-  const openV3Modal = () => {
-    setShowV3Modal(true);
-  };
+        requestBody.options = {
+          language: options.language,
+          diarize: options.diarize || false,
+          aiFeatures: options.aiFeatures,
+        }
 
-  const closeV3Modal = () => {
-    setShowV3Modal(false);
-  };
+        toast.info("Starting transcription...")
 
-  const openHistoryModal = () => {
-    setShowHistoryModal(true);
-  };
+        const response = await fetch(getApiUrl("transcribe"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody),
+        })
 
-  const closeHistoryModal = () => {
-    setShowHistoryModal(false);
-  };
+        if (!response.ok) {
+          let errorBody = "Unknown server error"
+          try {
+            const errorJson = await response.json()
+            errorBody = errorJson.error || errorJson.message || JSON.stringify(errorJson)
+          } catch {
+            errorBody = `Server error (${response.status})`
+          }
+          throw new Error(errorBody)
+        }
 
-  const handleDeleteSession = async (sessionId: string) => {
-    try {
-      // Import dynamically to prevent circular dependencies
-      const { deleteSession } = await import("@/lib/persistence-service");
-      await deleteSession(sessionId);
-    } catch (error) {
-      console.error("Failed to delete session:", error);
-    }
-  };
+        const resultData = await response.json()
 
-  const handleSelectSession = (session: TranscriptionSession) => {
-    setSelectedSession(session);
-    closeHistoryModal();
-    // Force re-render the TranscriptionForm component to pick up the selected session
-    setFormKey(Date.now());
-  };
+        if (!resultData?.id) {
+          throw new Error("Invalid API response: Missing prediction ID")
+        }
+
+        if (resultData.audioUrl) {
+          localStorage.setItem("studioAudioUrl", resultData.audioUrl)
+          audioUrl = resultData.audioUrl
+        }
+
+        addToHistory({
+          predictionId: resultData.id,
+          audioSource: {
+            name: audioSourceName,
+            size: audioSourceSize,
+            type: audioSourceType,
+            url: audioUrl,
+          },
+          options,
+          status: "processing",
+          createdAt: Date.now(),
+        })
+
+        router.push(`/transcribe/${resultData.id}`)
+      } catch (err) {
+        console.error("Upload failed:", err)
+        const errorInfo = getUserFriendlyErrorMessage(err)
+        toast.error(errorInfo.userMessage)
+        setIsSubmitting(false)
+      }
+    },
+    [router, addToHistory],
+  )
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-sky-50 to-white py-6 text-gray-900 md:py-12 dark:from-gray-900 dark:to-gray-800 dark:text-gray-100">
-      <div className="container mx-auto max-w-4xl px-4">
-        <Header
-          onOpenChangelog={openChangelogModal}
-          onShowHistory={openHistoryModal}
-          onOpenFeedbackModal={openFeedbackModal}
-          onShowV3={openV3Modal}
-        />
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key="card"
-            variants={expandCenter}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            <Card className="w-full overflow-hidden rounded-xl border-0 shadow-lg dark:bg-gray-800/60 dark:backdrop-blur-sm">
-              <CardContent className="p-0">
-                <Suspense
-                  fallback={
-                    <div className="p-8 text-center">Loading form...</div>
-                  }
-                >
-                  <TranscriptionForm
-                    key={formKey}
-                    initialSession={selectedSession}
-                  />
-                </Suspense>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-2xl">
+          <div className="mb-8 text-center">
+            <h1 className="mb-2 text-3xl font-bold text-foreground sm:text-4xl">
+              Transcriptr
+            </h1>
+            <p className="text-muted-foreground">
+              Convert audio to text with AI-powered transcription
+            </p>
+          </div>
 
-      <Footer
-        onOpenFeedbackModal={openFeedbackModal}
-        onOpenChangelog={openChangelogModal}
-      />
+          <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm sm:p-8">
+            {isSubmitting ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                <p className="text-sm text-muted-foreground">
+                  Preparing your transcription...
+                </p>
+              </div>
+            ) : (
+              <UploadAudio onUpload={handleUpload} />
+            )}
+          </div>
+        </div>
+      </main>
+
+      <Footer />
 
       <Suspense fallback={null}>
         <FeedbackModals />
       </Suspense>
 
-      <AnimatePresence>
-        {showChangelogModal && <ChangelogModal onClose={closeChangelogModal} />}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showV3Modal && <V3AnnouncementModal onClose={closeV3Modal} />}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showHistoryModal && (
-          <TranscriptionHistory
-            open={showHistoryModal}
-            onOpenChange={setShowHistoryModal}
-            onSelectSession={handleSelectSession}
-            onDeleteSession={handleDeleteSession}
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showResult && (
-          <Suspense fallback={<div>Loading result...</div>}>
-            <motion.div
-              variants={fadeInUp}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <TranscriptionResult transcription={transcriptionResult || ""} />
-            </motion.div>
-          </Suspense>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showError && (
-          <Suspense fallback={<div>Loading error details...</div>}>
-            <motion.div
-              variants={fadeInUp}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <TranscriptionError
-                status="failed"
-                error="An unknown error occurred."
-                onReset={() => setShowError(false)}
-                apiResponses={[]}
-                showApiDetails={false}
-                setShowApiDetails={() => {}}
-                formatTimestamp={() => ""}
-              />
-            </motion.div>
-          </Suspense>
-        )}
-      </AnimatePresence>
-
       <Toaster />
     </div>
-  );
+  )
 }
