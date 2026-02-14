@@ -1,10 +1,10 @@
-import { storage } from "./firebase";
+import { getStorage } from "./firebase"
 import {
   ref,
   uploadBytes,
   getDownloadURL,
   deleteObject,
-} from "firebase/storage";
+} from "firebase/storage"
 
 // Generate a unique filename with timestamp and random string
 const generateUniqueFilename = (originalName: string) => {
@@ -23,7 +23,7 @@ export const uploadLargeFile = async (
     // Create a unique filename to avoid collisions
     const filename = generateUniqueFilename(file.name);
     const filePath = `temp_audio/${filename}`;
-    const storageRef = ref(storage, filePath);
+    const storageRef = ref(getStorage(), filePath);
 
     console.log("Starting Firebase upload for:", filePath);
 
@@ -75,7 +75,7 @@ export const deleteFile = async (path: string): Promise<void> => {
     }
 
     // Create a reference to the file
-    const fileRef = ref(storage, filePath);
+    const fileRef = ref(getStorage(), filePath);
 
     // Delete the file
     await deleteObject(fileRef);

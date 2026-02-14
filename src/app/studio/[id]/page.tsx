@@ -6,7 +6,7 @@ import Link from "next/link"
 import { TranscriptionStudio } from "@/components/transcription/TranscriptionStudio"
 import { Button } from "@/components/ui/button"
 import { Toaster } from "sonner"
-import { ArrowLeft, FileAudio, AlertCircle, Loader2 } from "lucide-react"
+import { ArrowLeft, FileAudio, AlertCircle } from "lucide-react"
 import { getApiUrl } from "@/services/transcription"
 import type { TranscriptionSegment, TranscriptionIntelligence, AudioSource } from "@/types/transcription"
 
