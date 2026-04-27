@@ -253,6 +253,18 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
           content: new Blob([generateVTT()], { type: "text/vtt" }),
           filename: `transcription_${timestamp}.vtt`,
         },
+        {
+          content: new Blob([generateJSON()], { type: "application/json" }),
+          filename: `transcription_${timestamp}.json`,
+        },
+        {
+          content: new Blob([generateCSV()], { type: "text/csv" }),
+          filename: `transcription_${timestamp}.csv`,
+        },
+        {
+          content: new Blob([generateMarkdown()], { type: "text/markdown" }),
+          filename: `transcription_${timestamp}.md`,
+        },
       ]
 
       const doc = new Document({
