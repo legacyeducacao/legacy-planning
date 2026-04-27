@@ -292,7 +292,7 @@ export default function TranscribePage({
                           Transcription Complete
                         </h2>
                         <p className="text-muted-foreground text-sm">
-                          {result.transcription.split(/\s+/).length} words
+                          {result.transcription.trim().split(/\s+/).filter(Boolean).length} words
                           {result.detectedLanguage &&
                             ` · ${result.detectedLanguage}`}
                         </p>
