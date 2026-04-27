@@ -2,20 +2,26 @@ import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx"
 import type { TranscriptionSegment, TranscriptionIntelligence } from "@/types/transcription"
 import { formatDuration } from "./format-utils"
 
+const splitTimestamp = (seconds: number) => {
+  const totalMs = Math.round(seconds * 1000)
+  const ms = totalMs % 1000
+  const totalSecs = Math.floor(totalMs / 1000)
+  return {
+    hours: Math.floor(totalSecs / 3600),
+    minutes: Math.floor((totalSecs % 3600) / 60),
+    secs: totalSecs % 60,
+    ms,
+  }
+}
+
 export const formatTimeForSRT = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = Math.floor(seconds % 60)
-  const milliseconds = Math.round((seconds % 1) * 1000)
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")},${milliseconds.toString().padStart(3, "0")}`
+  const { hours, minutes, secs, ms } = splitTimestamp(seconds)
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")},${ms.toString().padStart(3, "0")}`
 }
 
 export const formatTimeForVTT = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = Math.floor(seconds % 60)
-  const milliseconds = Math.round((seconds % 1) * 1000)
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`
+  const { hours, minutes, secs, ms } = splitTimestamp(seconds)
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}.${ms.toString().padStart(3, "0")}`
 }
 
 export const generateSRT = (
