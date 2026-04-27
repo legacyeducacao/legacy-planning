@@ -142,12 +142,14 @@ export default function TranscribePage({
         stopPolling()
         setStatus("failed")
         setError(data.error || "Transcription failed")
+        patchHistory(id, { status: "failed" })
       }
 
       if (attemptsRef.current >= 120) {
         stopPolling()
         setStatus("failed")
         setError("Transcription timed out")
+        patchHistory(id, { status: "failed" })
       }
     } catch (err) {
       if (attemptsRef.current >= 5) {
@@ -155,6 +157,7 @@ export default function TranscribePage({
         const errorInfo = getUserFriendlyErrorMessage(err)
         setStatus("failed")
         setError(errorInfo.userMessage)
+        patchHistory(id, { status: "failed" })
       }
     }
   }, [id, stopPolling, patchHistory])
