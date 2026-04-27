@@ -130,9 +130,10 @@ export function ErrorState({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {hints.map((hint) => (
+            {hints.map((hint, index) => (
               <div
-                key={hint}
+                // biome-ignore lint/suspicious/noArrayIndexKey: hints are static strings with no stable identity
+                key={index}
                 className="border-border/70 bg-background rounded-xl border px-4 py-3"
               >
                 <p className="text-muted-foreground text-sm leading-6">

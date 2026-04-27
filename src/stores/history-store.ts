@@ -73,7 +73,7 @@ const initDb = (): Promise<IDBDatabase> => {
           }>
           for (const s of sessions) {
             if (!s.predictionId) continue
-            histStore.put({
+            const putReq = histStore.put({
               predictionId: s.predictionId,
               audioSource: {
                 type: s.audioSource.type as "file" | "url",
@@ -96,6 +96,9 @@ const initDb = (): Promise<IDBDatabase> => {
               createdAt: s.createdAt,
               result: s.result,
             } satisfies HistoryEntry)
+            putReq.onerror = () => {
+              console.error("Migration failed for entry:", s.predictionId)
+            }
           }
         }
       }
@@ -166,13 +169,28 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
 
   patch: async (predictionId, updates) => {
     try {
-      const existing = await dbOperation<HistoryEntry | undefined>(
-        "readonly",
-        (store) => store.get(predictionId),
+      const db = await initDb()
+      const merged = await new Promise<HistoryEntry | undefined>(
+        (resolve, reject) => {
+          const tx = db.transaction([HISTORY_STORE_NAME], "readwrite")
+          const store = tx.objectStore(HISTORY_STORE_NAME)
+          const getReq = store.get(predictionId)
+          getReq.onsuccess = () => {
+            const existing = getReq.result as HistoryEntry | undefined
+            if (!existing) {
+              resolve(undefined)
+              return
+            }
+            const result = { ...existing, ...updates }
+            store.put(result)
+            resolve(result)
+          }
+          getReq.onerror = () => reject(getReq.error)
+          tx.onerror = () => reject(new Error("IndexedDB transaction failed"))
+          tx.onabort = () => reject(new Error("IndexedDB transaction aborted"))
+        },
       )
-      if (!existing) return
-      const merged = { ...existing, ...updates }
-      await dbOperation("readwrite", (store) => store.put(merged))
+      if (!merged) return
       set((state) => ({
         entries: state.entries.map((e) =>
           e.predictionId === predictionId ? merged : e,

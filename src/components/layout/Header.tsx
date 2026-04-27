@@ -142,6 +142,7 @@ export function Header() {
           ))}
         </nav>
 
+        {/* Spacer to balance the logo on the left in mobile layout */}
         <div className="h-8 w-8 md:hidden" aria-hidden="true" />
       </div>
 

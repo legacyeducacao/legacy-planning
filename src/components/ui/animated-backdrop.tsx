@@ -19,13 +19,15 @@ export function AnimatedBackdrop({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClick}
-        aria-label="Close overlay"
-      />
-      {children}
+      {onClick && (
+        <button
+          type="button"
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={onClick}
+          aria-label="Close overlay"
+        />
+      )}
+      <div className="relative z-10">{children}</div>
     </motion.div>
   )
 }

@@ -4,7 +4,10 @@
  */
 
 import { TranscriptionStatus } from "@/services/transcription"
-import type { TranscriptionIntelligence } from "@/types/transcription"
+import type {
+  TranscriptionIntelligence,
+  TranscriptionSegment,
+} from "@/types/transcription"
 
 export type { TranscriptionSegment } from "@/types/transcription"
 

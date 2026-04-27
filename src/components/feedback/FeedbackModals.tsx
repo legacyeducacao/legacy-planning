@@ -74,10 +74,8 @@ export function FeedbackModals() {
   )
 }
 
-// Add a proper TypeScript interface for the window object
 declare global {
   interface Window {
     openFeedbackModal?: (type: "general" | "issue" | "feature") => void
-    feedbackType: "general" | "issue" | "feature" | "other"
   }
 }

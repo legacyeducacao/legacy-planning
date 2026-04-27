@@ -99,7 +99,11 @@ export default function UploadPage() {
           audioUrl = resultData.audioUrl
         }
         if (audioUrl) {
-          localStorage.setItem(`audioUrl_${resultData.id}`, audioUrl)
+          try {
+            localStorage.setItem(`audioUrl_${resultData.id}`, audioUrl)
+          } catch {
+            // Private browsing or storage quota exceeded
+          }
         }
 
         addToHistory({

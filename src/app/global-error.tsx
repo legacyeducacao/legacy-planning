@@ -14,12 +14,16 @@ export default function GlobalError({
   reset: () => void
 }>) {
   useEffect(() => {
-    console.error("Global error boundary triggered:", error)
+    if (process.env.NODE_ENV === "development") {
+      console.error("Global error boundary triggered:", error)
+    } else if (error.digest) {
+      console.error(`Global error (${error.digest})`)
+    }
   }, [error])
 
   return (
     <html lang="en">
-      <body className="bg-background min-h-screen font-sans">
+      <body style={{ minHeight: "100vh" }} className="bg-background font-sans">
         <main className="flex min-h-screen items-center px-4 py-10">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
             <div className="px-1">
@@ -50,7 +54,7 @@ export default function GlobalError({
               ]}
               actions={
                 <>
-                  <Button onClick={() => reset()}>
+                  <Button onClick={reset}>
                     <RefreshCw className="h-4 w-4" />
                     Reset app
                   </Button>

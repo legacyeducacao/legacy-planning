@@ -210,8 +210,17 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const setLoopPoint = (type: "start" | "end") => {
     if (type === "start") {
       setLoopStart(currentTime)
-      toast.success(`Loop start: ${formatDuration(currentTime)}`)
+      if (loopEnd !== null && currentTime >= loopEnd) {
+        setLoopEnd(null)
+        toast.warning("Loop end cleared — start must be before end")
+      } else {
+        toast.success(`Loop start: ${formatDuration(currentTime)}`)
+      }
     } else {
+      if (loopStart !== null && currentTime <= loopStart) {
+        toast.error("Loop end must be after loop start")
+        return
+      }
       setLoopEnd(currentTime)
       toast.success(`Loop end: ${formatDuration(currentTime)}`)
     }

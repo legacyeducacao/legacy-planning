@@ -80,6 +80,13 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
         }
       })
       setSearchResults(results)
+    } else if (term.trim() && !segments && transcription) {
+      const matches = transcription.match(
+        new RegExp(escapeRegExp(term), "gi"),
+      )
+      setSearchResults(
+        matches ? Array.from({ length: matches.length }, (_, i) => i) : [],
+      )
     } else {
       setSearchResults([])
     }
@@ -276,11 +283,24 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
           </div>
         </div>
       ) : (
-        // Fallback: full transcript
+        // Fallback: full transcript with optional search highlight
         <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
           <div className="max-h-96 overflow-y-auto p-6">
             <div className="font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-800 dark:text-gray-200">
-              {transcription || "No transcript available"}
+              {searchTerm && transcription
+                ? transcription
+                    .split(new RegExp(`(${escapeRegExp(searchTerm)})`, "gi"))
+                    .map((part, i) =>
+                      part.toLowerCase() === searchTerm.toLowerCase() ? (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: split parts have no stable identity
+                        <mark key={i} className="rounded bg-yellow-200 px-1">
+                          {part}
+                        </mark>
+                      ) : (
+                        part
+                      ),
+                    )
+                : (transcription || "No transcript available")}
             </div>
           </div>
         </div>

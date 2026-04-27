@@ -16,7 +16,11 @@ export default function RouteError({
   reset: () => void
 }>) {
   useEffect(() => {
-    console.error("Route error boundary triggered:", error)
+    if (process.env.NODE_ENV === "development") {
+      console.error("Route error boundary triggered:", error)
+    } else if (error.digest) {
+      console.error(`Route error (${error.digest})`)
+    }
   }, [error])
 
   return (

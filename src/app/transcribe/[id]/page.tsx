@@ -101,6 +101,31 @@ export default function TranscribePage({
     }
   }, [])
 
+  const handleTranscriptionSuccess = useCallback(
+    (output: unknown, audioUrl?: string) => {
+      setProgress(100)
+      stopPolling()
+      const { transcription, segments, intelligence } =
+        parseTranscriptionOutput(
+          output as Parameters<typeof parseTranscriptionOutput>[0],
+        )
+      setResult({
+        transcription,
+        segments,
+        intelligence,
+        detectedLanguage: (output as { detected_language?: string | null })
+          ?.detected_language,
+      })
+      setStatus("completed")
+      patchHistory(id, {
+        ...(audioUrl ? { audioSource: { type: "file", url: audioUrl } } : {}),
+        status: "succeeded",
+        result: transcription.slice(0, 200),
+      })
+    },
+    [id, stopPolling, patchHistory],
+  )
+
   const poll = useCallback(async () => {
     attemptsRef.current++
 
@@ -123,27 +148,7 @@ export default function TranscribePage({
         )
         setProgress(progressEstimate)
       } else if (data.status === "succeeded") {
-        setProgress(100)
-        stopPolling()
-
-        const output = data.output
-        const { transcription, segments, intelligence } =
-          parseTranscriptionOutput(output)
-
-        setResult({
-          transcription,
-          segments,
-          intelligence,
-          detectedLanguage: output?.detected_language,
-        })
-        setStatus("completed")
-
-        // Merge result into existing history entry to preserve original options/metadata
-        patchHistory(id, {
-          ...(audioUrl ? { audioSource: { type: "file", url: audioUrl } } : {}),
-          status: "succeeded",
-          result: transcription.slice(0, 200),
-        })
+        handleTranscriptionSuccess(data.output, audioUrl)
       } else if (data.status === "failed") {
         stopPolling()
         setStatus("failed")
@@ -166,7 +171,7 @@ export default function TranscribePage({
         patchHistory(id, { status: "failed" })
       }
     }
-  }, [id, stopPolling, patchHistory])
+  }, [id, stopPolling, patchHistory, handleTranscriptionSuccess])
 
   useEffect(() => {
     poll()

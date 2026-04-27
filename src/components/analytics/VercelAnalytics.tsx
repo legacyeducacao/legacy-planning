@@ -3,7 +3,10 @@
 import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react"
 
 function beforeSend(event: BeforeSendEvent) {
-  if (globalThis.localStorage.getItem("analytics_opt_out") === "true") {
+  if (
+    typeof globalThis.localStorage !== "undefined" &&
+    globalThis.localStorage.getItem("analytics_opt_out") === "true"
+  ) {
     return null
   }
 

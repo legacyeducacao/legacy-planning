@@ -36,13 +36,13 @@ export const generateSRT = (
   }
 
   return segments
-    .map((segment) => {
+    .map((segment, index) => {
       const startTime = formatTimeForSRT(segment.start)
       const endTime = formatTimeForSRT(segment.end)
       const speakerPrefix = segment.speaker
         ? `[Speaker ${segment.speaker}] `
         : ""
-      return `${segment.id + 1}\n${startTime} --> ${endTime}\n${speakerPrefix}${segment.text.trim()}\n`
+      return `${index + 1}\n${startTime} --> ${endTime}\n${speakerPrefix}${segment.text.trim()}\n`
     })
     .join("\n")
 }
