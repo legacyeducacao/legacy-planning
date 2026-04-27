@@ -39,9 +39,14 @@ const initDb = (): Promise<IDBDatabase> => {
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result
+      const tx = (event.target as IDBOpenDBRequest).transaction!
 
-      // Keep old store for migration if exists
-      if (!db.objectStoreNames.contains(HISTORY_STORE_NAME)) {
+      const hadSessionsStore = db.objectStoreNames.contains(
+        "transcription-sessions",
+      )
+      const hadHistoryStore = db.objectStoreNames.contains(HISTORY_STORE_NAME)
+
+      if (!hadHistoryStore) {
         const store = db.createObjectStore(HISTORY_STORE_NAME, {
           keyPath: "predictionId",
         })
@@ -49,8 +54,50 @@ const initDb = (): Promise<IDBDatabase> => {
         store.createIndex("status", "status", { unique: false })
       }
 
-      // Keep old sessions store if it exists (backward compat during transition)
-      if (!db.objectStoreNames.contains("transcription-sessions")) {
+      // Migrate completed sessions from the old store into the new history store
+      if (hadSessionsStore && !hadHistoryStore) {
+        const sessStore = tx.objectStore("transcription-sessions")
+        const histStore = tx.objectStore(HISTORY_STORE_NAME)
+        sessStore.getAll().onsuccess = (e) => {
+          const sessions = (e.target as IDBRequest).result as Array<{
+            id: string
+            predictionId: string | null
+            status: string
+            createdAt: number
+            audioSource: { type: string; url?: string; name?: string }
+            options: { language: string; diarize: boolean }
+            result?: string
+          }>
+          for (const s of sessions) {
+            if (!s.predictionId) continue
+            histStore.put({
+              predictionId: s.predictionId,
+              audioSource: {
+                type: s.audioSource.type as "file" | "url",
+                url: s.audioSource.url,
+              },
+              options: {
+                language: s.options.language ?? "auto",
+                diarize: s.options.diarize ?? false,
+                aiFeatures: {
+                  autoChapters: false,
+                  summarization: false,
+                  sentimentAnalysis: false,
+                  entityDetection: false,
+                  keyPhrases: false,
+                  contentModeration: false,
+                  topicDetection: false,
+                },
+              },
+              status: s.status === "completed" ? "succeeded" : s.status,
+              createdAt: s.createdAt,
+              result: s.result,
+            } satisfies HistoryEntry)
+          }
+        }
+      }
+
+      if (!hadSessionsStore) {
         const sessStore = db.createObjectStore("transcription-sessions", {
           keyPath: "id",
         })
