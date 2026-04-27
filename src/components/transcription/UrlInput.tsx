@@ -1,11 +1,11 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { AlertTriangle } from "lucide-react";
+import React from "react"
+import { Input } from "@/components/ui/input"
+import { AlertTriangle } from "lucide-react"
 
 interface UrlInputProps {
-  audioUrl: string;
-  urlError: string | null;
-  onUrlChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  audioUrl: string
+  urlError: string | null
+  onUrlChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export function UrlInput({ audioUrl, urlError, onUrlChange }: UrlInputProps) {
@@ -44,5 +44,5 @@ export function UrlInput({ audioUrl, urlError, onUrlChange }: UrlInputProps) {
         </p>
       </div>
     </div>
-  );
+  )
 }

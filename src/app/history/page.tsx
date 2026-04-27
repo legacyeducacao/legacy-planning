@@ -159,56 +159,56 @@ export default function HistoryPage() {
                 const fallbackName = `Transcription ${entry.predictionId.slice(0, 8)}`
                 const ariaLabel = `Open transcription: ${entry.audioSource.name || fallbackName}`
                 return (
-                <Card
-                  key={entry.predictionId}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={ariaLabel}
-                  className="cursor-pointer transition-shadow hover:shadow-md"
-                  onClick={() => handleOpen(entry)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault()
-                      handleOpen(entry)
-                    }
-                  }}
-                >
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-4 overflow-hidden">
-                      <div className="bg-muted flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg">
-                        {getStatusIcon(entry.status)}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-foreground truncate text-sm font-medium">
-                          {entry.audioSource.name ||
-                            `Transcription ${entry.predictionId.slice(0, 8)}`}
-                        </p>
-                        <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                          <span>{formatDate(entry.createdAt)}</span>
-                          <span
-                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusClassName(entry.status)}`}
-                          >
-                            {entry.status}
-                          </span>
+                  <Card
+                    key={entry.predictionId}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={ariaLabel}
+                    className="cursor-pointer transition-shadow hover:shadow-md"
+                    onClick={() => handleOpen(entry)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        handleOpen(entry)
+                      }
+                    }}
+                  >
+                    <CardContent className="flex items-center justify-between p-4">
+                      <div className="flex items-center gap-4 overflow-hidden">
+                        <div className="bg-muted flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg">
+                          {getStatusIcon(entry.status)}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-foreground truncate text-sm font-medium">
+                            {entry.audioSource.name ||
+                              `Transcription ${entry.predictionId.slice(0, 8)}`}
+                          </p>
+                          <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                            <span>{formatDate(entry.createdAt)}</span>
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusClassName(entry.status)}`}
+                            >
+                              {entry.status}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          remove(entry.predictionId)
-                        }}
-                        className="text-muted-foreground hover:text-destructive h-8 w-8 p-0"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                      <ExternalLink className="text-muted-foreground h-4 w-4" />
-                    </div>
-                  </CardContent>
-                </Card>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            remove(entry.predictionId)
+                          }}
+                          className="text-muted-foreground hover:text-destructive h-8 w-8 p-0"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                        <ExternalLink className="text-muted-foreground h-4 w-4" />
+                      </div>
+                    </CardContent>
+                  </Card>
                 )
               })}
             </div>

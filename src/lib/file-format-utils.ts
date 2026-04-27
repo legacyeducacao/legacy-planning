@@ -5,10 +5,33 @@
 
 export const SUPPORTED_FORMATS = [
   // Audio
-  "mp3", "wav", "flac", "ogg", "m4a", "aac", "wma", "aiff",
-  "opus", "amr", "webm", "caf", "3gp", "ape", "au", "gsm", "ra", "voc",
+  "mp3",
+  "wav",
+  "flac",
+  "ogg",
+  "m4a",
+  "aac",
+  "wma",
+  "aiff",
+  "opus",
+  "amr",
+  "webm",
+  "caf",
+  "3gp",
+  "ape",
+  "au",
+  "gsm",
+  "ra",
+  "voc",
   // Video (AssemblyAI extracts audio automatically)
-  "mp4", "mov", "avi", "mkv", "wmv", "flv", "ts", "m4v",
+  "mp4",
+  "mov",
+  "avi",
+  "mkv",
+  "wmv",
+  "flv",
+  "ts",
+  "m4v",
 ] as const
 
 export type SupportedFormat = (typeof SUPPORTED_FORMATS)[number]
@@ -36,7 +59,8 @@ export function validateFileFormat(file: File | string): {
   if (!extension) {
     return {
       valid: false,
-      error: "File has no extension. Please ensure your file has a valid audio format extension.",
+      error:
+        "File has no extension. Please ensure your file has a valid audio format extension.",
     }
   }
 

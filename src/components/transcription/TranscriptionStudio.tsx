@@ -62,8 +62,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
     const tabs: { value: string; label: string }[] = []
     if (intelligence.chapters && intelligence.chapters.length > 0)
       tabs.push({ value: "chapters", label: "Chapters" })
-    if (intelligence.summary)
-      tabs.push({ value: "summary", label: "Summary" })
+    if (intelligence.summary) tabs.push({ value: "summary", label: "Summary" })
     if (
       intelligence.sentimentAnalysis &&
       intelligence.sentimentAnalysis.length > 0
@@ -168,9 +167,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                       className="flex h-full flex-col"
                     >
                       <TabsList className="mb-4 flex-shrink-0 flex-wrap">
-                        <TabsTrigger value="transcript">
-                          Transcript
-                        </TabsTrigger>
+                        <TabsTrigger value="transcript">Transcript</TabsTrigger>
                         {intelligenceTabs.map((tab) => (
                           <TabsTrigger key={tab.value} value={tab.value}>
                             {tab.label}
@@ -221,9 +218,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                             className="flex-1 overflow-auto"
                           >
                             <SentimentPanel
-                              sentimentResults={
-                                intelligence.sentimentAnalysis
-                              }
+                              sentimentResults={intelligence.sentimentAnalysis}
                               currentTime={currentTime}
                               onSeek={handleSeek}
                             />

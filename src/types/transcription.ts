@@ -48,7 +48,7 @@ export interface KeyPhrase {
   text: string
   count: number
   rank: number
-  timestamps: { start: number, end: number }[]
+  timestamps: { start: number; end: number }[]
 }
 
 export interface ContentSafety {

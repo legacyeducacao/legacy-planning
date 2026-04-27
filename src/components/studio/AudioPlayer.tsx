@@ -225,7 +225,13 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }
 
   useEffect(() => {
-    if (isLooping && loopStart !== null && loopEnd !== null && audioRef.current && currentTime >= loopEnd) {
+    if (
+      isLooping &&
+      loopStart !== null &&
+      loopEnd !== null &&
+      audioRef.current &&
+      currentTime >= loopEnd
+    ) {
       audioRef.current.currentTime = loopStart
     }
   }, [currentTime, isLooping, loopStart, loopEnd, audioRef])

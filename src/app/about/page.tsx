@@ -1,14 +1,7 @@
 import Link from "next/link"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
-import {
-  FileAudio,
-  Languages,
-  Brain,
-  Download,
-  Zap,
-  Users,
-} from "lucide-react"
+import { FileAudio, Languages, Brain, Download, Zap, Users } from "lucide-react"
 
 const features = [
   {
@@ -50,9 +43,21 @@ const features = [
 ]
 
 const steps = [
-  { step: "1", title: "Upload", description: "Drop a file or paste an audio URL" },
-  { step: "2", title: "Transcribe", description: "AI processes your audio in minutes" },
-  { step: "3", title: "Explore", description: "View, search, export, and analyze" },
+  {
+    step: "1",
+    title: "Upload",
+    description: "Drop a file or paste an audio URL",
+  },
+  {
+    step: "2",
+    title: "Transcribe",
+    description: "AI processes your audio in minutes",
+  },
+  {
+    step: "3",
+    title: "Explore",
+    description: "View, search, export, and analyze",
+  },
 ]
 
 export default function AboutPage() {
@@ -65,12 +70,12 @@ export default function AboutPage() {
         <section className="px-4 py-20 text-center">
           <div className="mx-auto max-w-3xl">
             <h1 className="mb-4 text-4xl font-bold text-foreground sm:text-5xl">
-              Audio to Text,{" "}
-              <span className="text-primary">Powered by AI</span>
+              Audio to Text, <span className="text-primary">Powered by AI</span>
             </h1>
             <p className="mb-8 text-lg text-muted-foreground">
-              Transcriptr converts your audio files into accurate, searchable text
-              with AI-powered transcription, speaker identification, and intelligent analysis.
+              Transcriptr converts your audio files into accurate, searchable
+              text with AI-powered transcription, speaker identification, and
+              intelligent analysis.
             </p>
             <Link
               href="/"
@@ -90,7 +95,10 @@ export default function AboutPage() {
             </h2>
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((feature) => (
-                <div key={feature.title} className="rounded-xl border border-border bg-card p-6">
+                <div
+                  key={feature.title}
+                  className="rounded-xl border border-border bg-card p-6"
+                >
                   <feature.icon className="mb-4 h-8 w-8 text-primary" />
                   <h3 className="mb-2 font-semibold text-foreground">
                     {feature.title}
@@ -112,13 +120,18 @@ export default function AboutPage() {
             </h2>
             <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-center">
               {steps.map((s, i) => (
-                <div key={s.step} className="flex items-center gap-4 sm:flex-col sm:text-center">
+                <div
+                  key={s.step}
+                  className="flex items-center gap-4 sm:flex-col sm:text-center"
+                >
                   <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
                     {s.step}
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">{s.title}</h3>
-                    <p className="text-sm text-muted-foreground">{s.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {s.description}
+                    </p>
                   </div>
                   {i < steps.length - 1 && (
                     <div className="hidden h-px w-16 bg-border sm:block" />

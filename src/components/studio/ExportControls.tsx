@@ -7,10 +7,7 @@ import { Download, Copy } from "lucide-react"
 import { toast } from "sonner"
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx"
 import { formatDuration } from "@/lib/format-utils"
-import {
-  formatTimeForSRT,
-  formatTimeForVTT,
-} from "@/lib/export-formats"
+import { formatTimeForSRT, formatTimeForVTT } from "@/lib/export-formats"
 import type {
   TranscriptionSegment,
   TranscriptionIntelligence,

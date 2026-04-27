@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect } from "react"
 
-const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
+const escapeRegExp = (s: string) =>
+  s.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Search, Copy } from "lucide-react"
@@ -141,7 +142,10 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
         .split(new RegExp(`(${escapeRegExp(searchTerm)})`, "gi"))
         .map((part, partIndex) =>
           part.toLowerCase() === searchTerm.toLowerCase() ? (
-            <mark key={`part-${partIndex}-${part}`} className="rounded bg-yellow-200 px-1">
+            <mark
+              key={`part-${partIndex}-${part}`}
+              className="rounded bg-yellow-200 px-1"
+            >
               {part}
             </mark>
           ) : (

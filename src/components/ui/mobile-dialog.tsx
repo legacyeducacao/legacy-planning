@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "./button";
+import * as React from "react"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { X } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "./button"
 
-const MobileDialog = DialogPrimitive.Root;
+const MobileDialog = DialogPrimitive.Root
 
-const MobileDialogTrigger = DialogPrimitive.Trigger;
+const MobileDialogTrigger = DialogPrimitive.Trigger
 
 const MobileDialogPortal = (props: DialogPrimitive.DialogPortalProps) => (
   <DialogPrimitive.Portal {...props} />
-);
-MobileDialogPortal.displayName = DialogPrimitive.Portal.displayName;
+)
+MobileDialogPortal.displayName = DialogPrimitive.Portal.displayName
 
 const MobileDialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
@@ -27,8 +27,8 @@ const MobileDialogOverlay = React.forwardRef<
     )}
     {...props}
   />
-));
-MobileDialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+))
+MobileDialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 const MobileDialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
@@ -67,8 +67,8 @@ const MobileDialogContent = React.forwardRef<
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </MobileDialogPortal>
-));
-MobileDialogContent.displayName = DialogPrimitive.Content.displayName;
+))
+MobileDialogContent.displayName = DialogPrimitive.Content.displayName
 
 const MobileDialogHeader = ({
   className,
@@ -83,8 +83,8 @@ const MobileDialogHeader = ({
     )}
     {...props}
   />
-);
-MobileDialogHeader.displayName = "MobileDialogHeader";
+)
+MobileDialogHeader.displayName = "MobileDialogHeader"
 
 const MobileDialogFooter = ({
   className,
@@ -99,8 +99,8 @@ const MobileDialogFooter = ({
     )}
     {...props}
   />
-);
-MobileDialogFooter.displayName = "MobileDialogFooter";
+)
+MobileDialogFooter.displayName = "MobileDialogFooter"
 
 const MobileDialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
@@ -116,8 +116,8 @@ const MobileDialogTitle = React.forwardRef<
     )}
     {...props}
   />
-));
-MobileDialogTitle.displayName = DialogPrimitive.Title.displayName;
+))
+MobileDialogTitle.displayName = DialogPrimitive.Title.displayName
 
 const MobileDialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
@@ -133,8 +133,8 @@ const MobileDialogDescription = React.forwardRef<
     )}
     {...props}
   />
-));
-MobileDialogDescription.displayName = DialogPrimitive.Description.displayName;
+))
+MobileDialogDescription.displayName = DialogPrimitive.Description.displayName
 
 export {
   MobileDialog,
@@ -144,4 +144,4 @@ export {
   MobileDialogFooter,
   MobileDialogTitle,
   MobileDialogDescription,
-};
+}

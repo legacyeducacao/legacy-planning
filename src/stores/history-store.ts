@@ -15,7 +15,10 @@ interface HistoryStore {
   isLoaded: boolean
   load: () => Promise<void>
   add: (entry: HistoryEntry) => Promise<void>
-  patch: (predictionId: string, updates: Partial<Omit<HistoryEntry, "predictionId">>) => Promise<void>
+  patch: (
+    predictionId: string,
+    updates: Partial<Omit<HistoryEntry, "predictionId">>,
+  ) => Promise<void>
   remove: (predictionId: string) => Promise<void>
   clear: () => Promise<void>
 }
@@ -119,7 +122,9 @@ const dbOperation = async <T>(
     const store = tx.objectStore(HISTORY_STORE_NAME)
     const request = fn(store)
     let result: T
-    request.onsuccess = () => { result = request.result }
+    request.onsuccess = () => {
+      result = request.result
+    }
     tx.oncomplete = () => resolve(result)
     tx.onerror = () => reject(new Error("IndexedDB operation failed"))
     tx.onabort = () => reject(new Error("IndexedDB transaction aborted"))

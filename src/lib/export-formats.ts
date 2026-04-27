@@ -1,5 +1,8 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx"
-import type { TranscriptionSegment, TranscriptionIntelligence } from "@/types/transcription"
+import type {
+  TranscriptionSegment,
+  TranscriptionIntelligence,
+} from "@/types/transcription"
 import { formatDuration } from "./format-utils"
 
 const splitTimestamp = (seconds: number) => {
@@ -36,7 +39,9 @@ export const generateSRT = (
     .map((segment) => {
       const startTime = formatTimeForSRT(segment.start)
       const endTime = formatTimeForSRT(segment.end)
-      const speakerPrefix = segment.speaker ? `[Speaker ${segment.speaker}] ` : ""
+      const speakerPrefix = segment.speaker
+        ? `[Speaker ${segment.speaker}] `
+        : ""
       return `${segment.id + 1}\n${startTime} --> ${endTime}\n${speakerPrefix}${segment.text.trim()}\n`
     })
     .join("\n")
@@ -55,7 +60,9 @@ export const generateVTT = (
     .map((segment) => {
       const startTime = formatTimeForVTT(segment.start)
       const endTime = formatTimeForVTT(segment.end)
-      const speakerPrefix = segment.speaker ? `[Speaker ${segment.speaker}] ` : ""
+      const speakerPrefix = segment.speaker
+        ? `[Speaker ${segment.speaker}] `
+        : ""
       return `${startTime} --> ${endTime}\n${speakerPrefix}${segment.text.trim()}\n`
     })
     .join("\n")
@@ -89,7 +96,9 @@ export const generateCSV = (
   segments?: TranscriptionSegment[],
 ): string => {
   if (!segments || segments.length === 0) {
-    return 'id,start,end,text\n1,0,0,"' + transcription.replace(/"/g, '""') + '"'
+    return (
+      'id,start,end,text\n1,0,0,"' + transcription.replace(/"/g, '""') + '"'
+    )
   }
   const header = "id,start,end,duration,text"
   const rows = segments.map(

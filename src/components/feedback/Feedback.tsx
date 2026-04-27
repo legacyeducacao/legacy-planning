@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { FeedbackForm } from "./FeedbackForm";
+import Link from "next/link"
+import { FeedbackForm } from "./FeedbackForm"
 
 export function Feedback() {
   return (
@@ -47,5 +47,5 @@ export function Feedback() {
         </footer>
       </div>
     </div>
-  );
+  )
 }

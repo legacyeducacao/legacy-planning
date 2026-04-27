@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   Menu,
   X,
@@ -12,15 +12,15 @@ import {
   Lightbulb,
   ExternalLink,
   BookOpen,
-} from "lucide-react";
-import Link from "next/link";
-import { Button } from "./button";
+} from "lucide-react"
+import Link from "next/link"
+import { Button } from "./button"
 
 interface MobileNavigationProps {
-  onOpenChangelog: () => void;
-  onShowHistory?: () => void;
-  onOpenFeedbackModal: (type: "general" | "issue" | "feature") => void;
-  onShowV3?: () => void;
+  onOpenChangelog: () => void
+  onShowHistory?: () => void
+  onOpenFeedbackModal: (type: "general" | "issue" | "feature") => void
+  onShowV3?: () => void
 }
 
 export function MobileNavigation({
@@ -29,10 +29,10 @@ export function MobileNavigation({
   onOpenFeedbackModal,
   onShowV3,
 }: MobileNavigationProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
-  const toggleMenu = () => setIsOpen(!isOpen);
-  const closeMenu = () => setIsOpen(false);
+  const toggleMenu = () => setIsOpen(!isOpen)
+  const closeMenu = () => setIsOpen(false)
 
   const menuVariants = {
     closed: {
@@ -43,7 +43,7 @@ export function MobileNavigation({
       opacity: 1,
       x: 0,
     },
-  };
+  }
 
   const overlayVariants = {
     closed: {
@@ -52,7 +52,7 @@ export function MobileNavigation({
     open: {
       opacity: 1,
     },
-  };
+  }
 
   const itemVariants = {
     closed: { opacity: 0, x: 20 },
@@ -60,32 +60,32 @@ export function MobileNavigation({
       opacity: 1,
       x: 0,
     },
-  };
+  }
 
   const containerVariants = {
     closed: {},
     open: {},
-  };
+  }
 
   const handleHistoryClick = () => {
-    onShowHistory?.();
-    closeMenu();
-  };
+    onShowHistory?.()
+    closeMenu()
+  }
 
   const handleV3Click = () => {
-    onShowV3?.();
-    closeMenu();
-  };
+    onShowV3?.()
+    closeMenu()
+  }
 
   const handleChangelogClick = () => {
-    onOpenChangelog();
-    closeMenu();
-  };
+    onOpenChangelog()
+    closeMenu()
+  }
 
   const handleFeedbackClick = (type: "general" | "issue" | "feature") => {
-    onOpenFeedbackModal(type);
-    closeMenu();
-  };
+    onOpenFeedbackModal(type)
+    closeMenu()
+  }
 
   return (
     <div className="md:hidden">
@@ -296,5 +296,5 @@ export function MobileNavigation({
         )}
       </AnimatePresence>
     </div>
-  );
+  )
 }

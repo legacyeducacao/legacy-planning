@@ -36,7 +36,9 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
     const transcript = await assemblyai.transcripts.get(id)
     const mappedStatus = mapStatus(transcript.status)
-    console.log(`Transcription ${id} status: ${transcript.status} -> ${mappedStatus}`)
+    console.log(
+      `Transcription ${id} status: ${transcript.status} -> ${mappedStatus}`,
+    )
 
     const result: Record<string, unknown> = {
       id,
@@ -68,11 +70,12 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
           end: u.end / 1000,
           text: u.text,
           speaker: u.speaker,
-          words: u.words?.map((w) => ({
-            word: w.text,
-            start: w.start / 1000,
-            end: w.end / 1000,
-          })) || [],
+          words:
+            u.words?.map((w) => ({
+              word: w.text,
+              start: w.start / 1000,
+              end: w.end / 1000,
+            })) || [],
         }))
       } else {
         // No diarization — fetch sentences via SDK
@@ -82,19 +85,22 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
             start: s.start / 1000,
             end: s.end / 1000,
             text: s.text,
-            words: s.words?.map((w) => ({
-              word: w.text,
-              start: w.start / 1000,
-              end: w.end / 1000,
-            })) || [],
+            words:
+              s.words?.map((w) => ({
+                word: w.text,
+                start: w.start / 1000,
+                end: w.end / 1000,
+              })) || [],
           }))
         } catch (sentenceError) {
           console.error("Error fetching sentences:", sentenceError)
-          segments = [{
-            start: 0,
-            end: (transcript.audio_duration || 0),
-            text: transcript.text || "",
-          }]
+          segments = [
+            {
+              start: 0,
+              end: transcript.audio_duration || 0,
+              text: transcript.text || "",
+            },
+          ]
         }
       }
 
@@ -115,15 +121,19 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
         intelligence.summary = transcript.summary
       }
 
-      if (transcript.sentiment_analysis_results && Array.isArray(transcript.sentiment_analysis_results)) {
-        intelligence.sentimentAnalysis = transcript.sentiment_analysis_results.map((s) => ({
-          text: s.text,
-          start: s.start / 1000,
-          end: s.end / 1000,
-          sentiment: s.sentiment,
-          confidence: s.confidence,
-          speaker: s.speaker || null,
-        }))
+      if (
+        transcript.sentiment_analysis_results &&
+        Array.isArray(transcript.sentiment_analysis_results)
+      ) {
+        intelligence.sentimentAnalysis =
+          transcript.sentiment_analysis_results.map((s) => ({
+            text: s.text,
+            start: s.start / 1000,
+            end: s.end / 1000,
+            sentiment: s.sentiment,
+            confidence: s.confidence,
+            speaker: s.speaker || null,
+          }))
       }
 
       if (transcript.entities && Array.isArray(transcript.entities)) {
@@ -135,16 +145,21 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
         }))
       }
 
-      if (transcript.auto_highlights_result?.results && Array.isArray(transcript.auto_highlights_result.results)) {
-        intelligence.keyPhrases = transcript.auto_highlights_result.results.map((h) => ({
-          text: h.text,
-          count: h.count,
-          rank: h.rank,
-          timestamps: (h.timestamps || []).map((t) => ({
-            start: t.start / 1000,
-            end: t.end / 1000,
-          })),
-        }))
+      if (
+        transcript.auto_highlights_result?.results &&
+        Array.isArray(transcript.auto_highlights_result.results)
+      ) {
+        intelligence.keyPhrases = transcript.auto_highlights_result.results.map(
+          (h) => ({
+            text: h.text,
+            count: h.count,
+            rank: h.rank,
+            timestamps: (h.timestamps || []).map((t) => ({
+              start: t.start / 1000,
+              end: t.end / 1000,
+            })),
+          }),
+        )
       }
 
       if (transcript.content_safety_labels) {
@@ -164,7 +179,8 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
       result.output = {
         segments,
         detected_language: transcript.language_code || null,
-        intelligence: Object.keys(intelligence).length > 0 ? intelligence : undefined,
+        intelligence:
+          Object.keys(intelligence).length > 0 ? intelligence : undefined,
       }
     }
 
@@ -173,9 +189,6 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
     console.error("Error checking transcription:", error)
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error"
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }

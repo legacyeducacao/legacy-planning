@@ -64,10 +64,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { audioFileUrl, firebaseFilePath, firebaseUrl } = await prepareAudioInput(
-      audioData,
-      audioUrl,
-    )
+    const { audioFileUrl, firebaseFilePath, firebaseUrl } =
+      await prepareAudioInput(audioData, audioUrl)
 
     if (!audioFileUrl) {
       throw new Error("No audio URL available for transcription.")

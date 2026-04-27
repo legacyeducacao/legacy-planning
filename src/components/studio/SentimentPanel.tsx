@@ -86,17 +86,23 @@ export const SentimentPanel: React.FC<SentimentPanelProps> = ({
           )}
         </div>
         <div className="flex justify-between text-xs">
-          <span className="text-green-600">Positive {distribution.POSITIVE}%</span>
+          <span className="text-green-600">
+            Positive {distribution.POSITIVE}%
+          </span>
           <span className="text-gray-500">Neutral {distribution.NEUTRAL}%</span>
-          <span className="text-red-600">Negative {distribution.NEGATIVE}%</span>
+          <span className="text-red-600">
+            Negative {distribution.NEGATIVE}%
+          </span>
         </div>
       </div>
 
       {/* Timeline */}
       <div className="max-h-80 space-y-2 overflow-y-auto">
         {sentimentResults.map((result, index) => {
-          const colors = SENTIMENT_COLORS[result.sentiment] || SENTIMENT_COLORS.NEUTRAL
-          const isActive = currentTime >= result.start && currentTime < result.end
+          const colors =
+            SENTIMENT_COLORS[result.sentiment] || SENTIMENT_COLORS.NEUTRAL
+          const isActive =
+            currentTime >= result.start && currentTime < result.end
 
           return (
             <button
@@ -113,7 +119,12 @@ export const SentimentPanel: React.FC<SentimentPanelProps> = ({
                 <span className="font-mono text-xs text-gray-500">
                   {formatDuration(result.start)}
                 </span>
-                <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", colors.badge)}>
+                <span
+                  className={cn(
+                    "rounded-full px-2 py-0.5 text-xs font-medium",
+                    colors.badge,
+                  )}
+                >
                   {result.sentiment}
                 </span>
               </div>

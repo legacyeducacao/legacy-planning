@@ -1,9 +1,9 @@
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
 export interface MobileInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  touchOptimized?: boolean;
+  touchOptimized?: boolean
 }
 
 const MobileInput = React.forwardRef<HTMLInputElement, MobileInputProps>(
@@ -24,9 +24,9 @@ const MobileInput = React.forwardRef<HTMLInputElement, MobileInputProps>(
         ref={ref}
         {...props}
       />
-    );
+    )
   },
-);
-MobileInput.displayName = "MobileInput";
+)
+MobileInput.displayName = "MobileInput"
 
-export { MobileInput };
+export { MobileInput }

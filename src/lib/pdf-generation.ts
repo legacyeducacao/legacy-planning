@@ -1,15 +1,15 @@
-import { toast } from "sonner";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import { toast } from "sonner"
+import { jsPDF } from "jspdf"
+import "jspdf-autotable"
 
 export const generatePdf = async (
   _templateId: string,
   data: Record<string, unknown>,
 ): Promise<Blob> => {
   // Use true PDF generation with jsPDF
-  console.log("Using local PDF generation");
-  return await generatePdfLocally(data);
-};
+  console.log("Using local PDF generation")
+  return await generatePdfLocally(data)
+}
 
 // Helper to add header and date
 const addHeaderAndDate = (
@@ -19,19 +19,19 @@ const addHeaderAndDate = (
   margin: number,
   pageWidth: number,
 ) => {
-  doc.setFontSize(24);
-  doc.setTextColor(0, 102, 204); // #0066cc
-  doc.text(title, margin, margin + 10);
+  doc.setFontSize(24)
+  doc.setTextColor(0, 102, 204) // #0066cc
+  doc.text(title, margin, margin + 10)
 
-  doc.setFontSize(10);
-  doc.setTextColor(119, 119, 119); // #777777
-  const dateWidth = doc.getTextWidth(formattedDate);
-  doc.text(formattedDate, pageWidth - margin - dateWidth, margin + 10);
+  doc.setFontSize(10)
+  doc.setTextColor(119, 119, 119) // #777777
+  const dateWidth = doc.getTextWidth(formattedDate)
+  doc.text(formattedDate, pageWidth - margin - dateWidth, margin + 10)
 
-  doc.setDrawColor(0, 102, 204); // #0066cc
-  doc.setLineWidth(1);
-  doc.line(margin, margin + 20, pageWidth - margin, margin + 20);
-};
+  doc.setDrawColor(0, 102, 204) // #0066cc
+  doc.setLineWidth(1)
+  doc.line(margin, margin + 20, pageWidth - margin, margin + 20)
+}
 
 // Helper to add footer
 const addFooter = (
@@ -41,23 +41,23 @@ const addFooter = (
   pageWidth: number,
   footerText: string,
 ) => {
-  doc.setFontSize(8);
-  doc.setTextColor(119, 119, 119); // #777777
+  doc.setFontSize(8)
+  doc.setTextColor(119, 119, 119) // #777777
 
-  doc.setDrawColor(221, 221, 221); // #dddddd
-  doc.setLineWidth(0.5);
+  doc.setDrawColor(221, 221, 221) // #dddddd
+  doc.setLineWidth(0.5)
   doc.line(
     margin,
     pageHeight - margin - 20,
     pageWidth - margin,
     pageHeight - margin - 20,
-  );
+  )
 
-  const footerWidth = doc.getTextWidth(footerText);
-  const footerX = (pageWidth - footerWidth) / 2;
+  const footerWidth = doc.getTextWidth(footerText)
+  const footerX = (pageWidth - footerWidth) / 2
 
-  doc.text(footerText, footerX, pageHeight - margin - 5);
-};
+  doc.text(footerText, footerX, pageHeight - margin - 5)
+}
 
 // Helper to render content with page breaks
 const renderContent = (
@@ -69,49 +69,49 @@ const renderContent = (
   pageHeight: number,
   lineHeight: number,
 ) => {
-  let verticalPosition = margin + 40;
-  let currentPage = 1;
+  let verticalPosition = margin + 40
+  let currentPage = 1
 
-  const lines = doc.splitTextToSize(contentText, usableWidth);
+  const lines = doc.splitTextToSize(contentText, usableWidth)
 
   for (let i = 0; i < lines.length; i++) {
     if (verticalPosition > pageHeight - margin) {
-      doc.addPage();
-      currentPage++;
-      verticalPosition = margin + 40;
+      doc.addPage()
+      currentPage++
+      verticalPosition = margin + 40
     }
 
-    let xPosition = margin;
+    let xPosition = margin
     if (isRTL) {
-      const lineWidth = doc.getTextWidth(lines[i]);
-      xPosition = doc.internal.pageSize.getWidth() - margin - lineWidth;
+      const lineWidth = doc.getTextWidth(lines[i])
+      xPosition = doc.internal.pageSize.getWidth() - margin - lineWidth
     }
 
-    doc.text(lines[i], xPosition, verticalPosition);
-    verticalPosition += lineHeight;
+    doc.text(lines[i], xPosition, verticalPosition)
+    verticalPosition += lineHeight
   }
-  return currentPage; // Return the total number of pages
-};
+  return currentPage // Return the total number of pages
+}
 
 // Client-side PDF generation using jsPDF with proper font handling
 const generatePdfLocally = async (
   data: Record<string, unknown>,
 ): Promise<Blob> => {
-  const toastId = toast.loading("Generating PDF...");
+  const toastId = toast.loading("Generating PDF...")
 
   try {
-    console.log("Generating PDF using jsPDF");
+    console.log("Generating PDF using jsPDF")
 
-    const title = (data.title as string) || "Transcription";
-    const contentText = (data.content as string) || "";
+    const title = (data.title as string) || "Transcription"
+    const contentText = (data.content as string) || ""
 
     // Check for RTL languages
-    const containsArabic = /[\u0600-\u06FF]/.test(contentText);
-    const containsHebrew = /[\u0590-\u05FF]/.test(contentText);
-    const isRTL = containsArabic || containsHebrew;
+    const containsArabic = /[\u0600-\u06FF]/.test(contentText)
+    const containsHebrew = /[\u0590-\u05FF]/.test(contentText)
+    const isRTL = containsArabic || containsHebrew
 
     // Format current date
-    const today = new Date();
+    const today = new Date()
     const options: Intl.DateTimeFormatOptions = {
       weekday: "short",
       year: "numeric",
@@ -119,8 +119,8 @@ const generatePdfLocally = async (
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    };
-    const formattedDate = today.toLocaleDateString("en-US", options);
+    }
+    const formattedDate = today.toLocaleDateString("en-US", options)
 
     // Create a PDF document with jsPDF
     const doc = new jsPDF({
@@ -129,21 +129,21 @@ const generatePdfLocally = async (
       format: "a4",
       putOnlyUsedFonts: true,
       compress: true,
-    });
+    })
 
     // Define page dimensions
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 40;
-    const usableWidth = pageWidth - 2 * margin;
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const pageHeight = doc.internal.pageSize.getHeight()
+    const margin = 40
+    const usableWidth = pageWidth - 2 * margin
 
     // Add initial header and date
-    addHeaderAndDate(doc, title, formattedDate, margin, pageWidth);
+    addHeaderAndDate(doc, title, formattedDate, margin, pageWidth)
 
     // Add content (with proper line breaks and page handling)
-    doc.setTextColor(51, 51, 51); // #333333
-    doc.setFontSize(12);
-    const lineHeight = 14;
+    doc.setTextColor(51, 51, 51) // #333333
+    doc.setFontSize(12)
+    const lineHeight = 14
 
     const totalPages = renderContent(
       doc,
@@ -153,40 +153,40 @@ const generatePdfLocally = async (
       usableWidth,
       pageHeight,
       lineHeight,
-    );
+    )
 
     // Add footer to each page
     const footerText =
-      "Generated with Transcriptr (https://transcriptr.aramb.dev)";
+      "Generated with Transcriptr (https://transcriptr.aramb.dev)"
     for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      addFooter(doc, pageHeight, margin, pageWidth, footerText);
+      doc.setPage(i)
+      addFooter(doc, pageHeight, margin, pageWidth, footerText)
     }
 
     // Convert jsPDF document to blob
-    const pdfBlob = doc.output("blob");
+    const pdfBlob = doc.output("blob")
 
-    toast.success("PDF generated successfully", { id: toastId });
-    console.log(`PDF document generated, size: ${pdfBlob.size} bytes`);
+    toast.success("PDF generated successfully", { id: toastId })
+    console.log(`PDF document generated, size: ${pdfBlob.size} bytes`)
 
-    return pdfBlob;
+    return pdfBlob
   } catch (error) {
-    console.error("Error generating PDF document:", error);
+    console.error("Error generating PDF document:", error)
 
     // Fallback to HTML if PDF generation fails
     try {
-      console.log("Falling back to HTML document generation");
+      console.log("Falling back to HTML document generation")
 
-      const title = (data.title as string) || "Transcription";
-      const contentText = (data.content as string) || "";
+      const title = (data.title as string) || "Transcription"
+      const contentText = (data.content as string) || ""
 
       // Check for RTL languages
-      const containsArabic = /[\u0600-\u06FF]/.test(contentText);
-      const containsHebrew = /[\u0590-\u05FF]/.test(contentText);
-      const isRTL = containsArabic || containsHebrew;
+      const containsArabic = /[\u0600-\u06FF]/.test(contentText)
+      const containsHebrew = /[\u0590-\u05FF]/.test(contentText)
+      const isRTL = containsArabic || containsHebrew
 
       // Format current date
-      const today = new Date();
+      const today = new Date()
       const options: Intl.DateTimeFormatOptions = {
         weekday: "short",
         year: "numeric",
@@ -194,8 +194,8 @@ const generatePdfLocally = async (
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-      };
-      const formattedDate = today.toLocaleDateString("en-US", options);
+      }
+      const formattedDate = today.toLocaleDateString("en-US", options)
 
       // Create HTML with proper styling and UTF-8 encoding
       const htmlContent = `
@@ -253,27 +253,27 @@ const generatePdfLocally = async (
           </div>
         </body>
         </html>
-      `;
+      `
 
       // Convert HTML to Blob
-      const blob = new Blob([htmlContent], { type: "text/html" });
+      const blob = new Blob([htmlContent], { type: "text/html" })
 
       toast.warning("PDF generation failed, providing HTML document instead", {
         id: toastId,
-      });
+      })
       toast.info(
         "HTML document preserves all characters correctly for multilingual support",
         { duration: 5000 },
-      );
+      )
 
-      console.log(`Fallback HTML document generated, size: ${blob.size} bytes`);
-      return blob;
+      console.log(`Fallback HTML document generated, size: ${blob.size} bytes`)
+      return blob
     } catch (fallbackError) {
-      console.error("Fallback HTML generation also failed:", fallbackError);
+      console.error("Fallback HTML generation also failed:", fallbackError)
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to generate document";
-      toast.error(errorMessage, { id: toastId });
-      throw error;
+        error instanceof Error ? error.message : "Failed to generate document"
+      toast.error(errorMessage, { id: toastId })
+      throw error
     }
   }
-};
+}

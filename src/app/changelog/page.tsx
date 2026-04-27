@@ -35,7 +35,8 @@ export default function ChangelogPage() {
                 Release notes
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                Shipped features, improvements, and fixes in chronological order.
+                Shipped features, improvements, and fixes in chronological
+                order.
               </p>
             </div>
 

@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Button } from "./ui/button";
+import Link from "next/link"
+import { Button } from "./ui/button"
 
 export function Documentation() {
   return (
@@ -110,5 +110,5 @@ export function Documentation() {
         </div>
       </div>
     </div>
-  );
+  )
 }

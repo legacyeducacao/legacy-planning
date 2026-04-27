@@ -1,11 +1,11 @@
-import * as React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import * as React from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface AnimatedListProps {
-  items: React.ReactNode[];
-  keyExtractor: (item: React.ReactNode, index: number) => string | number;
-  className?: string;
-  itemClassName?: string;
+  items: React.ReactNode[]
+  keyExtractor: (item: React.ReactNode, index: number) => string | number
+  className?: string
+  itemClassName?: string
 }
 
 export function AnimatedList({
@@ -29,13 +29,13 @@ export function AnimatedList({
         staggerDirection: -1,
       },
     },
-  };
+  }
 
   const item = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -10 },
-  };
+  }
 
   return (
     <motion.div
@@ -58,5 +58,5 @@ export function AnimatedList({
         ))}
       </AnimatePresence>
     </motion.div>
-  );
+  )
 }

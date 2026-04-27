@@ -25,18 +25,16 @@ export const TranscriptStatistics: React.FC<TranscriptStatisticsProps> = ({
       .filter((s) => s.trim().length > 0).length
     const avgWordLength =
       words.length > 0
-        ? (
-            words.reduce((sum, w) => sum + w.length, 0) / words.length
-          ).toFixed(1)
+        ? (words.reduce((sum, w) => sum + w.length, 0) / words.length).toFixed(
+            1,
+          )
         : "0"
     const totalDuration =
       segments && segments.length > 0
         ? segments[segments.length - 1].end - segments[0].start
         : 0
     const wordsPerMinute =
-      totalDuration > 0
-        ? Math.round(words.length / (totalDuration / 60))
-        : 0
+      totalDuration > 0 ? Math.round(words.length / (totalDuration / 60)) : 0
 
     // Find most common words (excluding short words)
     const wordFreq: Record<string, number> = {}

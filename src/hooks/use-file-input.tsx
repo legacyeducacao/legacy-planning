@@ -5,9 +5,7 @@ interface UseFileInputOptions {
   maxSize?: number // in MB
 }
 
-export function useFileInput({
-  maxSize = 100,
-}: UseFileInputOptions = {}) {
+export function useFileInput({ maxSize = 100 }: UseFileInputOptions = {}) {
   const [fileName, setFileName] = useState<string | null>(null)
   const [fileSize, setFileSize] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)

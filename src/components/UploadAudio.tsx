@@ -11,9 +11,7 @@ import type { AIFeatures } from "./transcription/TranscriptionOptions"
 
 interface UploadAudioProps {
   onUpload: (
-    data:
-      | FormData
-      | { audioUrl: string },
+    data: FormData | { audioUrl: string },
     options: { language: string; diarize: boolean; aiFeatures: AIFeatures },
   ) => void
   disabled?: boolean
@@ -107,7 +105,11 @@ export function UploadAudio({ onUpload }: UploadAudioProps) {
   }, [fileInputRef])
 
   const handleOptionsChange = useCallback(
-    (options: { language: string; diarize: boolean; aiFeatures: AIFeatures }) => {
+    (options: {
+      language: string
+      diarize: boolean
+      aiFeatures: AIFeatures
+    }) => {
       setTranscriptionOptions(options)
     },
     [],

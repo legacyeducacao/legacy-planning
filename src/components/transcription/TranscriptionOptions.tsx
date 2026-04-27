@@ -70,17 +70,51 @@ const AI_FEATURE_LIST: {
   label: string
   description: string
 }[] = [
-  { key: "autoChapters", label: "Auto Chapters", description: "Break transcript into time-stamped chapters with summaries (excludes Summarization)" },
-  { key: "summarization", label: "Summarization", description: "Generate a bullet-point summary of the audio (excludes Auto Chapters)" },
-  { key: "sentimentAnalysis", label: "Sentiment Analysis", description: "Detect positive/negative/neutral sentiment per sentence" },
-  { key: "entityDetection", label: "Entity Detection", description: "Identify people, locations, organizations mentioned" },
-  { key: "keyPhrases", label: "Key Phrases", description: "Extract important phrases and keywords" },
-  { key: "contentModeration", label: "Content Moderation", description: "Flag potentially unsafe content" },
-  { key: "topicDetection", label: "Topic Detection", description: "Classify content by IAB taxonomy topics" },
+  {
+    key: "autoChapters",
+    label: "Auto Chapters",
+    description:
+      "Break transcript into time-stamped chapters with summaries (excludes Summarization)",
+  },
+  {
+    key: "summarization",
+    label: "Summarization",
+    description:
+      "Generate a bullet-point summary of the audio (excludes Auto Chapters)",
+  },
+  {
+    key: "sentimentAnalysis",
+    label: "Sentiment Analysis",
+    description: "Detect positive/negative/neutral sentiment per sentence",
+  },
+  {
+    key: "entityDetection",
+    label: "Entity Detection",
+    description: "Identify people, locations, organizations mentioned",
+  },
+  {
+    key: "keyPhrases",
+    label: "Key Phrases",
+    description: "Extract important phrases and keywords",
+  },
+  {
+    key: "contentModeration",
+    label: "Content Moderation",
+    description: "Flag potentially unsafe content",
+  },
+  {
+    key: "topicDetection",
+    label: "Topic Detection",
+    description: "Classify content by IAB taxonomy topics",
+  },
 ]
 
 export interface TranscriptionOptionsProps {
-  onChange: (options: { language: string; diarize: boolean; aiFeatures: AIFeatures }) => void
+  onChange: (options: {
+    language: string
+    diarize: boolean
+    aiFeatures: AIFeatures
+  }) => void
 }
 
 export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
@@ -91,9 +125,9 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
   const hasShownModal = useRef(false)
 
   // summarization is excluded from "all" since it's mutually exclusive with autoChapters
-  const allEnabled = AI_FEATURE_LIST
-    .filter((f) => f.key !== "summarization")
-    .every((f) => aiFeatures[f.key])
+  const allEnabled = AI_FEATURE_LIST.filter(
+    (f) => f.key !== "summarization",
+  ).every((f) => aiFeatures[f.key])
   const anyEnabled = diarize || AI_FEATURE_LIST.some((f) => aiFeatures[f.key])
 
   const maybeShowModal = () => {
@@ -285,10 +319,7 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col gap-2 sm:flex-row">
-            <Button
-              variant="outline"
-              onClick={() => setShowDonateModal(false)}
-            >
+            <Button variant="outline" onClick={() => setShowDonateModal(false)}>
               Got it
             </Button>
             <Button

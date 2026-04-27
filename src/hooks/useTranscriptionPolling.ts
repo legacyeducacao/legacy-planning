@@ -145,7 +145,10 @@ export function useTranscriptionPolling({
         }
       } catch (error) {
         consecutiveErrors++
-        console.error(`Polling error (${consecutiveErrors}/${maxConsecutiveErrors}):`, error)
+        console.error(
+          `Polling error (${consecutiveErrors}/${maxConsecutiveErrors}):`,
+          error,
+        )
 
         if (consecutiveErrors >= maxConsecutiveErrors) {
           const errorInfo = getUserFriendlyErrorMessage(error)

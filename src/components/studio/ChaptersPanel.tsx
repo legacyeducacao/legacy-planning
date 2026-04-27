@@ -58,9 +58,7 @@ export const ChaptersPanel: React.FC<ChaptersPanelProps> = ({
               <span className="rounded bg-gray-100 px-1.5 py-0.5 font-mono dark:bg-gray-700">
                 {formatDuration(chapter.start)} - {formatDuration(chapter.end)}
               </span>
-              <span className="text-gray-400">
-                {chapter.gist}
-              </span>
+              <span className="text-gray-400">{chapter.gist}</span>
             </div>
           </button>
         )

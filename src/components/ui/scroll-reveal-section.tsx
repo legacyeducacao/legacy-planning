@@ -1,13 +1,13 @@
-import React from "react";
-import { motion, Variants } from "framer-motion";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import React from "react"
+import { motion, Variants } from "framer-motion"
+import { useScrollAnimation } from "@/hooks/useScrollAnimation"
 
 interface ScrollRevealSectionProps {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-  threshold?: number;
-  variants?: Variants;
+  children: React.ReactNode
+  className?: string
+  delay?: number
+  threshold?: number
+  variants?: Variants
 }
 
 export function ScrollRevealSection({
@@ -17,7 +17,7 @@ export function ScrollRevealSection({
   threshold = 0.1,
   variants,
 }: ScrollRevealSectionProps) {
-  const { ref, isInView } = useScrollAnimation(threshold);
+  const { ref, isInView } = useScrollAnimation(threshold)
 
   const defaultVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -29,7 +29,7 @@ export function ScrollRevealSection({
         delay,
       },
     },
-  };
+  }
 
   return (
     <motion.div
@@ -41,5 +41,5 @@ export function ScrollRevealSection({
     >
       {children}
     </motion.div>
-  );
+  )
 }

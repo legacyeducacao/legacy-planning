@@ -44,9 +44,7 @@ export const FileDetails: React.FC<FileDetailsProps> = ({ audioSource }) => {
 
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">Size</span>
-          <span className="text-sm">
-            {formatFileSize(audioSource?.size)}
-          </span>
+          <span className="text-sm">{formatFileSize(audioSource?.size)}</span>
         </div>
 
         <div className="flex items-center justify-between">
