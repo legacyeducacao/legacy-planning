@@ -118,8 +118,6 @@ app.get("/api/prediction/:id", (async (req: Request, res: Response) => {
   try {
     const { id } = req.params
 
-    console.log(`Checking transcription status for ID: ${id}`)
-
     const response = await fetch(
       `https://api.assemblyai.com/v2/transcript/${id}`,
       {
