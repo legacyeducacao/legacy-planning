@@ -1,4 +1,5 @@
 // Remove the cors import
+import { Readable } from "node:stream"
 import dotenv from "dotenv"
 import express, { Request, RequestHandler, Response } from "express"
 import path from "path"
@@ -41,6 +42,22 @@ app.use(((req, res, next) => {
 app.post("/api/transcribe", (async (req: Request, res: Response) => {
   try {
     const { audioUrl, options } = req.body
+
+    if (!audioUrl || typeof audioUrl !== "string") {
+      return res.status(400).json({ error: "audioUrl is required" })
+    }
+    let parsedAudioUrl: URL
+    try {
+      parsedAudioUrl = new URL(audioUrl)
+    } catch {
+      return res.status(400).json({ error: "audioUrl must be a valid URL" })
+    }
+    if (parsedAudioUrl.protocol !== "https:") {
+      return res.status(400).json({ error: "audioUrl must use HTTPS" })
+    }
+    if (!options || typeof options !== "object" || Array.isArray(options)) {
+      return res.status(400).json({ error: "options must be an object" })
+    }
 
     console.log("Request received with options:", {
       ...options,
@@ -167,12 +184,18 @@ app.post("/api/firebase-proxy", (async (req: Request, res: Response) => {
       })
     }
 
-    // Stream the response directly to the client
+    // Stream the response directly to avoid buffering large audio files
     const contentType = response.headers.get("content-type")
     res.setHeader("Content-Type", contentType || "application/octet-stream")
+    res.status(200)
 
-    const arrayBuffer = await response.arrayBuffer()
-    res.status(200).send(Buffer.from(arrayBuffer))
+    if (response.body) {
+      Readable.fromWeb(
+        response.body as Parameters<typeof Readable.fromWeb>[0],
+      ).pipe(res)
+    } else {
+      res.end()
+    }
   } catch (error) {
     console.error("Error proxying Firebase Storage request:", error)
     res.status(500).json({

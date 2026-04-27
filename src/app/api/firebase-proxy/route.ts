@@ -45,14 +45,11 @@ export async function POST(request: Request) {
     const buffer = await response.arrayBuffer()
     const contentType = response.headers.get("content-type")
 
-    // Return the file content
+    // Return the file content — no wildcard CORS; this is a same-origin route
     return new NextResponse(Buffer.from(buffer), {
       status: 200,
       headers: {
         "Content-Type": contentType || "application/octet-stream",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
       },
     })
   } catch (error: unknown) {

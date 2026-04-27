@@ -91,19 +91,26 @@ export const generateJSON = (
   )
 }
 
+// Sanitize a CSV cell value: quote the value and escape embedded quotes.
+// Also guard against spreadsheet formula injection by prefixing dangerous
+// leading characters with a tab so they are treated as plain text.
+const sanitizeCsvCell = (value: string): string => {
+  const escaped = value.replace(/"/g, '""')
+  const safe = /^[=+\-@\t\r]/.test(escaped) ? `\t${escaped}` : escaped
+  return `"${safe}"`
+}
+
 export const generateCSV = (
   transcription: string,
   segments?: TranscriptionSegment[],
 ): string => {
-  if (!segments || segments.length === 0) {
-    return (
-      'id,start,end,text\n1,0,0,"' + transcription.replace(/"/g, '""') + '"'
-    )
-  }
   const header = "id,start,end,duration,text"
+  if (!segments || segments.length === 0) {
+    return `${header}\n1,0,0,0,${sanitizeCsvCell(transcription)}`
+  }
   const rows = segments.map(
-    (seg) =>
-      `${seg.id},${seg.start.toFixed(3)},${seg.end.toFixed(3)},${(seg.end - seg.start).toFixed(3)},"${seg.text.replace(/"/g, '""')}"`,
+    (seg, index) =>
+      `${index + 1},${seg.start.toFixed(3)},${seg.end.toFixed(3)},${(seg.end - seg.start).toFixed(3)},${sanitizeCsvCell(seg.text)}`,
   )
   return [header, ...rows].join("\n")
 }

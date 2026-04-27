@@ -76,8 +76,6 @@ export function FileUploadInput({
 
       const files = e.dataTransfer.files
 
-      console.log("File dropped:", files?.[0]?.name)
-
       if (files && files.length > 0) {
         validateAndSetFile(files[0])
       }

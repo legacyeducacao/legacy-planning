@@ -56,12 +56,15 @@ export function useTranscriptionPolling({
 
       let attempts = 0
       let consecutiveErrors = 0
+      let isPollInFlight = false
       const maxAttempts = 120 // 10 minutes at 5s interval
       const maxConsecutiveErrors = 5
       const pollIntervalMs = 5000
 
       // Create poll function that uses the closure over id
       const poll = async () => {
+        if (isPollInFlight) return
+        isPollInFlight = true
         attempts++
 
         try {
@@ -171,6 +174,8 @@ export function useTranscriptionPolling({
               },
             })
           }
+        } finally {
+          isPollInFlight = false
         }
       }
 
