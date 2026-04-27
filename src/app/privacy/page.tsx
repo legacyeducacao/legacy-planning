@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { AnalyticsOptOut } from "@/components/analytics/AnalyticsOptOut";
+import Link from "next/link"
+import { AnalyticsOptOut } from "@/components/analytics/AnalyticsOptOut"
 
 export default function PrivacyPage() {
   return (
@@ -73,9 +73,10 @@ export default function PrivacyPage() {
                   2.2 Analytics and Usage Data
                 </h3>
                 <p className="mb-4">
-                  With your consent, we collect usage data through Google
-                  Analytics and Microsoft Clarity to improve our service. This
-                  includes:
+                  We use Vercel Web Analytics to understand usage patterns and
+                  improve the service. Analytics events are anonymized and we
+                  strip query strings before pageview URLs are sent. This may
+                  include:
                 </p>
                 <ul className="mb-4 list-disc space-y-2 pl-6">
                   <li>Usage statistics (pages visited, features used)</li>
@@ -95,12 +96,12 @@ export default function PrivacyPage() {
                   we collect the information you provide, which may include:
                 </p>
                 <ul className="mb-4 list-disc space-y-2 pl-6">
-                  <li>Your name (if provided)</li>
-                  <li>Your email address (optional)</li>
+                  <li>Information you enter into the feedback form</li>
                   <li>
-                    Browser and operating system information for issue reports
+                    Browser and operating system information forwarded with the
+                    embedded feedback form
                   </li>
-                  <li>The content of your feedback or issue report</li>
+                  <li>The page URL and route context tied to the submission</li>
                 </ul>
               </div>
             </section>
@@ -156,16 +157,8 @@ export default function PrivacyPage() {
               <ul className="mb-4 list-disc space-y-2 pl-6">
                 <li>AssemblyAI: Processes audio files for transcription</li>
                 <li>Firebase Storage: Temporarily stores larger audio files</li>
-                <li>
-                  Google Analytics: Tracks usage patterns (with consent only)
-                </li>
-                <li>
-                  Microsoft Clarity: Monitors user experience (with consent
-                  only)
-                </li>
-                <li>
-                  Netlify: Hosts the application and processes form submissions
-                </li>
+                <li>Vercel Web Analytics: Tracks anonymized usage patterns</li>
+                <li>Tally: Hosts the embedded feedback form submissions</li>
               </ul>
             </section>
 
@@ -175,7 +168,7 @@ export default function PrivacyPage() {
               </h2>
               <p className="mb-4">You have the right to:</p>
               <ul className="mb-4 list-disc space-y-2 pl-6">
-                <li>Decline analytics cookies and tracking</li>
+                <li>Disable analytics tracking for this browser</li>
                 <li>Request deletion of any data we hold about you</li>
                 <li>Access information about what data we process</li>
               </ul>
@@ -186,9 +179,9 @@ export default function PrivacyPage() {
                 7. Analytics Opt-Out
               </h2>
               <p className="mb-4">
-                You can opt out of analytics tracking by declining cookies when
-                prompted. You can also use browser extensions that block
-                tracking or enable "Do Not Track" settings in your browser.
+                You can disable Vercel Web Analytics for this browser below.
+                This stores a local browser preference and prevents analytics
+                events from being sent from this device.
               </p>
               <AnalyticsOptOut />
             </section>
@@ -228,5 +221,5 @@ export default function PrivacyPage() {
         </footer>
       </div>
     </div>
-  );
+  )
 }

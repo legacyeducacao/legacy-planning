@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useCallback, Suspense } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { UploadAudio } from "@/components/UploadAudio"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { Toaster, toast } from "sonner"
-import { FeedbackModals } from "@/components/feedback/FeedbackModals"
 import { uploadLargeFile } from "@/lib/storage-service"
 import { getApiUrl } from "@/services/transcription"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
@@ -148,10 +147,6 @@ export default function UploadPage() {
       </main>
 
       <Footer />
-
-      <Suspense fallback={null}>
-        <FeedbackModals />
-      </Suspense>
 
       <Toaster />
     </div>

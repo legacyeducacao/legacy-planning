@@ -66,6 +66,12 @@ export function useAudioPlayer({
         return
       }
 
+      if (e.key === "?" || (e.code === "Slash" && e.shiftKey)) {
+        e.preventDefault()
+        onShowShortcuts()
+        return
+      }
+
       if (isInputField) return
 
       const audio = audioRef.current
@@ -144,11 +150,6 @@ export function useAudioPlayer({
         case "0":
           e.preventDefault()
           audio.currentTime = 0
-          break
-
-        case "?":
-          e.preventDefault()
-          onShowShortcuts()
           break
       }
     }

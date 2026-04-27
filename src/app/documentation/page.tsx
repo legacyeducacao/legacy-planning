@@ -1,406 +1,534 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { Button } from "../../components/ui/button";
+import Link from "next/link"
+import {
+  ArrowRight,
+  BookOpen,
+  Brain,
+  ChevronRight,
+  CircleHelp,
+  Clock3,
+  Download,
+  FileAudio,
+  FileVideo,
+  Globe2,
+  History,
+  Languages,
+  MessageSquareMore,
+  Settings2,
+  ShieldCheck,
+  Sparkles,
+  Wrench,
+} from "lucide-react"
+import { Footer } from "@/components/layout/Footer"
+import { Header } from "@/components/layout/Header"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+const guideSections = [
+  {
+    href: "#quick-start",
+    icon: BookOpen,
+    title: "Quick start",
+    description: "The fastest route from upload to export.",
+  },
+  {
+    href: "#features",
+    icon: Sparkles,
+    title: "Key features",
+    description: "What the current Transcriptr workflow supports.",
+  },
+  {
+    href: "#formats",
+    icon: FileAudio,
+    title: "Supported formats",
+    description: "Audio and video formats that work without conversion.",
+  },
+  {
+    href: "#troubleshooting",
+    icon: Wrench,
+    title: "Troubleshooting",
+    description: "Common issues and the quickest fixes.",
+  },
+  {
+    href: "#faq",
+    icon: CircleHelp,
+    title: "FAQ",
+    description: "Short answers to the questions users ask most.",
+  },
+]
+
+const quickStartSteps = [
+  {
+    step: "01",
+    icon: FileAudio,
+    title: "Upload audio",
+    description:
+      "Drag in a file or paste a direct audio URL to start a new transcription.",
+  },
+  {
+    step: "02",
+    icon: Settings2,
+    title: "Choose options",
+    description:
+      "Set language, speaker labels, and optional AI analysis before submitting.",
+  },
+  {
+    step: "03",
+    icon: Clock3,
+    title: "Track progress",
+    description:
+      "Monitor the job while it queues and processes, then reopen it from History if needed.",
+  },
+  {
+    step: "04",
+    icon: Download,
+    title: "Review and export",
+    description:
+      "Use the Studio to play back audio, scan the transcript, and export the result.",
+  },
+]
+
+const features = [
+  {
+    icon: Languages,
+    title: "Multi-language transcription",
+    description:
+      "Work across a wide range of languages with either explicit selection or automatic detection.",
+  },
+  {
+    icon: Brain,
+    title: "AI analysis",
+    description:
+      "Generate summaries, chapters, sentiment, entities, key phrases, and topic labels when enabled.",
+  },
+  {
+    icon: History,
+    title: "History and recovery",
+    description:
+      "Completed and in-progress jobs can be reopened through the app without rebuilding your workflow from scratch.",
+  },
+  {
+    icon: Download,
+    title: "Multiple export formats",
+    description:
+      "Download transcripts in plain text and document-friendly formats after review.",
+  },
+  {
+    icon: Globe2,
+    title: "Audio and video input",
+    description:
+      "Use direct file uploads or supported media URLs depending on how your source material is hosted.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Temporary processing pipeline",
+    description:
+      "Uploaded media is handled for transcription and not intended to be kept as permanent storage.",
+  },
+]
+
+const formatGroups = [
+  {
+    icon: FileAudio,
+    title: "Audio formats",
+    description:
+      "Common voice notes, podcast masters, and archival audio formats work directly.",
+    items: [
+      "MP3, WAV, and FLAC",
+      "OGG, OPUS, and WebM audio",
+      "M4A, AAC, and AIFF",
+      "WMA, CAF, and other supported variants",
+    ],
+  },
+  {
+    icon: FileVideo,
+    title: "Video formats",
+    description:
+      "Transcriptr can extract audio from supported video containers before transcription.",
+    items: [
+      "MP4 and MOV",
+      "AVI and MKV",
+      "WMV, FLV, and M4V",
+      "Other standard containers supported by the transcription backend",
+    ],
+  },
+]
+
+const troubleshootingTopics = [
+  {
+    icon: FileAudio,
+    title: "Upload issues",
+    tips: [
+      "Confirm the file or URL points to a supported audio or video format.",
+      "Try refreshing the page if an upload stalls before submission.",
+      "Check that your connection is stable for larger uploads.",
+      "If a source URL fails, verify it is directly reachable and not gated behind auth.",
+    ],
+  },
+  {
+    icon: Brain,
+    title: "Transcription failures",
+    tips: [
+      "Clearer speech and cleaner source audio usually improve completion rates.",
+      "If advanced analysis is enabled, try a simpler run to isolate the failure.",
+      "Retry the job after a short pause if the provider reports a temporary issue.",
+      "Use the feedback form for persistent failures tied to one file or workflow.",
+    ],
+  },
+  {
+    icon: Globe2,
+    title: "Browser compatibility",
+    tips: [
+      "Use a current version of Chrome, Firefox, Safari, or Edge.",
+      "Keep JavaScript enabled for uploads, polling, and studio playback.",
+      "Clear cached site data if a stale UI state persists after a deployment.",
+      "Disable extensions that block uploads or media playback when debugging.",
+    ],
+  },
+  {
+    icon: Clock3,
+    title: "Performance tips",
+    tips: [
+      "Shorter recordings typically finish faster and are easier to review.",
+      "Split very long recordings if you need quicker turnaround.",
+      "Close heavy browser tabs when working with larger transcripts.",
+      "Use History to reopen finished work instead of rerunning the same job.",
+    ],
+  },
+]
+
+const faqItems = [
+  {
+    question: "What audio formats can I upload?",
+    answer:
+      "Most common audio and video formats are supported directly, including MP3, WAV, FLAC, OGG, M4A, AAC, MP4, MOV, and more.",
+  },
+  {
+    question: "Is my audio data secure?",
+    answer:
+      "Audio is processed for transcription and temporary storage, not treated as long-term media hosting.",
+  },
+  {
+    question: "What is the maximum file size?",
+    answer:
+      "File size limits depend on the current product constraints and hosting setup. If a file fails, split it or reduce its size before retrying.",
+  },
+  {
+    question: "How accurate are the transcriptions?",
+    answer:
+      "Accuracy depends heavily on audio quality, speaker overlap, language choice, and background noise. Clear recordings perform best.",
+  },
+  {
+    question: "Can I edit transcriptions after they are generated?",
+    answer:
+      "You can review, copy, and export transcripts today. Built-in editing is still more limited than a dedicated document editor.",
+  },
+]
 
 export default function DocumentationPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white py-12 text-gray-900 dark:from-gray-900 dark:to-gray-800 dark:text-gray-100">
-      <div className="container mx-auto max-w-4xl px-4">
-        <div className="overflow-hidden rounded-xl bg-white shadow-lg dark:bg-gray-800">
-          <div className="p-6 sm:p-8">
-            {/* Header */}
-            <div className="mb-8 text-center">
-              <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">
-                Documentation
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
-                Everything you need to know about using Transcriptr
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
+
+      <main className="flex-1">
+        <section className="border-b border-border px-4 py-16 sm:py-20">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+              <div>
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+                  <BookOpen className="h-3.5 w-3.5 text-primary" />
+                  Documentation
+                </div>
+
+                <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                  Everything you need to use Transcriptr&apos;s current workflow
+                </h1>
+
+                <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+                  Start with uploads and transcription options, then move into
+                  Studio playback, exports, troubleshooting, and the questions
+                  that come up most often.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Button asChild size="lg">
+                    <Link href="/">
+                      <FileAudio className="h-4 w-4" />
+                      Start Transcribing
+                    </Link>
+                  </Button>
+                  <Button asChild size="lg" variant="outline">
+                    <Link href="/changelog">
+                      View Changelog
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="mt-10 grid gap-3 sm:grid-cols-3">
+                  <Card className="border-border/60">
+                    <CardContent className="py-1">
+                      <p className="text-2xl font-semibold text-foreground">
+                        4
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Core workflow stages from upload to export
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-border/60">
+                    <CardContent className="py-1">
+                      <p className="text-2xl font-semibold text-foreground">
+                        25+
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Supported media formats across audio and video
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-border/60">
+                    <CardContent className="py-1">
+                      <p className="text-2xl font-semibold text-foreground">
+                        1
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Studio workspace for playback, search, and export
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              <Card className="border-border/60">
+                <CardHeader>
+                  <CardTitle>In this guide</CardTitle>
+                  <CardDescription>
+                    Jump directly to the section you need.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {guideSections.map((section) => (
+                    <Link
+                      key={section.href}
+                      href={section.href}
+                      className="flex items-start gap-3 rounded-lg border border-transparent px-3 py-3 transition-colors hover:border-border hover:bg-muted/40"
+                    >
+                      <section.icon className="mt-0.5 h-4 w-4 text-primary" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-foreground">
+                          {section.title}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {section.description}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="quick-start"
+          className="border-b border-border px-4 py-16"
+        >
+          <div className="container mx-auto max-w-6xl">
+            <div className="mb-10 max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground">
+                Quick start
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                The shortest path from raw media to a reviewed transcript.
               </p>
             </div>
 
-            {/* Getting Started */}
-            <section className="mb-10">
-              <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                🚀 Getting Started
-              </h2>
-              <div className="rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-6 dark:from-blue-900/20 dark:to-indigo-900/20">
-                <p className="mb-4 text-gray-700 dark:text-gray-300">
-                  Transform your audio files into accurate transcriptions in
-                  just a few simple steps.
-                </p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-                        1
-                      </span>
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                          Upload Audio
-                        </h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Upload your audio file or provide a URL
-                        </p>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {quickStartSteps.map((step) => (
+                <Card key={step.step} className="border-border/60">
+                  <CardHeader>
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <step.icon className="h-4 w-4" />
                       </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-                        2
+                      <span className="text-xs font-medium tracking-[0.24em] text-muted-foreground">
+                        {step.step}
                       </span>
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                          Configure Options
-                        </h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Select language and other settings
-                        </p>
-                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-                        3
-                      </span>
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                          Start Transcription
-                        </h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Click "Transcribe" and monitor progress
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-                        4
-                      </span>
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                          Download Results
-                        </h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Review and export your transcription
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Features */}
-            <section className="mb-10">
-              <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                ✨ Key Features
-              </h2>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="text-2xl">🌍</span>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                      Multi-language Support
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Transcribe audio in 100+ languages with high accuracy
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="text-2xl">💾</span>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                      Session Persistence
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Your progress is automatically saved and restored
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="text-2xl">📄</span>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                      Multiple Export Formats
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Download as PDF, DOCX, or plain text with timestamps
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="text-2xl">🕒</span>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                      Transcription History
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Access and manage all your past transcriptions
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="text-2xl">🎵</span>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                      Universal Format Support
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Supports 25+ audio and video formats natively — MP3, WAV,
-                    M4A, MP4, and more
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {/* Supported Formats */}
-            <section className="mb-10">
-              <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                📁 Supported Formats
-              </h2>
-              <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-900/50">
-                <p className="mb-4 text-gray-700 dark:text-gray-300">
-                  Transcriptr supports 25+ audio and video formats natively — no
-                  conversion step needed.
-                </p>
-
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div>
-                    <h4 className="mb-3 font-medium text-gray-900 dark:text-gray-100">
-                      Audio Formats
-                    </h4>
-                    <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>MP3</strong> - Most common audio format
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>WAV</strong> - Waveform Audio File
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>FLAC</strong> - Free Lossless Audio Codec
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>OGG</strong> - Open-source audio format
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>M4A</strong> - MPEG-4 Audio (iPhone recordings)
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>AAC, WMA, AIFF, OPUS, WebM, CAF</strong> - and
-                        more
-                      </li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="mb-3 font-medium text-gray-900 dark:text-gray-100">
-                      Video Formats
-                    </h4>
-                    <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>MP4</strong> - MPEG-4 video
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>MOV</strong> - QuickTime
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="text-green-500">•</span>
-                        <strong>AVI, MKV, WMV, FLV, M4V</strong> - and more
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Troubleshooting */}
-            <section className="mb-10">
-              <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                🔧 Troubleshooting
-              </h2>
-              <div className="space-y-4">
-                <details className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <summary className="cursor-pointer font-medium text-gray-900 dark:text-gray-100">
-                    Upload Issues
-                  </summary>
-                  <div className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p>
-                      • Most audio formats are now supported (MP3, WAV, FLAC,
-                      OGG, M4A, AAC, etc.)
-                    </p>
-                    <p>
-                      • If your format isn't supported, try converting to MP3 or
-                      WAV first
-                    </p>
-                    <p>
-                      • Check that the file size doesn't exceed the upload limit
-                    </p>
-                    <p>• Try refreshing the page if uploads are failing</p>
-                    <p>• Verify your internet connection is stable</p>
-                  </div>
-                </details>
-
-                <details className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <summary className="cursor-pointer font-medium text-gray-900 dark:text-gray-100">
-                    Transcription Failures
-                  </summary>
-                  <div className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p>• Check your internet connection and try again</p>
-                    <p>• Ensure the audio quality is clear and audible</p>
-                    <p>• Try reducing the batch size in advanced options</p>
-                    <p>
-                      • For persistent issues, use the feedback form to report
-                      bugs
-                    </p>
-                  </div>
-                </details>
-
-                <details className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <summary className="cursor-pointer font-medium text-gray-900 dark:text-gray-100">
-                    Browser Compatibility
-                  </summary>
-                  <div className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p>
-                      • Use modern browsers: Chrome, Firefox, Safari, or Edge
-                    </p>
-                    <p>• Enable JavaScript for full functionality</p>
-                    <p>• Clear browser cache if experiencing issues</p>
-                    <p>• Disable ad blockers if uploads are blocked</p>
-                  </div>
-                </details>
-
-                <details className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                  <summary className="cursor-pointer font-medium text-gray-900 dark:text-gray-100">
-                    Performance Tips
-                  </summary>
-                  <div className="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p>• Shorter audio files (under 1 hour) process faster</p>
-                    <p>
-                      • Use lower batch sizes for large files to avoid memory
-                      issues
-                    </p>
-                    <p>• Close other browser tabs to free up resources</p>
-                    <p>
-                      • Consider splitting very long recordings into segments
-                    </p>
-                  </div>
-                </details>
-              </div>
-            </section>
-
-            {/* FAQ */}
-            <section className="mb-10">
-              <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                ❓ Frequently Asked Questions
-              </h2>
-              <div className="space-y-4">
-                <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/50">
-                  <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
-                    What audio formats can I upload?
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    You can upload almost any audio or video format! We natively
-                    support MP3, WAV, FLAC, OGG, M4A, AAC, MP4, MOV, MKV, and
-                    many more — no conversion needed.
-                  </p>
-                </div>
-                <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/50">
-                  <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
-                    Is my audio data secure?
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Yes, your audio files are processed securely and
-                    automatically deleted after transcription. We don't store
-                    your audio permanently.
-                  </p>
-                </div>
-                <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/50">
-                  <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
-                    What's the maximum file size?
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    File size limits depend on your plan. Free users can upload
-                    files up to 25MB, while premium users enjoy higher limits.
-                  </p>
-                </div>
-                <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/50">
-                  <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
-                    How accurate are the transcriptions?
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Transcription accuracy typically ranges from 85-95%
-                    depending on audio quality, language, and speech clarity.
-                  </p>
-                </div>
-                <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/50">
-                  <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
-                    Can I edit transcriptions after they're generated?
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Currently, you can copy and edit transcriptions in external
-                    applications. Built-in editing features are planned for
-                    future releases.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {/* Footer */}
-            <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
-              <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Need more help? Check out our{" "}
-                  <Link
-                    href="/changelog"
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400"
-                  >
-                    changelog
-                  </Link>{" "}
-                  or submit{" "}
-                  <button
-                    onClick={() => window.openFeedbackModal?.("general")}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400"
-                  >
-                    feedback
-                  </button>
-                  {"."}
-                </p>
-                <Link href="/">
-                  <Button variant="outline" className="gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M19 12H5M12 19l-7-7 7-7" />
-                    </svg>
-                    Back to Transcriptr
-                  </Button>
-                </Link>
-              </div>
+                    <CardTitle>{step.title}</CardTitle>
+                    <CardDescription>{step.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+
+        <section id="features" className="border-b border-border px-4 py-16">
+          <div className="container mx-auto max-w-6xl">
+            <div className="mb-10 max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground">
+                Key features
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                The documentation tracks the product shape reflected in the
+                newer pages and the current Studio flow.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {features.map((feature) => (
+                <Card key={feature.title} className="border-border/60">
+                  <CardHeader>
+                    <feature.icon className="mb-3 h-5 w-5 text-primary" />
+                    <CardTitle>{feature.title}</CardTitle>
+                    <CardDescription>{feature.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="formats" className="border-b border-border px-4 py-16">
+          <div className="container mx-auto max-w-6xl">
+            <div className="mb-10 max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground">
+                Supported formats
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Most common media types work natively, so you usually do not
+                need an extra conversion step before uploading.
+              </p>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              {formatGroups.map((group) => (
+                <Card key={group.title} className="border-border/60">
+                  <CardHeader>
+                    <group.icon className="mb-3 h-5 w-5 text-primary" />
+                    <CardTitle>{group.title}</CardTitle>
+                    <CardDescription>{group.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {group.items.map((item) => (
+                        <div key={item} className="flex items-start gap-2">
+                          <ChevronRight className="mt-0.5 h-4 w-4 text-primary" />
+                          <p className="text-sm text-muted-foreground">{item}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="troubleshooting"
+          className="border-b border-border px-4 py-16"
+        >
+          <div className="container mx-auto max-w-6xl">
+            <div className="mb-10 max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground">
+                Troubleshooting
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Start with the category closest to the failure mode you are
+                seeing.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              {troubleshootingTopics.map((topic) => (
+                <Card key={topic.title} className="border-border/60">
+                  <CardHeader>
+                    <topic.icon className="mb-3 h-5 w-5 text-primary" />
+                    <CardTitle>{topic.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {topic.tips.map((tip) => (
+                        <div key={tip} className="flex items-start gap-2">
+                          <ChevronRight className="mt-0.5 h-4 w-4 text-primary" />
+                          <p className="text-sm text-muted-foreground">{tip}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="faq" className="px-4 py-16">
+          <div className="container mx-auto max-w-6xl">
+            <div className="mb-10 max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground">FAQ</h2>
+              <p className="mt-2 text-muted-foreground">
+                Short answers to the questions that come up most often.
+              </p>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              {faqItems.map((item) => (
+                <Card key={item.question} className="border-border/60">
+                  <CardHeader>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <CircleHelp className="h-4 w-4" />
+                    </div>
+                    <CardTitle>{item.question}</CardTitle>
+                    <CardDescription>{item.answer}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+
+            <Card className="mt-10 border-border/60">
+              <CardContent className="flex flex-col gap-5 py-1 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-lg font-semibold text-foreground">
+                    Need more help?
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Check the changelog for recent behavior changes or send
+                    feedback directly from the app.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button asChild variant="outline">
+                    <Link href="/changelog">
+                      <BookOpen className="h-4 w-4" />
+                      View Changelog
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => window.openFeedbackModal?.("general")}
+                  >
+                    <MessageSquareMore className="h-4 w-4" />
+                    Send Feedback
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
-  );
+  )
 }

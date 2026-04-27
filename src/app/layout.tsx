@@ -1,6 +1,7 @@
-import type { Metadata, Viewport } from "next";
-import Script from "next/script";
-import "../index.css";
+import type { Metadata, Viewport } from "next"
+import { VercelAnalytics } from "@/components/analytics/VercelAnalytics"
+import { FeedbackModals } from "@/components/feedback/FeedbackModals"
+import "../index.css"
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const metadata: Metadata = {
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
       "Convert audio to text with AI-powered transcription. Supports multiple formats and languages, providing fast and accurate results.",
     images: ["https://transcriptr.aramb.dev/social_preview.png"],
   },
-};
+}
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const viewport: Viewport = {
@@ -43,70 +44,20 @@ export const viewport: Viewport = {
   maximumScale: 5,
   userScalable: true,
   viewportFit: "cover", // Support for safe areas on mobile devices
-};
+}
 
 export default function RootLayout({
   children,
 }: {
-  readonly children: React.ReactNode;
+  readonly children: React.ReactNode
 }) {
   return (
     <html lang="en">
       <body className="font-sans">
-        <div id="root">{children}</div>
-        {/* Hidden form for Netlify */}
-        <form
-          name="feedback"
-          data-netlify="true"
-          data-netlify-honeypot="bot-field"
-          hidden
-        >
-          <input type="text" name="name" />
-          <input type="email" name="email" />
-          <input type="text" name="feedbackType" />
-          <input type="text" name="browser" />
-          <input type="text" name="operatingSystem" />
-          <textarea name="feedback"></textarea>
-        </form>
-        <Script
-          async
-          src="https://fundingchoicesmessages.google.com/i/pub-YOUR_PUBLISHER_ID?ers=1"
-          nonce="YOUR_NONCE"
-          strategy="afterInteractive"
-        />
-        <Script id="google-fc-present" strategy="afterInteractive">
-          {`
-            (function () {
-              function signalGooglefcPresent() {
-                if (!window.frames['googlefcPresent']) {
-                  if (document.body) {
-                    const iframe = document.createElement('iframe');
-                    iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
-                    iframe.style.display = 'none';
-                    iframe.name = 'googlefcPresent';
-                    document.body.appendChild(iframe);
-                  } else {
-                    setTimeout(signalGooglefcPresent, 0);
-                  }
-                }
-              }
-              signalGooglefcPresent();
-            })();
-          `}
-        </Script>
-        <Script id="google-tag-manager" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-PZJLV82QQ6');
-          `}
-        </Script>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-PZJLV82QQ6"
-          strategy="lazyOnload"
-        />
+        {children}
+        <FeedbackModals />
+        <VercelAnalytics />
       </body>
     </html>
-  );
+  )
 }

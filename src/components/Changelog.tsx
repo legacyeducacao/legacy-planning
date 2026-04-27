@@ -19,6 +19,8 @@ export function Changelog({ isModal = false, onClose }: ChangelogProps) {
     changelogItems.length > 0 ? [changelogItems[0].version] : [],
   )
 
+  const showHeader = !isModal || !!onClose
+
   const toggleVersion = (version: string) => {
     setExpandedVersions((prev) =>
       prev.includes(version)
@@ -41,8 +43,12 @@ export function Changelog({ isModal = false, onClose }: ChangelogProps) {
     if (!changes || changes.length === 0) return null
     return (
       <div>
-        <h3 className={`mb-2 text-sm font-medium ${colorClass}`}>{label}</h3>
-        <ul className="list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
+        <h3
+          className={`mb-2 text-xs font-semibold tracking-[0.22em] uppercase ${colorClass}`}
+        >
+          {label}
+        </h3>
+        <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground marker:text-primary">
           {changes.map((change) => (
             <li
               key={`${label}-${change.slice(0, 50)}`}
@@ -56,24 +62,26 @@ export function Changelog({ isModal = false, onClose }: ChangelogProps) {
 
   const content = (
     <div
-      className={`bg-white dark:bg-gray-800 ${isModal ? "rounded-lg shadow-xl" : "rounded-xl shadow-lg"} overflow-hidden`}
+      className={`overflow-hidden border border-border bg-card text-card-foreground ${isModal ? "rounded-2xl shadow-xs" : "rounded-2xl shadow-sm"}`}
     >
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-gray-100">
-            Changelog
-          </h2>
-          {isModal && onClose && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          )}
-        </div>
+        {showHeader && (
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-foreground sm:text-2xl">
+              Changelog
+            </h2>
+            {isModal && onClose && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
+        )}
 
         <div className="space-y-4">
           {changelogItems.map((item) => {
