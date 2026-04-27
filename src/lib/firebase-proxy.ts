@@ -1,5 +1,3 @@
-import { toast } from "sonner"
-
 /**
  * Utility functions for Firebase Storage and PDF generation
  */
@@ -27,44 +25,6 @@ export async function proxyFirebaseDownload(url: string): Promise<Blob> {
     return await response.blob()
   } catch (error) {
     console.error("Error proxying Firebase download:", error)
-    throw error
-  }
-}
-
-/**
- * Generate PDF using Printerz service
- */
-export async function generatePdf(
-  templateId: string,
-  data: Record<string, unknown>,
-): Promise<Blob> {
-  try {
-    // Determine server URL based on environment
-    const serverUrl = determineServerUrl()
-
-    console.log(
-      `Generating PDF with template ${templateId} via ${serverUrl}/api/printerz/render`,
-    )
-
-    const response = await fetch(`${serverUrl}/api/printerz/render`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        templateId,
-        printerzData: data,
-      }),
-    })
-
-    if (!response.ok) {
-      toast.error("Failed to generate PDF")
-      throw new Error(`PDF generation failed with status: ${response.status}`)
-    }
-
-    return await response.blob()
-  } catch (error) {
-    console.error("Error generating PDF:", error)
     throw error
   }
 }

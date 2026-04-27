@@ -132,7 +132,6 @@ export function ErrorState({
           <CardContent className="space-y-3">
             {hints.map((hint, index) => (
               <div
-                // biome-ignore lint/suspicious/noArrayIndexKey: hints are static strings with no stable identity
                 key={index}
                 className="border-border/70 bg-background rounded-xl border px-4 py-3"
               >
