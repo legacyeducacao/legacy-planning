@@ -74,7 +74,7 @@ export const generateJSON = (
       segments: segments || [],
       intelligence: intelligence || undefined,
       metadata: {
-        wordCount: transcription.split(/\s+/).length,
+        wordCount: transcription.trim().split(/\s+/).filter(Boolean).length,
         characterCount: transcription.length,
         segmentCount: segments?.length || 0,
       },
