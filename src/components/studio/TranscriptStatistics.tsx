@@ -41,7 +41,7 @@ export const TranscriptStatistics: React.FC<TranscriptStatisticsProps> = ({
     // Find most common words (excluding short words)
     const wordFreq: Record<string, number> = {}
     words.forEach((w) => {
-      const word = w.toLowerCase().replace(/[^a-z]/g, "")
+      const word = w.toLowerCase().replace(/[^\p{L}]/gu, "")
       if (word.length > 3) {
         wordFreq[word] = (wordFreq[word] || 0) + 1
       }

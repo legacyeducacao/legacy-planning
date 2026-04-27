@@ -13,10 +13,16 @@ interface UseAudioPlayerOptions {
 function isEditableTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false
 
+  const tag = target.tagName
   return (
-    target.tagName === "INPUT" ||
-    target.tagName === "TEXTAREA" ||
-    target.isContentEditable
+    tag === "INPUT" ||
+    tag === "TEXTAREA" ||
+    tag === "BUTTON" ||
+    tag === "SELECT" ||
+    (tag === "A" && target.hasAttribute("href")) ||
+    target.isContentEditable ||
+    target.getAttribute("role") === "button" ||
+    target.getAttribute("role") === "slider"
   )
 }
 
@@ -166,6 +172,7 @@ export function useAudioPlayer({
       }
 
       if ((e.ctrlKey || e.metaKey) && e.key === "c" && !isInputField) {
+        if (globalThis.window?.getSelection()?.toString()) return
         e.preventDefault()
         copyTranscript(transcription)
         return

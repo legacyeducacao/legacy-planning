@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useEffect } from "react"
 import { Button } from "../ui/button"
 import { Keyboard, X } from "lucide-react"
 
@@ -28,6 +28,15 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    globalThis.addEventListener("keydown", handleKeyDown)
+    return () => globalThis.removeEventListener("keydown", handleKeyDown)
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   return (
@@ -38,9 +47,17 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
         onClick={onClose}
         aria-label="Close keyboard shortcuts"
       />
-      <div className="relative mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="keyboard-shortcuts-title"
+        className="relative mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
+      >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
+          <h3
+            id="keyboard-shortcuts-title"
+            className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white"
+          >
             <Keyboard className="h-5 w-5" />
             Keyboard Shortcuts
           </h3>
@@ -48,6 +65,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
             variant="ghost"
             size="sm"
             onClick={onClose}
+            aria-label="Close"
             className="h-8 w-8 p-0"
           >
             <X className="h-4 w-4" />
