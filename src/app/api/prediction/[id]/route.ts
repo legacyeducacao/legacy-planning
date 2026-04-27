@@ -187,8 +187,9 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(result, { status: 200 })
   } catch (error: unknown) {
     console.error("Error checking transcription:", error)
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error"
-    return NextResponse.json({ error: errorMessage }, { status: 500 })
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    )
   }
 }

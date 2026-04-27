@@ -14,9 +14,16 @@ const port = process.env.PORT || 3001
 
 app.use(express.json({ limit: "50mb" }))
 
-// Add manual CORS headers to all responses instead
+// CORS — restrict to explicit origin allowlist via env
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+  : ["http://localhost:3000"]
+
 app.use(((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*")
+  const origin = req.headers.origin
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin)
+  }
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
   res.header(
     "Access-Control-Allow-Headers",
@@ -80,15 +87,11 @@ app.post("/api/transcribe", (async (req: Request, res: Response) => {
     }
 
     const data = await response.json()
-    console.log("AssemblyAI API response:", data)
     res.json(data)
   } catch (error) {
     console.error("Error proxying to AssemblyAI:", error)
     res.status(500).json({
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to communicate with AssemblyAI API",
+      error: "Failed to communicate with AssemblyAI API",
     })
   }
 }) as RequestHandler)
@@ -121,15 +124,11 @@ app.get("/api/prediction/:id", (async (req: Request, res: Response) => {
     }
 
     const data = await response.json()
-    console.log("Transcription status data:", data)
     res.json(data)
   } catch (error) {
     console.error("Error checking transcription status:", error)
     res.status(500).json({
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to check transcription status",
+      error: "Failed to check transcription status",
     })
   }
 }) as RequestHandler)
@@ -177,10 +176,7 @@ app.post("/api/firebase-proxy", (async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error proxying Firebase Storage request:", error)
     res.status(500).json({
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to proxy Firebase Storage request",
+      error: "Failed to proxy Firebase Storage request",
     })
   }
 }) as RequestHandler)

@@ -18,10 +18,11 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: "1.x"
+          cache: true
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
       - name: Type check
-        run: bun x tsc --noEmit
+        run: bun x tsc --noEmit --ignoreDeprecations 6.0

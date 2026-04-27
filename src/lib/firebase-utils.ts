@@ -47,7 +47,7 @@ export async function uploadBase64ToFirebase(
     console.log("Upload successful:", snapshot.metadata.fullPath)
 
     const downloadURL = await getDownloadURL(snapshot.ref)
-    console.log("Firebase download URL obtained:", downloadURL)
+    console.log("Firebase upload complete, download URL obtained")
 
     return { url: downloadURL, path: filePath }
   } catch (error: unknown) {

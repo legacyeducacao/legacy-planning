@@ -146,7 +146,7 @@ export const generateMarkdown = (
   }
 
   md += "\n---\n\n"
-  md += `*Word count: ${transcription.split(/\s+/).length}*\n`
+  md += `*Word count: ${transcription.trim().split(/\s+/).filter(Boolean).length}*\n`
   return md
 }
 

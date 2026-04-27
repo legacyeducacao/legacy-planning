@@ -6,18 +6,29 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { url } = body
 
-    if (!url?.includes("firebasestorage.googleapis.com")) {
+    let parsedUrl: URL
+    try {
+      parsedUrl = new URL(url)
+    } catch {
       return NextResponse.json(
         { error: "Invalid or missing Firebase Storage URL" },
         { status: 400 },
       )
     }
 
-    console.log(`Proxying request to Firebase Storage: ${url}`)
+    if (parsedUrl.hostname !== "firebasestorage.googleapis.com") {
+      return NextResponse.json(
+        { error: "Invalid or missing Firebase Storage URL" },
+        { status: 400 },
+      )
+    }
 
-    // Fetch the content from Firebase Storage
-    const response = await fetch(url, {
+    console.log("Proxying request to Firebase Storage")
+
+    // Fetch the content from Firebase Storage with a 10s timeout
+    const response = await fetch(parsedUrl.toString(), {
       method: "GET",
+      signal: AbortSignal.timeout(10000),
     })
 
     if (!response.ok) {
@@ -46,8 +57,9 @@ export async function POST(request: Request) {
     })
   } catch (error: unknown) {
     console.error("Error proxying Firebase Storage request:", error)
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred"
-    return NextResponse.json({ error: errorMessage }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to proxy Firebase Storage request" },
+      { status: 500 },
+    )
   }
 }

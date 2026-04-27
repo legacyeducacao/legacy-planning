@@ -4,8 +4,13 @@ import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx"
 import { Copy, Download } from "lucide-react"
 import React, { useState } from "react"
 import { toast } from "sonner"
-import { formatTimeForSRT, formatTimeForVTT } from "@/lib/export-formats"
-import { formatDuration } from "@/lib/format-utils"
+import {
+  generateCSV,
+  generateJSON,
+  generateMarkdown,
+  generateSRT,
+  generateVTT,
+} from "@/lib/export-formats"
 import type {
   TranscriptionIntelligence,
   TranscriptionSegment,
@@ -30,110 +35,6 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
   const [isDownloading, setIsDownloading] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
   const [isDownloadingAll, setIsDownloadingAll] = useState(false)
-
-  const generateSRT = (): string => {
-    if (!segments || segments.length === 0) {
-      return "1\n00:00:00,000 --> 00:00:00,100\n" + transcription
-    }
-    return segments
-      .map((segment) => {
-        const startTime = formatTimeForSRT(segment.start)
-        const endTime = formatTimeForSRT(segment.end)
-        const speakerPrefix = segment.speaker
-          ? `[Speaker ${segment.speaker}] `
-          : ""
-        return `${segment.id + 1}\n${startTime} --> ${endTime}\n${speakerPrefix}${segment.text.trim()}\n`
-      })
-      .join("\n")
-  }
-
-  const generateVTT = (): string => {
-    if (!segments || segments.length === 0) {
-      return "WEBVTT\n\n00:00:00.000 --> 00:00:00.100\n" + transcription
-    }
-    let vtt = "WEBVTT\n\n"
-    vtt += segments
-      .map((segment) => {
-        const startTime = formatTimeForVTT(segment.start)
-        const endTime = formatTimeForVTT(segment.end)
-        const speakerPrefix = segment.speaker
-          ? `[Speaker ${segment.speaker}] `
-          : ""
-        return `${startTime} --> ${endTime}\n${speakerPrefix}${segment.text.trim()}\n`
-      })
-      .join("\n")
-    return vtt
-  }
-
-  const generateJSON = (): string => {
-    return JSON.stringify(
-      {
-        exportedAt: new Date().toISOString(),
-        transcription,
-        segments: segments || [],
-        intelligence: intelligence || undefined,
-        metadata: {
-          wordCount: transcription.split(/\s+/).length,
-          characterCount: transcription.length,
-          segmentCount: segments?.length || 0,
-        },
-      },
-      null,
-      2,
-    )
-  }
-
-  const generateCSV = (): string => {
-    if (!segments || segments.length === 0) {
-      return (
-        'id,start,end,text\n1,0,0,"' + transcription.replace(/"/g, '""') + '"'
-      )
-    }
-    const header = "id,start,end,duration,text"
-    const rows = segments.map(
-      (seg) =>
-        `${seg.id},${seg.start.toFixed(3)},${seg.end.toFixed(3)},${(seg.end - seg.start).toFixed(3)},"${seg.text.replace(/"/g, '""')}"`,
-    )
-    return [header, ...rows].join("\n")
-  }
-
-  const generateMarkdown = (): string => {
-    let md = "# Transcription\n\n"
-    md += `*Exported: ${new Date().toLocaleString()}*\n\n`
-    md += "---\n\n"
-
-    if (intelligence?.summary) {
-      md += "## Summary\n\n"
-      md += `${intelligence.summary}\n\n`
-      md += "---\n\n"
-    }
-
-    if (intelligence?.chapters && intelligence.chapters.length > 0) {
-      md += "## Chapters\n\n"
-      intelligence.chapters.forEach((ch) => {
-        md += `### ${ch.headline}\n\n`
-        md += `*${formatDuration(ch.start)} - ${formatDuration(ch.end)}*\n\n`
-        md += `${ch.summary}\n\n`
-      })
-      md += "---\n\n"
-    }
-
-    if (segments && segments.length > 0) {
-      md += "## Transcript\n\n"
-      segments.forEach((seg) => {
-        const speakerPrefix = seg.speaker ? `**Speaker ${seg.speaker}:** ` : ""
-        md += `**[${formatDuration(seg.start)} - ${formatDuration(seg.end)}]** ${speakerPrefix}\n\n`
-        md += `${seg.text.trim()}\n\n`
-      })
-    } else {
-      md += "## Full Transcript\n\n"
-      md += transcription
-    }
-
-    md += "\n---\n\n"
-    md += `*Word count: ${transcription.split(/\s+/).length}*\n`
-    return md
-  }
 
   const buildDocxChildren = () => {
     const docChildren: Paragraph[] = [
@@ -189,9 +90,13 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
       let blob: Blob
 
       if (selectedFormat === "srt") {
-        blob = new Blob([generateSRT()], { type: "text/plain" })
+        blob = new Blob([generateSRT(transcription, segments)], {
+          type: "text/plain",
+        })
       } else if (selectedFormat === "vtt") {
-        blob = new Blob([generateVTT()], { type: "text/vtt" })
+        blob = new Blob([generateVTT(transcription, segments)], {
+          type: "text/vtt",
+        })
       } else if (selectedFormat === "docx") {
         const doc = new Document({
           sections: [{ children: buildDocxChildren() }],
@@ -201,11 +106,18 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
           type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         })
       } else if (selectedFormat === "json") {
-        blob = new Blob([generateJSON()], { type: "application/json" })
+        blob = new Blob([generateJSON(transcription, segments, intelligence)], {
+          type: "application/json",
+        })
       } else if (selectedFormat === "csv") {
-        blob = new Blob([generateCSV()], { type: "text/csv" })
+        blob = new Blob([generateCSV(transcription, segments)], {
+          type: "text/csv",
+        })
       } else if (selectedFormat === "md") {
-        blob = new Blob([generateMarkdown()], { type: "text/markdown" })
+        blob = new Blob(
+          [generateMarkdown(transcription, segments, intelligence)],
+          { type: "text/markdown" },
+        )
       } else {
         blob = new Blob([transcription], { type: "text/plain" })
       }
@@ -243,23 +155,35 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
           filename: `transcription_${timestamp}.txt`,
         },
         {
-          content: new Blob([generateSRT()], { type: "text/plain" }),
+          content: new Blob([generateSRT(transcription, segments)], {
+            type: "text/plain",
+          }),
           filename: `transcription_${timestamp}.srt`,
         },
         {
-          content: new Blob([generateVTT()], { type: "text/vtt" }),
+          content: new Blob([generateVTT(transcription, segments)], {
+            type: "text/vtt",
+          }),
           filename: `transcription_${timestamp}.vtt`,
         },
         {
-          content: new Blob([generateJSON()], { type: "application/json" }),
+          content: new Blob(
+            [generateJSON(transcription, segments, intelligence)],
+            { type: "application/json" },
+          ),
           filename: `transcription_${timestamp}.json`,
         },
         {
-          content: new Blob([generateCSV()], { type: "text/csv" }),
+          content: new Blob([generateCSV(transcription, segments)], {
+            type: "text/csv",
+          }),
           filename: `transcription_${timestamp}.csv`,
         },
         {
-          content: new Blob([generateMarkdown()], { type: "text/markdown" }),
+          content: new Blob(
+            [generateMarkdown(transcription, segments, intelligence)],
+            { type: "text/markdown" },
+          ),
           filename: `transcription_${timestamp}.md`,
         },
       ]

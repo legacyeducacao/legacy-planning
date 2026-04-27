@@ -145,9 +145,13 @@ export const saveSession = async (
     // Save to store
     await new Promise<void>((resolve, reject) => {
       const request = store.put(session)
-      request.onsuccess = () => resolve()
       request.onerror = (event) => {
         console.error("Error saving session:", event)
+        reject(new Error("Failed to save session"))
+      }
+      transaction.oncomplete = () => resolve()
+      transaction.onerror = (event) => {
+        console.error("Transaction error saving session:", event)
         reject(new Error("Failed to save session"))
       }
     })
