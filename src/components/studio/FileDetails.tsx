@@ -48,7 +48,11 @@ export const FileDetails: React.FC<FileDetailsProps> = ({ audioSource }) => {
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">Type</span>
           <Badge variant="secondary" className="text-xs">
-            {audioSource?.type === "file" ? "Upload" : "URL"}
+            {audioSource?.type === "file"
+              ? "Upload"
+              : audioSource?.type === "url"
+                ? "URL"
+                : "Unknown"}
           </Badge>
         </div>
       </CardContent>

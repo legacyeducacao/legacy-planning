@@ -7,6 +7,10 @@ import { Download, Copy } from "lucide-react"
 import { toast } from "sonner"
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx"
 import { formatDuration } from "@/lib/format-utils"
+import {
+  formatTimeForSRT,
+  formatTimeForVTT,
+} from "@/lib/export-formats"
 import type {
   TranscriptionSegment,
   TranscriptionIntelligence,
@@ -16,24 +20,6 @@ export interface ExportControlsProps {
   transcription: string
   segments?: TranscriptionSegment[]
   intelligence?: TranscriptionIntelligence
-}
-
-// Helper to format time for SRT (HH:MM:SS,mmm)
-const formatTimeForSRT = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = Math.floor(seconds % 60)
-  const milliseconds = Math.round((seconds % 1) * 1000)
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")},${milliseconds.toString().padStart(3, "0")}`
-}
-
-// Helper to format time for VTT (HH:MM:SS.mmm)
-const formatTimeForVTT = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = Math.floor(seconds % 60)
-  const milliseconds = Math.round((seconds % 1) * 1000)
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`
 }
 
 export const ExportControls: React.FC<ExportControlsProps> = ({
