@@ -152,7 +152,7 @@ export function UploadAudio({ onUpload }: UploadAudioProps) {
         }
       }
     },
-    [validateFile, handleFileSelect, setActiveTab, setAudioUrl],
+    [validateFile, handleFileSelect],
   )
 
   const canSubmit =

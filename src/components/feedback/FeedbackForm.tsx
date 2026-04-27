@@ -136,7 +136,7 @@ export function FeedbackForm({
     return () => {
       observer.disconnect()
     }
-  }, [embedSrc, isReady])
+  }, [])
 
   useEffect(() => {
     if (globalThis.window === undefined) {

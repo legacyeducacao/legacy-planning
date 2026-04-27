@@ -48,10 +48,9 @@ export function useTranscriptionPolling({
         pollIntervalRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [predictionId])
+  }, [predictionId, startPolling])
 
-  const startPolling = (id: string) => {
+  const startPolling = useCallback((id: string) => {
     if (pollIntervalRef.current) {
       clearInterval(pollIntervalRef.current)
     }
@@ -176,7 +175,7 @@ export function useTranscriptionPolling({
     pollIntervalRef.current = setInterval(poll, pollIntervalMs)
 
     firstPollTimeoutRef.current = setTimeout(() => poll(), 500)
-  }
+  }, [])
 
   const stopPolling = () => {
     if (pollIntervalRef.current) {

@@ -43,25 +43,25 @@ function parseTranscriptionOutput(output: {
     return { transcription: "", segments: undefined, intelligence: undefined }
   }
 
-  const segments = output.segments.map(
-    (
-      seg: {
-        start: number
-        end: number
-        text: string
-        speaker?: string
-        words?: unknown[]
-      },
-      idx: number,
-    ) => ({
+  type RawSegment = {
+    start: number
+    end: number
+    text: string
+    speaker?: string
+    words?: unknown[]
+  }
+
+  const segments = output.segments.map((seg, idx) => {
+    const s = seg as RawSegment
+    return {
       id: idx,
-      start: seg.start,
-      end: seg.end,
-      text: seg.text,
-      speaker: seg.speaker,
-      words: seg.words,
-    }),
-  ) as TranscriptionSegment[]
+      start: s.start,
+      end: s.end,
+      text: s.text,
+      speaker: s.speaker,
+      words: s.words,
+    }
+  }) as TranscriptionSegment[]
 
   const transcription = output.segments
     .map((seg) => (seg as { text: string }).text)
