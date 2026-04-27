@@ -43,10 +43,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
   const audioRef = useRef<HTMLVideoElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  const audioUrl =
-    typeof window !== "undefined"
-      ? audioSource?.url || localStorage.getItem("studioAudioUrl") || undefined
-      : audioSource?.url
+  const audioUrl = audioSource?.url
 
   const { handleSeek } = useAudioPlayer({
     audioRef,

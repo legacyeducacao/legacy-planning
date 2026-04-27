@@ -73,10 +73,10 @@ export default function TranscribePage({
 
       const data = await response.json()
       const audioUrl =
-        data.audioUrl || localStorage.getItem("studioAudioUrl") || undefined
+        data.audioUrl || localStorage.getItem(`audioUrl_${id}`) || undefined
 
       if (data.audioUrl) {
-        localStorage.setItem("studioAudioUrl", data.audioUrl)
+        localStorage.setItem(`audioUrl_${id}`, data.audioUrl)
       }
 
       if (data.status === "starting" || data.status === "processing") {

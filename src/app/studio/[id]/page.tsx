@@ -99,11 +99,11 @@ export default function StudioPage({
 
           const audioUrl =
             result.audioUrl ||
-            localStorage.getItem("studioAudioUrl") ||
+            localStorage.getItem(`audioUrl_${id}`) ||
             undefined
 
           if (result.audioUrl) {
-            localStorage.setItem("studioAudioUrl", result.audioUrl)
+            localStorage.setItem(`audioUrl_${id}`, result.audioUrl)
           }
 
           setData({

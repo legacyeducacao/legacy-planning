@@ -51,13 +51,13 @@ export default function UploadPage() {
           const uploadResult = await uploadLargeFile(file)
           requestBody.audioUrl = uploadResult.url
           audioUrl = uploadResult.url
-          localStorage.setItem("studioAudioUrl", uploadResult.url)
+          // audioUrl held in memory; written to localStorage below once we have the prediction ID
         } else {
           requestBody.audioUrl = data.audioUrl
           audioUrl = data.audioUrl
           audioSourceName = data.audioUrl
           audioSourceType = "url"
-          localStorage.setItem("studioAudioUrl", data.audioUrl)
+          // audioUrl held in memory; written to localStorage below once we have the prediction ID
         }
 
         requestBody.options = {
@@ -93,8 +93,10 @@ export default function UploadPage() {
         }
 
         if (resultData.audioUrl) {
-          localStorage.setItem("studioAudioUrl", resultData.audioUrl)
           audioUrl = resultData.audioUrl
+        }
+        if (audioUrl) {
+          localStorage.setItem(`audioUrl_${resultData.id}`, audioUrl)
         }
 
         addToHistory({
