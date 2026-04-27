@@ -237,19 +237,18 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }, [currentTime, isLooping, loopStart, loopEnd, audioRef])
 
   const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause()
-        setIsPlaying(false)
-      } else {
-        audioRef.current
-          .play()
-          .then(() => setIsPlaying(true))
-          .catch((error) => {
-            console.error("Audio playback failed:", error)
-            toast.error("Failed to play audio")
-          })
-      }
+    if (!audioRef.current) return
+    if (isPlaying) {
+      audioRef.current.pause()
+      setIsPlaying(false)
+    } else {
+      audioRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((error) => {
+          console.error("Audio playback failed:", error)
+          toast.error("Failed to play audio")
+        })
     }
   }
 

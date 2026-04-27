@@ -2,9 +2,10 @@
 
 import { FileAudio } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 
-export default function StudioRedirectPage() {
+function StudioRedirectContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -33,5 +34,13 @@ export default function StudioRedirectPage() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function StudioRedirectPage() {
+  return (
+    <Suspense>
+      <StudioRedirectContent />
+    </Suspense>
   )
 }

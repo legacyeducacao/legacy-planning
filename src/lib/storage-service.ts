@@ -57,7 +57,7 @@ export const deleteFile = async (path: string): Promise<void> => {
     if (path.startsWith("http")) {
       // Try to convert URL to storage path - this is tricky and implementation depends on URL format
       // For simplicity, if path contains 'temp_audio/', extract that part and everything after
-      const match = path.match(/temp_audio\/.+/)
+      const match = /temp_audio\/.+/.exec(path)
       if (match) {
         filePath = match[0]
       } else {

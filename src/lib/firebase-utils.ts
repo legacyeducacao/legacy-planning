@@ -3,7 +3,11 @@ import { getStorage } from "@/lib/firebase"
 
 const generateUniqueFilename = (originalName: string): string => {
   const timestamp = Date.now()
-  const randomString = Math.random().toString(36).substring(2, 8)
+  const randomBytes = new Uint8Array(4)
+  crypto.getRandomValues(randomBytes)
+  const randomString = Array.from(randomBytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
   const fileExtension = originalName?.split(".").pop() || "audio"
   return `audio_${timestamp}_${randomString}.${fileExtension}`
 }
@@ -26,7 +30,7 @@ export async function uploadBase64ToFirebase(
     const byteCharacters = atob(base64WithoutPrefix)
     const byteNumbers = new Array(byteCharacters.length)
     for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i)
+      byteNumbers[i] = byteCharacters.codePointAt(i) ?? 0
     }
     const byteArray = new Uint8Array(byteNumbers)
 

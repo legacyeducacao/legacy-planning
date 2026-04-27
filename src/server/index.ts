@@ -152,14 +152,11 @@ app.post("/api/printerz/render", (async (req: Request, res: Response) => {
       return res.status(500).json({ error: "Printerz API key not configured" })
     }
 
-    console.log(`Proxying request to Printerz template: ${templateId}`)
-    console.log(
-      "With data:",
-      JSON.stringify(printerzData).substring(0, 200) + "...",
-    )
+    console.log("Proxying request to Printerz")
 
+    const safeTemplateId = encodeURIComponent(String(templateId))
     const response = await fetch(
-      `https://api.printerz.dev/templates/${templateId}/render`,
+      `https://api.printerz.dev/templates/${safeTemplateId}/render`,
       {
         method: "POST",
         headers: {
@@ -213,15 +210,28 @@ app.post("/api/firebase-proxy", (async (req: Request, res: Response) => {
   try {
     const { url } = req.body
 
-    if (!url || !url.includes("firebasestorage.googleapis.com")) {
+    if (!url || typeof url !== "string") {
       return res
         .status(400)
         .json({ error: "Invalid or missing Firebase Storage URL" })
     }
 
-    console.log(`Proxying request to Firebase Storage: ${url}`)
+    let parsedUrl: URL
+    try {
+      parsedUrl = new URL(url)
+    } catch {
+      return res.status(400).json({ error: "Malformed Firebase Storage URL" })
+    }
 
-    const response = await fetch(url)
+    if (parsedUrl.hostname !== "firebasestorage.googleapis.com") {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing Firebase Storage URL" })
+    }
+
+    console.log("Proxying request to Firebase Storage")
+
+    const response = await fetch(parsedUrl.toString())
 
     if (!response.ok) {
       return res.status(response.status).json({

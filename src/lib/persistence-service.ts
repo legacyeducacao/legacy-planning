@@ -4,12 +4,9 @@
  */
 
 import { TranscriptionStatus } from "@/services/transcription"
-import type {
-  TranscriptionIntelligence,
-  TranscriptionSegment,
-} from "@/types/transcription"
+import type { TranscriptionIntelligence } from "@/types/transcription"
 
-export type { TranscriptionSegment }
+export type { TranscriptionSegment } from "@/types/transcription"
 
 export interface TranscriptionSession {
   id: string // Unique session ID
@@ -55,13 +52,13 @@ const DEFAULT_SESSION_EXPIRY_HOURS = 24
 const initDb = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
     // Check for IndexedDB support
-    if (!window.indexedDB) {
+    if (!globalThis.indexedDB) {
       console.error("Your browser doesn't support IndexedDB")
       reject(new Error("IndexedDB not supported"))
       return
     }
 
-    const request = window.indexedDB.open(DB_NAME, DB_VERSION)
+    const request = globalThis.indexedDB.open(DB_NAME, DB_VERSION)
 
     request.onerror = (event) => {
       console.error("Database error:", event)
@@ -94,7 +91,11 @@ const initDb = (): Promise<IDBDatabase> => {
  */
 export const createSessionId = (): string => {
   const timestamp = Date.now()
-  const randomString = Math.random().toString(36).substring(2, 10)
+  const randomBytes = new Uint8Array(5)
+  crypto.getRandomValues(randomBytes)
+  const randomString = Array.from(randomBytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
   const sessionId = `${timestamp}-${randomString}`
 
   // Set session cookie
