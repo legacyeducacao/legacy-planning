@@ -15,6 +15,7 @@ interface HistoryStore {
   isLoaded: boolean
   load: () => Promise<void>
   add: (entry: HistoryEntry) => Promise<void>
+  patch: (predictionId: string, updates: Partial<Omit<HistoryEntry, "predictionId">>) => Promise<void>
   remove: (predictionId: string) => Promise<void>
   clear: () => Promise<void>
 }
@@ -105,6 +106,25 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       }))
     } catch (error) {
       console.error("Failed to add history entry:", error)
+    }
+  },
+
+  patch: async (predictionId, updates) => {
+    try {
+      const existing = await dbOperation<HistoryEntry | undefined>(
+        "readonly",
+        (store) => store.get(predictionId),
+      )
+      if (!existing) return
+      const merged = { ...existing, ...updates }
+      await dbOperation("readwrite", (store) => store.put(merged))
+      set((state) => ({
+        entries: state.entries.map((e) =>
+          e.predictionId === predictionId ? merged : e,
+        ),
+      }))
+    } catch (error) {
+      console.error("Failed to patch history entry:", error)
     }
   },
 

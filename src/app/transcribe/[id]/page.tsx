@@ -55,7 +55,7 @@ export default function TranscribePage({
   const [copySuccess, setCopySuccess] = useState(false)
   const pollRef = useRef<NodeJS.Timeout | null>(null)
   const attemptsRef = useRef(0)
-  const updateHistory = useHistoryStore((s) => s.add)
+  const patchHistory = useHistoryStore((s) => s.patch)
 
   const stopPolling = useCallback(() => {
     if (pollRef.current) {
@@ -132,28 +132,10 @@ export default function TranscribePage({
         })
         setStatus("completed")
 
-        // Update history entry
-        updateHistory({
-          predictionId: id,
-          audioSource: {
-            type: "file",
-            url: audioUrl,
-          },
-          options: {
-            language: "auto",
-            diarize: false,
-            aiFeatures: {
-              autoChapters: false,
-              summarization: false,
-              sentimentAnalysis: false,
-              entityDetection: false,
-              keyPhrases: false,
-              contentModeration: false,
-              topicDetection: false,
-            },
-          },
+        // Merge result into existing history entry to preserve original options/metadata
+        patchHistory(id, {
+          ...(audioUrl ? { audioSource: { type: "file", url: audioUrl } } : {}),
           status: "succeeded",
-          createdAt: Date.now(),
           result: transcription.slice(0, 200),
         })
       } else if (data.status === "failed") {
@@ -175,7 +157,7 @@ export default function TranscribePage({
         setError(errorInfo.userMessage)
       }
     }
-  }, [id, stopPolling, updateHistory])
+  }, [id, stopPolling, patchHistory])
 
   useEffect(() => {
     poll()
