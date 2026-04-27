@@ -158,8 +158,17 @@ export default function HistoryPage() {
               {filtered.map((entry) => (
                 <Card
                   key={entry.predictionId}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open transcription: ${entry.audioSource.name || `Transcription ${entry.predictionId.slice(0, 8)}`}`}
                   className="cursor-pointer transition-shadow hover:shadow-md"
                   onClick={() => handleOpen(entry)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      handleOpen(entry)
+                    }
+                  }}
                 >
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-4 overflow-hidden">
