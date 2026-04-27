@@ -27,8 +27,8 @@ export default {
         ring: "var(--color-ring)",
         background: "var(--color-background)",
         foreground: "var(--color-foreground)",
-        success: "var(--color-success)",
-        warning: "var(--color-warning)",
+        success: "var(--success)",
+        warning: "var(--warning)",
         primary: {
           DEFAULT: "var(--color-primary)",
           foreground: "var(--color-primary-foreground)",

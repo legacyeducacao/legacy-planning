@@ -22,8 +22,8 @@ export async function uploadBase64ToFirebase(
   base64Data: string,
   mimeType: string = "audio/mpeg",
 ): Promise<{ url: string; path: string }> {
-  const storageInstance = getStorage()
   try {
+    const storageInstance = getStorage()
     const base64WithoutPrefix = base64Data.replace(/^data:.*;base64,/, "");
 
     // Decode base64 string to Uint8Array

@@ -118,8 +118,11 @@ const dbOperation = async <T>(
     const tx = db.transaction([HISTORY_STORE_NAME], mode)
     const store = tx.objectStore(HISTORY_STORE_NAME)
     const request = fn(store)
-    request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(new Error("IndexedDB operation failed"))
+    let result: T
+    request.onsuccess = () => { result = request.result }
+    tx.oncomplete = () => resolve(result)
+    tx.onerror = () => reject(new Error("IndexedDB operation failed"))
+    tx.onabort = () => reject(new Error("IndexedDB transaction aborted"))
   })
 }
 
