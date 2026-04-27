@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import DeviceDetector from "device-detector-js"
 import { AlertCircle, ExternalLink, Loader2 } from "lucide-react"
 import { Button } from "../ui/button"
@@ -12,6 +12,7 @@ interface FeedbackFormProps {
 
 const TALLY_EMBED_SRC = "https://tally.so/embed/9q6x7Q"
 const TALLY_SCRIPT_SRC = "https://tally.so/widgets/embed.js"
+const DEFAULT_IFRAME_HEIGHT = 420
 
 declare global {
   interface Window {
@@ -25,9 +26,12 @@ export function FeedbackForm({
   initialType = "general",
   onClose,
 }: FeedbackFormProps) {
+  const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const [embedSrc, setEmbedSrc] = useState("")
   const [isReady, setIsReady] = useState(false)
   const [loadError, setLoadError] = useState("")
+  const [iframeHeight, setIframeHeight] = useState(DEFAULT_IFRAME_HEIGHT)
+  const [embedScale, setEmbedScale] = useState(1)
 
   useEffect(() => {
     setIsReady(false)
@@ -105,13 +109,54 @@ export function FeedbackForm({
     document.body.appendChild(script)
   }, [embedSrc])
 
-  return (
-    <div className="mx-auto w-full max-w-md rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
-      <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
-        Browser and operating system details are forwarded to Tally for this
-        submission.
-      </p>
+  useEffect(() => {
+    const iframe = iframeRef.current
 
+    if (!iframe || typeof ResizeObserver === "undefined") {
+      return
+    }
+
+    const updateHeight = () => {
+      setIframeHeight(Math.max(iframe.offsetHeight, DEFAULT_IFRAME_HEIGHT))
+    }
+
+    updateHeight()
+
+    const observer = new ResizeObserver(() => {
+      updateHeight()
+    })
+
+    observer.observe(iframe)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [embedSrc, isReady])
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return
+    }
+
+    const updateScale = () => {
+      const reservedHeight = onClose ? 250 : 190
+      const availableHeight = Math.max(window.innerHeight - reservedHeight, 320)
+      const nextScale =
+        iframeHeight > availableHeight ? availableHeight / iframeHeight : 1
+
+      setEmbedScale(Number(nextScale.toFixed(3)))
+    }
+
+    updateScale()
+    window.addEventListener("resize", updateScale)
+
+    return () => {
+      window.removeEventListener("resize", updateScale)
+    }
+  }, [iframeHeight, onClose])
+
+  return (
+    <div className="w-full">
       {loadError ? (
         <div className="space-y-4">
           <div className="flex items-start rounded-md border border-red-200 bg-red-50 p-3 dark:border-red-700 dark:bg-red-900/30">
@@ -145,27 +190,41 @@ export function FeedbackForm({
           )}
 
           {embedSrc && (
-            <iframe
-              data-tally-src={embedSrc}
-              loading="lazy"
-              width="100%"
-              height="420"
-              frameBorder="0"
-              marginHeight={0}
-              marginWidth={0}
-              title="Transcriptr Feedback"
-              onLoad={() => setIsReady(true)}
-              className={isReady ? "w-full" : "w-full opacity-0"}
-            />
+            <div
+              className="overflow-hidden rounded-md"
+              style={{
+                height: `${Math.round(iframeHeight * embedScale)}px`,
+              }}
+            >
+              <iframe
+                ref={iframeRef}
+                data-tally-src={embedSrc}
+                loading="lazy"
+                width="100%"
+                height={DEFAULT_IFRAME_HEIGHT}
+                frameBorder="0"
+                marginHeight={0}
+                marginWidth={0}
+                title="Transcriptr Feedback"
+                onLoad={() => setIsReady(true)}
+                className={isReady ? "origin-top-left border-0 opacity-100" : "origin-top-left border-0 opacity-0"}
+                style={{
+                  width: `${100 / embedScale}%`,
+                  height: `${iframeHeight}px`,
+                  transform: `scale(${embedScale})`,
+                  transformOrigin: "top left",
+                }}
+              />
+            </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             {onClose && (
               <Button
                 type="button"
                 variant="outline"
                 onClick={onClose}
-                className="flex-1"
+                className="w-full sm:flex-1"
               >
                 Cancel
               </Button>
@@ -175,7 +234,7 @@ export function FeedbackForm({
               <Button
                 asChild
                 variant="outline"
-                className={onClose ? "flex-1" : "w-full"}
+                className={onClose ? "w-full sm:flex-1" : "w-full"}
               >
                 <a href={embedSrc} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />

@@ -35,7 +35,7 @@ export function FeedbackModals() {
       {activeModal && (
         <AnimatedBackdrop onClick={() => setActiveModal(null)}>
           <motion.div
-            className="relative w-full max-w-md overflow-hidden rounded-xl bg-white shadow-xl dark:bg-gray-800"
+            className="relative mx-auto w-full max-w-[min(40rem,calc(100vw-1.5rem))] max-h-[calc(100vh-1.5rem)] overflow-y-auto rounded-xl bg-white shadow-xl dark:bg-gray-800"
             onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -46,7 +46,7 @@ export function FeedbackModals() {
               stiffness: 300,
             }}
           >
-            <div className="p-6">
+            <div className="p-4 sm:p-5">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                   {modalTitles[activeModal]}
