@@ -93,7 +93,12 @@ export default function StudioPage({
               .trim()
           }
 
-          const audioUrl = localStorage.getItem("studioAudioUrl") || undefined
+          const audioUrl =
+            result.audioUrl || localStorage.getItem("studioAudioUrl") || undefined
+
+          if (result.audioUrl) {
+            localStorage.setItem("studioAudioUrl", result.audioUrl)
+          }
 
           setData({
             transcription,

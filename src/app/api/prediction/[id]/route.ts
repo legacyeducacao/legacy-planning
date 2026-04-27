@@ -43,6 +43,10 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
       status: mappedStatus,
     }
 
+    if (transcript.audio_url) {
+      result.audioUrl = transcript.audio_url
+    }
+
     if (mappedStatus === "failed") {
       result.error = transcript.error || "Unknown transcription error"
     }

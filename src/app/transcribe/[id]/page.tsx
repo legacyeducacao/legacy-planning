@@ -62,6 +62,12 @@ export default function TranscribePage({
       if (!response.ok) throw new Error(`Server error: ${response.status}`)
 
       const data = await response.json()
+      const audioUrl =
+        data.audioUrl || localStorage.getItem("studioAudioUrl") || undefined
+
+      if (data.audioUrl) {
+        localStorage.setItem("studioAudioUrl", data.audioUrl)
+      }
 
       if (data.status === "starting" || data.status === "processing") {
         const progressEstimate = Math.min(
@@ -121,7 +127,7 @@ export default function TranscribePage({
           predictionId: id,
           audioSource: {
             type: "file",
-            url: localStorage.getItem("studioAudioUrl") || undefined,
+            url: audioUrl,
           },
           options: { language: "auto", diarize: false, aiFeatures: { autoChapters: false, summarization: false, sentimentAnalysis: false, entityDetection: false, keyPhrases: false, contentModeration: false, topicDetection: false } },
           status: "succeeded",
