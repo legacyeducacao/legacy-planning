@@ -6,7 +6,7 @@ export const formatDuration = (seconds?: number): string => {
 }
 
 export const formatFileSize = (bytes?: number): string => {
-  if (!bytes) return "--"
+  if (bytes == null || !Number.isFinite(bytes)) return "--"
   const mb = bytes / (1024 * 1024)
   return `${mb.toFixed(1)} MB`
 }
