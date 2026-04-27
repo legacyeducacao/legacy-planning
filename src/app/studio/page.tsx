@@ -1,25 +1,19 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FileAudio } from "lucide-react"
 
 export default function StudioRedirectPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
-  // Old studio page used ?session= query params
-  // Now we use /studio/[id] route params
-  // Redirect to home if no specific ID
-  useEffect(() => {
-    const params = new URLSearchParams(globalThis.location.search)
-    const session = params.get("session")
-    if (session) {
-      // Can't directly map old session IDs to prediction IDs
-      // Redirect to home
-      router.replace("/")
-    }
-  }, [router])
+  // Old studio page used ?session= query params; new route is /studio/[id].
+  // Redirect to home immediately — can't map old session IDs to prediction IDs.
+  if (searchParams.get("session")) {
+    router.replace("/")
+    return null
+  }
 
   return (
     <div className="bg-background flex min-h-screen items-center justify-center">
