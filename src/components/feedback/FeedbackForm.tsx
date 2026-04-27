@@ -49,7 +49,7 @@ export function FeedbackForm({
           : device.os.name
         : navigator.platform || "Unknown"
 
-      const params = new URLSearchParams(globalThis.location.search)
+      const params = new URLSearchParams()
       params.set("alignLeft", "1")
       params.set("hideTitle", "1")
       params.set("transparentBackground", "1")
@@ -59,7 +59,6 @@ export function FeedbackForm({
       params.set("os", operatingSystem)
       params.set("operatingSystem", operatingSystem)
       params.set("originPage", globalThis.location.pathname)
-      params.set("originUrl", globalThis.location.href)
 
       return `${TALLY_EMBED_SRC}?${params.toString()}`
     } catch (error) {
