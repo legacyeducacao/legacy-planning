@@ -59,7 +59,7 @@ export default function HistoryPage() {
       return <FileAudio className="text-primary h-5 w-5" />
     }
 
-    if (status === "processing") {
+    if (status === "processing" || status === "starting") {
       return <Clock className="h-5 w-5 text-amber-500" />
     }
 
@@ -71,7 +71,7 @@ export default function HistoryPage() {
       return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
     }
 
-    if (status === "processing") {
+    if (status === "processing" || status === "starting") {
       return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
     }
 
