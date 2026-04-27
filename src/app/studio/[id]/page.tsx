@@ -60,6 +60,7 @@ export default function StudioPage({
   useEffect(() => {
     async function loadData() {
       setIsLoading(true)
+      let didRedirect = false
       try {
         const response = await fetch(getApiUrl(`prediction/${id}`))
         if (!response.ok) throw new Error(`Server error: ${response.status}`)
@@ -116,7 +117,7 @@ export default function StudioPage({
           result.status === "processing" ||
           result.status === "starting"
         ) {
-          // Still processing - redirect back to transcribe page
+          didRedirect = true
           router.replace(`/transcribe/${id}`)
           return
         } else if (result.status === "failed") {
@@ -128,7 +129,7 @@ export default function StudioPage({
         console.error("Failed to load studio data:", err)
         setError("Failed to load transcription data")
       } finally {
-        setIsLoading(false)
+        if (!didRedirect) setIsLoading(false)
       }
     }
 
