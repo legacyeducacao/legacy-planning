@@ -30,6 +30,123 @@ export interface AudioPlayerProps {
   onSegmentChange?: (segmentIndex: number) => void
 }
 
+function NoAudioContent() {
+  return (
+    <div className="py-8 text-center text-gray-500">
+      <FileAudio className="mx-auto mb-2 h-8 w-8 opacity-50" />
+      <p className="text-sm">No audio file available for playback</p>
+    </div>
+  )
+}
+
+function SpeedMenu({
+  playbackSpeed,
+  onSpeedChange,
+}: Readonly<{
+  playbackSpeed: number
+  onSpeedChange: (speed: number) => void
+}>) {
+  return (
+    <div className="absolute right-0 bottom-10 z-10 rounded-md border bg-white p-1 shadow-lg dark:bg-gray-800">
+      {PLAYBACK_SPEEDS.map((speed) => (
+        <button
+          key={speed}
+          onClick={() => onSpeedChange(speed)}
+          className={cn(
+            "block w-full rounded px-3 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700",
+            playbackSpeed === speed && "bg-blue-100 dark:bg-blue-900",
+          )}
+        >
+          {speed}x
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function SegmentNavigation({
+  currentSegmentIndex,
+  segmentsLength,
+  onPrevious,
+  onNext,
+}: Readonly<{
+  currentSegmentIndex: number
+  segmentsLength: number
+  onPrevious: () => void
+  onNext: () => void
+}>) {
+  return (
+    <div className="flex items-center justify-between border-t pt-3">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onPrevious}
+        disabled={currentSegmentIndex <= 0}
+        className="flex items-center gap-1"
+      >
+        <ChevronLeft className="h-4 w-4" />
+        Prev
+      </Button>
+      <span className="text-xs text-gray-500">
+        Segment {currentSegmentIndex + 1} of {segmentsLength}
+      </span>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onNext}
+        disabled={currentSegmentIndex >= segmentsLength - 1}
+        className="flex items-center gap-1"
+      >
+        Next
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  )
+}
+
+function LoopPoints({
+  loopStart,
+  loopEnd,
+  onSetLoopPoint,
+  onClearLoop,
+}: Readonly<{
+  loopStart: number | null
+  loopEnd: number | null
+  onSetLoopPoint: (type: "start" | "end") => void
+  onClearLoop: () => void
+}>) {
+  return (
+    <div className="flex items-center justify-between border-t pt-3 text-xs">
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onSetLoopPoint("start")}
+          className="h-6 px-2 text-xs"
+        >
+          A: {loopStart !== null ? formatDuration(loopStart) : "--:--"}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onSetLoopPoint("end")}
+          className="h-6 px-2 text-xs"
+        >
+          B: {loopEnd !== null ? formatDuration(loopEnd) : "--:--"}
+        </Button>
+      </div>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onClearLoop}
+        className="h-6 px-2 text-xs text-red-500"
+      >
+        Clear
+      </Button>
+    </div>
+  )
+}
+
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   audioUrl,
   audioRef: externalAudioRef,
@@ -48,7 +165,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const [loopEnd, setLoopEnd] = useState<number | null>(null)
   const [showSpeedMenu, setShowSpeedMenu] = useState(false)
   const internalAudioRef = useRef<HTMLVideoElement>(null)
-  const audioRef = externalAudioRef || internalAudioRef
+  const audioRef = externalAudioRef ?? internalAudioRef
 
   const currentSegmentIndex =
     segments?.findIndex(
@@ -65,7 +182,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }
 
   const goToPrevSegment = () => {
-    if (!segments || segments.length === 0) return
+    if (segments === undefined || segments.length === 0) return
     const prevIndex = Math.max(0, currentSegmentIndex - 1)
     if (audioRef.current && segments[prevIndex]) {
       audioRef.current.currentTime = segments[prevIndex].start
@@ -74,7 +191,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }
 
   const goToNextSegment = () => {
-    if (!segments || segments.length === 0) return
+    if (segments === undefined || segments.length === 0) return
     const nextIndex = Math.min(segments.length - 1, currentSegmentIndex + 1)
     if (audioRef.current && segments[nextIndex]) {
       audioRef.current.currentTime = segments[nextIndex].start
@@ -84,8 +201,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
   const toggleMute = () => {
     if (audioRef.current) {
-      audioRef.current.muted = !isMuted
-      setIsMuted(!isMuted)
+      const nextMuted = isMuted === false
+      audioRef.current.muted = nextMuted
+      setIsMuted(nextMuted)
     }
   }
 
@@ -129,7 +247,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           toast.error("Failed to play audio")
         })
       }
-      setIsPlaying(!isPlaying)
+      setIsPlaying(isPlaying === false)
     }
   }
 
@@ -151,8 +269,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }
 
   const handleDurationChange = () => {
-    if (audioRef.current && audioRef.current.duration) {
-      setDuration(audioRef.current.duration)
+    const audioDuration = audioRef.current?.duration
+    if (audioDuration) {
+      setDuration(audioDuration)
     }
   }
 
@@ -167,8 +286,22 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     }
   }
 
+  const handleProgressKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!audioRef.current) return
+
+    if (e.key === "ArrowLeft") {
+      e.preventDefault()
+      skip(-5)
+    }
+
+    if (e.key === "ArrowRight") {
+      e.preventDefault()
+      skip(5)
+    }
+  }
+
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value)
+    const newVolume = Number.parseFloat(e.target.value)
     setVolume(newVolume)
     if (audioRef.current) {
       audioRef.current.volume = newVolume
@@ -195,7 +328,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               preload="metadata"
               crossOrigin="anonymous"
               className="hidden"
-            />
+            >
+              <track kind="captions" />
+            </video>
 
             <div className="space-y-4">
               {/* Controls */}
@@ -241,8 +376,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   <span>{formatDuration(duration)}</span>
                 </div>
                 <div
+                  tabIndex={0}
                   className="h-1 cursor-pointer overflow-hidden rounded-full bg-gray-200 transition-all duration-100 hover:h-2"
                   onClick={handleProgressBarClick}
+                  onKeyDown={handleProgressKeyDown}
                   role="slider"
                   aria-label="Audio progress"
                   aria-valuemin={0}
@@ -294,27 +431,18 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                    onClick={() =>
+                      setShowSpeedMenu((current) => current === false)
+                    }
                     className="h-8 px-2 text-xs"
                   >
                     {playbackSpeed}x
                   </Button>
                   {showSpeedMenu && (
-                    <div className="absolute right-0 bottom-10 z-10 rounded-md border bg-white p-1 shadow-lg dark:bg-gray-800">
-                      {PLAYBACK_SPEEDS.map((speed) => (
-                        <button
-                          key={speed}
-                          onClick={() => handleSpeedChange(speed)}
-                          className={cn(
-                            "block w-full rounded px-3 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700",
-                            playbackSpeed === speed &&
-                              "bg-blue-100 dark:bg-blue-900",
-                          )}
-                        >
-                          {speed}x
-                        </button>
-                      ))}
-                    </div>
+                    <SpeedMenu
+                      playbackSpeed={playbackSpeed}
+                      onSpeedChange={handleSpeedChange}
+                    />
                   )}
                 </div>
 
@@ -325,7 +453,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                     size="sm"
                     onClick={() => {
                       if (loopStart !== null && loopEnd !== null) {
-                        setIsLooping(!isLooping)
+                        setIsLooping((current) => current === false)
                       } else {
                         toast.error("Set loop start and end points first")
                       }
@@ -339,72 +467,28 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               </div>
 
               {/* Segment Navigation */}
-              {segments && segments.length > 0 && (
-                <div className="flex items-center justify-between border-t pt-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={goToPrevSegment}
-                    disabled={currentSegmentIndex <= 0}
-                    className="flex items-center gap-1"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                    Prev
-                  </Button>
-                  <span className="text-xs text-gray-500">
-                    Segment {currentSegmentIndex + 1} of {segments.length}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={goToNextSegment}
-                    disabled={currentSegmentIndex >= segments.length - 1}
-                    className="flex items-center gap-1"
-                  >
-                    Next
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
+              {!!segments?.length && (
+                <SegmentNavigation
+                  currentSegmentIndex={currentSegmentIndex}
+                  segmentsLength={segments.length}
+                  onPrevious={goToPrevSegment}
+                  onNext={goToNextSegment}
+                />
               )}
 
               {/* Loop Points Display */}
               {(loopStart !== null || loopEnd !== null) && (
-                <div className="flex items-center justify-between border-t pt-3 text-xs">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setLoopPoint("start")}
-                      className="h-6 px-2 text-xs"
-                    >
-                      A: {loopStart !== null ? formatDuration(loopStart) : "--:--"}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setLoopPoint("end")}
-                      className="h-6 px-2 text-xs"
-                    >
-                      B: {loopEnd !== null ? formatDuration(loopEnd) : "--:--"}
-                    </Button>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearLoop}
-                    className="h-6 px-2 text-xs text-red-500"
-                  >
-                    Clear
-                  </Button>
-                </div>
+                <LoopPoints
+                  loopStart={loopStart}
+                  loopEnd={loopEnd}
+                  onSetLoopPoint={setLoopPoint}
+                  onClearLoop={clearLoop}
+                />
               )}
             </div>
           </>
         ) : (
-          <div className="py-8 text-center text-gray-500">
-            <FileAudio className="mx-auto mb-2 h-8 w-8 opacity-50" />
-            <p className="text-sm">No audio file available for playback</p>
-          </div>
+          <NoAudioContent />
         )}
       </CardContent>
     </Card>

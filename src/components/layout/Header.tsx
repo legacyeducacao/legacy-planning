@@ -56,8 +56,8 @@ export function Header() {
   )
 
   const openFeedback = () => {
-    if (typeof window !== "undefined" && window.openFeedbackModal) {
-      window.openFeedbackModal("general")
+    if (globalThis.window?.openFeedbackModal) {
+      globalThis.window.openFeedbackModal("general")
     }
   }
 

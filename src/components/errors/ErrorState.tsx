@@ -18,7 +18,8 @@ const toneStyles: Record<
     glow: "from-sky-500/12 via-transparent to-transparent",
   },
   warning: {
-    badge: "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+    badge:
+      "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
     code: "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
     glow: "from-amber-500/12 via-transparent to-transparent",
   },
@@ -56,11 +57,11 @@ export function ErrorState({
   actions,
   tone = "neutral",
   note,
-}: ErrorStateProps) {
+}: Readonly<ErrorStateProps>) {
   const styles = toneStyles[tone]
 
   return (
-    <section className="relative overflow-hidden rounded-[1.75rem] border border-border/70 bg-background">
+    <section className="border-border/70 bg-background relative overflow-hidden rounded-[1.75rem] border">
       <div
         className={cn(
           "pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,var(--tw-gradient-stops))]",
@@ -84,10 +85,10 @@ export function ErrorState({
                 </div>
 
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-muted-foreground text-sm font-medium">
                     HTTP status
                   </p>
-                  <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                  <h1 className="text-foreground text-4xl font-bold tracking-tight sm:text-5xl">
                     {title}
                   </h1>
                 </div>
@@ -108,12 +109,12 @@ export function ErrorState({
               </div>
             </div>
 
-            <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
+            <p className="text-muted-foreground mt-5 max-w-2xl text-base leading-7">
               {description}
             </p>
 
             {note && (
-              <p className="mt-3 text-sm text-muted-foreground">{note}</p>
+              <p className="text-muted-foreground mt-3 text-sm">{note}</p>
             )}
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -124,7 +125,7 @@ export function ErrorState({
 
         <Card className="border-border/60 shadow-none">
           <CardHeader>
-            <CardTitle className="text-sm font-semibold tracking-[0.22em] uppercase text-muted-foreground">
+            <CardTitle className="text-muted-foreground text-sm font-semibold tracking-[0.22em] uppercase">
               Next steps
             </CardTitle>
           </CardHeader>
@@ -132,9 +133,9 @@ export function ErrorState({
             {hints.map((hint) => (
               <div
                 key={hint}
-                className="rounded-xl border border-border/70 bg-background px-4 py-3"
+                className="border-border/70 bg-background rounded-xl border px-4 py-3"
               >
-                <p className="text-sm leading-6 text-muted-foreground">
+                <p className="text-muted-foreground text-sm leading-6">
                   {hint}
                 </p>
               </div>

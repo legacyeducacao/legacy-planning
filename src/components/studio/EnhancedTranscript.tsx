@@ -52,7 +52,7 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
   const [searchTerm, setSearchTerm] = useState("")
   const [searchResults, setSearchResults] = useState<number[]>([])
   const [copySuccess, setCopySuccess] = useState(false)
-  const activeSegmentRef = useRef<HTMLDivElement>(null)
+  const activeSegmentRef = useRef<HTMLButtonElement>(null)
   const prevSegmentIndexRef = useRef<number | null>(null)
 
   const handleCopyTranscript = async () => {
@@ -107,6 +107,7 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
     return words.map((word, idx) => {
       const isActive = idx === activeWordIdx
       const isPast = currentTime >= word.end
+      const isInactivePast = isPast && isActive === false
 
       return (
         <span
@@ -115,15 +116,54 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
             "transition-colors duration-100",
             isActive &&
               "rounded bg-blue-200 px-0.5 font-bold text-blue-900 dark:bg-blue-700 dark:text-blue-100",
-            isPast &&
-              !isActive &&
-              "text-gray-400 dark:text-gray-500",
+            isInactivePast && "text-gray-400 dark:text-gray-500",
           )}
         >
           {word.word}{" "}
         </span>
       )
     })
+  }
+
+  const renderSegmentText = (
+    segment: TranscriptionSegment,
+    isCurrentSegment: boolean,
+    isHighlighted: boolean,
+  ) => {
+    if (isCurrentSegment && segment.words && segment.words.length > 0) {
+      return renderKaraokeWords(segment.words as TranscriptionWord[])
+    }
+
+    if (searchTerm && isHighlighted) {
+      return segment.text
+        .split(new RegExp(`(${searchTerm})`, "gi"))
+        .map((part, partIndex) =>
+          part.toLowerCase() === searchTerm.toLowerCase() ? (
+            <mark key={partIndex} className="rounded bg-yellow-200 px-1">
+              {part}
+            </mark>
+          ) : (
+            part
+          ),
+        )
+    }
+
+    return segment.text
+  }
+
+  const getSegmentClassName = (
+    isCurrentSegment: boolean,
+    isHighlighted: boolean,
+  ) => {
+    if (isCurrentSegment) {
+      return "border-blue-400 bg-blue-50 shadow-md dark:border-blue-600 dark:bg-blue-900/20"
+    }
+
+    if (isHighlighted) {
+      return "border-yellow-200 bg-yellow-50 dark:border-yellow-600 dark:bg-yellow-900/20"
+    }
+
+    return "border-gray-200 bg-gray-50 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-750"
   }
 
   return (
@@ -180,18 +220,15 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
                 : null
 
               return (
-                <div
+                <button
+                  type="button"
                   key={segment.id}
                   ref={isCurrentSegment ? activeSegmentRef : undefined}
                   onClick={() => onSegmentClick?.(segment.start)}
                   className={cn(
-                    "cursor-pointer rounded-lg border p-3 transition-all duration-200 hover:shadow-md",
+                    "w-full cursor-pointer rounded-lg border p-3 text-left transition-all duration-200 hover:shadow-md",
                     speakerColor && `border-l-4 ${speakerColor.border}`,
-                    isCurrentSegment
-                      ? "border-blue-400 bg-blue-50 shadow-md dark:border-blue-600 dark:bg-blue-900/20"
-                      : isHighlighted
-                        ? "border-yellow-200 bg-yellow-50 dark:border-yellow-600 dark:bg-yellow-900/20"
-                        : "border-gray-200 bg-gray-50 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-750",
+                    getSegmentClassName(isCurrentSegment, isHighlighted),
                   )}
                   title="Click to play audio from this segment"
                 >
@@ -220,33 +257,13 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
 
                   {/* Transcript Text — karaoke for active segment */}
                   <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-                    {isCurrentSegment &&
-                    segment.words &&
-                    segment.words.length > 0
-                      ? renderKaraokeWords(
-                          segment.words as TranscriptionWord[],
-                        )
-                      : searchTerm && isHighlighted
-                        ? segment.text
-                            .split(
-                              new RegExp(`(${searchTerm})`, "gi"),
-                            )
-                            .map((part, partIndex) =>
-                              part.toLowerCase() ===
-                              searchTerm.toLowerCase() ? (
-                                <mark
-                                  key={partIndex}
-                                  className="rounded bg-yellow-200 px-1"
-                                >
-                                  {part}
-                                </mark>
-                              ) : (
-                                part
-                              ),
-                            )
-                        : segment.text}
+                    {renderSegmentText(
+                      segment,
+                      isCurrentSegment,
+                      isHighlighted,
+                    )}
                   </p>
-                </div>
+                </button>
               )
             })}
           </div>

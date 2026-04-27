@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import DeviceDetector from "device-detector-js"
 import { AlertCircle, ExternalLink, Loader2 } from "lucide-react"
 import { Button } from "../ui/button"
@@ -27,15 +27,12 @@ export function FeedbackForm({
   onClose,
 }: FeedbackFormProps) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
-  const [embedSrc, setEmbedSrc] = useState("")
   const [isReady, setIsReady] = useState(false)
   const [loadError, setLoadError] = useState("")
   const [iframeHeight, setIframeHeight] = useState(DEFAULT_IFRAME_HEIGHT)
   const [embedScale, setEmbedScale] = useState(1)
 
-  useEffect(() => {
-    setIsReady(false)
-
+  const embedSrc = useMemo(() => {
     try {
       const deviceDetector = new DeviceDetector()
       const device = deviceDetector.parse(navigator.userAgent)
@@ -52,7 +49,7 @@ export function FeedbackForm({
           : device.os.name
         : navigator.platform || "Unknown"
 
-      const params = new URLSearchParams(window.location.search)
+      const params = new URLSearchParams(globalThis.location.search)
       params.set("alignLeft", "1")
       params.set("hideTitle", "1")
       params.set("transparentBackground", "1")
@@ -61,28 +58,33 @@ export function FeedbackForm({
       params.set("browser", browser)
       params.set("os", operatingSystem)
       params.set("operatingSystem", operatingSystem)
-      params.set("originPage", window.location.pathname)
-      params.set("originUrl", window.location.href)
+      params.set("originPage", globalThis.location.pathname)
+      params.set("originUrl", globalThis.location.href)
 
-      setEmbedSrc(`${TALLY_EMBED_SRC}?${params.toString()}`)
-      setLoadError("")
+      return `${TALLY_EMBED_SRC}?${params.toString()}`
     } catch (error) {
       console.error("Error preparing Tally feedback embed:", error)
-      setLoadError("Unable to prepare the feedback form right now.")
+      return ""
     }
   }, [initialType])
+
+  const displayError =
+    loadError ||
+    (embedSrc ? "" : "Unable to prepare the feedback form right now.")
 
   useEffect(() => {
     if (!embedSrc) return
 
     const loadEmbeds = () => {
-      if (window.Tally) {
-        window.Tally.loadEmbeds()
+      if (globalThis.window.Tally) {
+        globalThis.window.Tally.loadEmbeds()
         return
       }
 
       document
-        .querySelectorAll<HTMLIFrameElement>("iframe[data-tally-src]:not([src])")
+        .querySelectorAll<HTMLIFrameElement>(
+          "iframe[data-tally-src]:not([src])",
+        )
         .forEach((iframe) => {
           iframe.src = iframe.dataset.tallySrc || ""
         })
@@ -102,7 +104,9 @@ export function FeedbackForm({
     script.async = true
     script.onload = loadEmbeds
     script.onerror = () => {
-      setLoadError("The embedded form failed to load. Try opening it in a new tab.")
+      setLoadError(
+        "The embedded form failed to load. Try opening it in a new tab.",
+      )
       loadEmbeds()
     }
 
@@ -134,13 +138,16 @@ export function FeedbackForm({
   }, [embedSrc, isReady])
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof globalThis.window === "undefined") {
       return
     }
 
     const updateScale = () => {
       const reservedHeight = onClose ? 250 : 190
-      const availableHeight = Math.max(window.innerHeight - reservedHeight, 320)
+      const availableHeight = Math.max(
+        globalThis.innerHeight - reservedHeight,
+        320,
+      )
       const nextScale =
         iframeHeight > availableHeight ? availableHeight / iframeHeight : 1
 
@@ -148,16 +155,16 @@ export function FeedbackForm({
     }
 
     updateScale()
-    window.addEventListener("resize", updateScale)
+    globalThis.addEventListener("resize", updateScale)
 
     return () => {
-      window.removeEventListener("resize", updateScale)
+      globalThis.removeEventListener("resize", updateScale)
     }
   }, [iframeHeight, onClose])
 
   return (
     <div className="w-full">
-      {loadError ? (
+      {displayError ? (
         <div className="space-y-4">
           <div className="flex items-start rounded-md border border-red-200 bg-red-50 p-3 dark:border-red-700 dark:bg-red-900/30">
             <AlertCircle className="mt-0.5 mr-3 h-5 w-5 text-red-500" />
@@ -166,7 +173,7 @@ export function FeedbackForm({
                 Failed to load form
               </p>
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                {loadError}
+                {displayError}
               </p>
             </div>
           </div>
@@ -183,7 +190,7 @@ export function FeedbackForm({
       ) : (
         <div className="space-y-4">
           {!isReady && (
-            <div className="flex items-center justify-center gap-2 rounded-md border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+            <div className="border-border bg-muted/40 text-muted-foreground flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm">
               <Loader2 className="h-4 w-4 animate-spin" />
               Loading feedback form...
             </div>
@@ -207,7 +214,11 @@ export function FeedbackForm({
                 marginWidth={0}
                 title="Transcriptr Feedback"
                 onLoad={() => setIsReady(true)}
-                className={isReady ? "origin-top-left border-0 opacity-100" : "origin-top-left border-0 opacity-0"}
+                className={
+                  isReady
+                    ? "origin-top-left border-0 opacity-100"
+                    : "origin-top-left border-0 opacity-0"
+                }
                 style={{
                   width: `${100 / embedScale}%`,
                   height: `${iframeHeight}px`,

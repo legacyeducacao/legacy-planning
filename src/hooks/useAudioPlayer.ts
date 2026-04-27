@@ -10,6 +10,125 @@ interface UseAudioPlayerOptions {
   onMuteChange?: (muted: boolean) => void
 }
 
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false
+
+  return (
+    target.tagName === "INPUT" ||
+    target.tagName === "TEXTAREA" ||
+    target.isContentEditable
+  )
+}
+
+function clearSearchInput(input: HTMLInputElement | null) {
+  if (!input) return
+
+  input.blur()
+  input.value = ""
+}
+
+function copyTranscript(transcription: string) {
+  navigator.clipboard
+    .writeText(transcription)
+    .then(() => {
+      toast.success("Transcript copied to clipboard!")
+    })
+    .catch(() => {
+      toast.error("Failed to copy transcript")
+    })
+}
+
+function togglePlayback(audio: HTMLVideoElement) {
+  if (audio.paused) {
+    audio.play().catch(console.error)
+    return
+  }
+
+  audio.pause()
+}
+
+function adjustVolume(
+  audio: HTMLVideoElement,
+  amount: number,
+  onVolumeChange?: (volume: number) => void,
+) {
+  const nextVolume = Math.max(0, Math.min(1, audio.volume + amount))
+  audio.volume = nextVolume
+  onVolumeChange?.(nextVolume)
+  toast.success(`Volume: ${Math.round(nextVolume * 100)}%`)
+}
+
+function jumpToPercentage(audio: HTMLVideoElement, key: string) {
+  const percentage = Number.parseInt(key, 10) * 10
+  if (!audio.duration) return
+
+  audio.currentTime = (audio.duration * percentage) / 100
+  toast.success(`Jumped to ${percentage}%`)
+}
+
+function handleAudioShortcut(
+  e: KeyboardEvent,
+  audio: HTMLVideoElement,
+  onVolumeChange?: (volume: number) => void,
+  onMuteChange?: (muted: boolean) => void,
+) {
+  switch (e.key) {
+    case " ":
+      e.preventDefault()
+      togglePlayback(audio)
+      break
+
+    case "ArrowLeft":
+      e.preventDefault()
+      audio.currentTime = Math.max(0, audio.currentTime - (e.shiftKey ? 30 : 5))
+      break
+
+    case "ArrowRight":
+      e.preventDefault()
+      audio.currentTime = Math.min(
+        audio.duration || 0,
+        audio.currentTime + (e.shiftKey ? 30 : 5),
+      )
+      break
+
+    case "ArrowUp":
+      e.preventDefault()
+      adjustVolume(audio, 0.1, onVolumeChange)
+      break
+
+    case "ArrowDown":
+      e.preventDefault()
+      adjustVolume(audio, -0.1, onVolumeChange)
+      break
+
+    case "m":
+    case "M":
+      e.preventDefault()
+      audio.muted = !audio.muted
+      onMuteChange?.(audio.muted)
+      toast.success(audio.muted ? "Muted" : "Unmuted")
+      break
+
+    case "1":
+    case "2":
+    case "3":
+    case "4":
+    case "5":
+    case "6":
+    case "7":
+    case "8":
+    case "9":
+      e.preventDefault()
+      jumpToPercentage(audio, e.key)
+      break
+
+    case "0":
+      e.preventDefault()
+      audio.currentTime = 0
+      break
+  }
+}
+
 export function useAudioPlayer({
   audioRef,
   searchInputRef,
@@ -33,17 +152,10 @@ export function useAudioPlayer({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement
-      const isInputField =
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
+      const isInputField = isEditableTarget(e.target)
 
       if (e.key === "Escape") {
-        if (searchInputRef.current) {
-          searchInputRef.current.blur()
-          searchInputRef.current.value = ""
-        }
+        clearSearchInput(searchInputRef.current)
         return
       }
 
@@ -55,14 +167,7 @@ export function useAudioPlayer({
 
       if ((e.ctrlKey || e.metaKey) && e.key === "c" && !isInputField) {
         e.preventDefault()
-        navigator.clipboard
-          .writeText(transcription)
-          .then(() => {
-            toast.success("Transcript copied to clipboard!")
-          })
-          .catch(() => {
-            toast.error("Failed to copy transcript")
-          })
+        copyTranscript(transcription)
         return
       }
 
@@ -77,86 +182,19 @@ export function useAudioPlayer({
       const audio = audioRef.current
       if (!audio) return
 
-      switch (e.key) {
-        case " ":
-          e.preventDefault()
-          if (audio.paused) {
-            audio.play().catch(console.error)
-          } else {
-            audio.pause()
-          }
-          break
-
-        case "ArrowLeft":
-          e.preventDefault()
-          audio.currentTime = Math.max(
-            0,
-            audio.currentTime - (e.shiftKey ? 30 : 5),
-          )
-          break
-
-        case "ArrowRight":
-          e.preventDefault()
-          audio.currentTime = Math.min(
-            audio.duration || 0,
-            audio.currentTime + (e.shiftKey ? 30 : 5),
-          )
-          break
-
-        case "ArrowUp": {
-          e.preventDefault()
-          const newVolUp = Math.min(1, audio.volume + 0.1)
-          audio.volume = newVolUp
-          onVolumeChange?.(newVolUp)
-          toast.success(`Volume: ${Math.round(newVolUp * 100)}%`)
-          break
-        }
-
-        case "ArrowDown": {
-          e.preventDefault()
-          const newVolDown = Math.max(0, audio.volume - 0.1)
-          audio.volume = newVolDown
-          onVolumeChange?.(newVolDown)
-          toast.success(`Volume: ${Math.round(newVolDown * 100)}%`)
-          break
-        }
-
-        case "m":
-        case "M":
-          e.preventDefault()
-          audio.muted = !audio.muted
-          onMuteChange?.(audio.muted)
-          toast.success(audio.muted ? "Muted" : "Unmuted")
-          break
-
-        case "1":
-        case "2":
-        case "3":
-        case "4":
-        case "5":
-        case "6":
-        case "7":
-        case "8":
-        case "9": {
-          e.preventDefault()
-          const percentage = parseInt(e.key) * 10
-          if (audio.duration) {
-            audio.currentTime = (audio.duration * percentage) / 100
-            toast.success(`Jumped to ${percentage}%`)
-          }
-          break
-        }
-
-        case "0":
-          e.preventDefault()
-          audio.currentTime = 0
-          break
-      }
+      handleAudioShortcut(e, audio, onVolumeChange, onMuteChange)
     }
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [audioRef, searchInputRef, transcription, onShowShortcuts, onVolumeChange, onMuteChange])
+    globalThis.addEventListener("keydown", handleKeyDown)
+    return () => globalThis.removeEventListener("keydown", handleKeyDown)
+  }, [
+    audioRef,
+    searchInputRef,
+    transcription,
+    onShowShortcuts,
+    onVolumeChange,
+    onMuteChange,
+  ])
 
   return { handleSeek }
 }

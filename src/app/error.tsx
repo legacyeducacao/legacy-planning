@@ -8,19 +8,19 @@ import { Header } from "@/components/layout/Header"
 import { ErrorState } from "@/components/errors/ErrorState"
 import { Button } from "@/components/ui/button"
 
-export default function Error({
+export default function RouteError({
   error,
   reset,
-}: {
+}: Readonly<{
   error: Error & { digest?: string }
   reset: () => void
-}) {
+}>) {
   useEffect(() => {
     console.error("Route error boundary triggered:", error)
   }, [error])
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <Header />
 
       <main className="flex flex-1 items-center px-4 py-10">

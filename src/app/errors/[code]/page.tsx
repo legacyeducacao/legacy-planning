@@ -30,7 +30,8 @@ const errorCodePages: Record<string, ErrorCodeConfig> = {
     code: "401",
     status: "Authentication required",
     title: "You need to sign in before continuing",
-    description: "This resource expects an authenticated session before it can be accessed.",
+    description:
+      "This resource expects an authenticated session before it can be accessed.",
     tone: "warning",
     icon: ShieldAlert,
     hints: [
@@ -43,7 +44,8 @@ const errorCodePages: Record<string, ErrorCodeConfig> = {
     code: "403",
     status: "Access forbidden",
     title: "Your current access level can't open this",
-    description: "The route exists, but the request was blocked by a permission check or policy rule.",
+    description:
+      "The route exists, but the request was blocked by a permission check or policy rule.",
     tone: "warning",
     icon: Ban,
     hints: [
@@ -56,7 +58,8 @@ const errorCodePages: Record<string, ErrorCodeConfig> = {
     code: "429",
     status: "Too many requests",
     title: "The workflow needs a minute",
-    description: "The request rate is temporarily above the allowed limit, so the system is asking you to slow down.",
+    description:
+      "The request rate is temporarily above the allowed limit, so the system is asking you to slow down.",
     tone: "warning",
     icon: Clock3,
     hints: [
@@ -69,7 +72,8 @@ const errorCodePages: Record<string, ErrorCodeConfig> = {
     code: "500",
     status: "Internal server error",
     title: "The server hit an unexpected fault",
-    description: "The request reached the backend, but something failed before a successful response could be returned.",
+    description:
+      "The request reached the backend, but something failed before a successful response could be returned.",
     tone: "danger",
     icon: TriangleAlert,
     hints: [
@@ -82,7 +86,8 @@ const errorCodePages: Record<string, ErrorCodeConfig> = {
     code: "503",
     status: "Service unavailable",
     title: "The transcription service is temporarily offline",
-    description: "A required upstream system is unavailable or still warming back up, so this request cannot complete yet.",
+    description:
+      "A required upstream system is unavailable or still warming back up, so this request cannot complete yet.",
     tone: "danger",
     icon: WifiOff,
     hints: [
@@ -99,9 +104,9 @@ export function generateStaticParams() {
 
 export default async function ErrorCodePage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ code: string }>
-}) {
+}>) {
   const { code } = await params
   const config = errorCodePages[code]
 
@@ -110,7 +115,7 @@ export default async function ErrorCodePage({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <Header />
 
       <main className="flex flex-1 items-center px-4 py-10">

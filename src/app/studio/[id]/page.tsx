@@ -8,7 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Toaster } from "sonner"
 import { ArrowLeft, FileAudio, AlertCircle } from "lucide-react"
 import { getApiUrl } from "@/services/transcription"
-import type { TranscriptionSegment, TranscriptionIntelligence, AudioSource } from "@/types/transcription"
+import type {
+  TranscriptionSegment,
+  TranscriptionIntelligence,
+  AudioSource,
+} from "@/types/transcription"
 
 interface StudioData {
   transcription: string
@@ -19,22 +23,22 @@ interface StudioData {
 
 function StudioSkeleton() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <div className="container mx-auto px-4 py-6">
         <div className="mb-6 flex items-center justify-between">
           <div className="space-y-2">
-            <div className="h-8 w-48 animate-pulse rounded bg-muted" />
-            <div className="h-4 w-64 animate-pulse rounded bg-muted" />
+            <div className="bg-muted h-8 w-48 animate-pulse rounded" />
+            <div className="bg-muted h-4 w-64 animate-pulse rounded" />
           </div>
-          <div className="h-10 w-32 animate-pulse rounded bg-muted" />
+          <div className="bg-muted h-10 w-32 animate-pulse rounded" />
         </div>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <div className="h-96 animate-pulse rounded-xl bg-muted" />
+            <div className="bg-muted h-96 animate-pulse rounded-xl" />
           </div>
           <div className="space-y-4">
-            <div className="h-48 animate-pulse rounded-xl bg-muted" />
-            <div className="h-32 animate-pulse rounded-xl bg-muted" />
+            <div className="bg-muted h-48 animate-pulse rounded-xl" />
+            <div className="bg-muted h-32 animate-pulse rounded-xl" />
           </div>
         </div>
       </div>
@@ -44,9 +48,9 @@ function StudioSkeleton() {
 
 export default function StudioPage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ id: string }>
-}) {
+}>) {
   const { id } = use(params)
   const router = useRouter()
   const [data, setData] = useState<StudioData | null>(null)
@@ -94,7 +98,9 @@ export default function StudioPage({
           }
 
           const audioUrl =
-            result.audioUrl || localStorage.getItem("studioAudioUrl") || undefined
+            result.audioUrl ||
+            localStorage.getItem("studioAudioUrl") ||
+            undefined
 
           if (result.audioUrl) {
             localStorage.setItem("studioAudioUrl", result.audioUrl)
@@ -106,7 +112,10 @@ export default function StudioPage({
             intelligence: output.intelligence,
             audioSource: audioUrl ? { type: "url", url: audioUrl } : undefined,
           })
-        } else if (result.status === "processing" || result.status === "starting") {
+        } else if (
+          result.status === "processing" ||
+          result.status === "starting"
+        ) {
           // Still processing - redirect back to transcribe page
           router.replace(`/transcribe/${id}`)
           return
@@ -130,15 +139,15 @@ export default function StudioPage({
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="mx-auto max-w-md px-4 text-center">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10">
-            <AlertCircle className="h-10 w-10 text-destructive" />
+          <div className="bg-destructive/10 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
+            <AlertCircle className="text-destructive h-10 w-10" />
           </div>
-          <h1 className="mb-2 text-2xl font-bold text-foreground">
+          <h1 className="text-foreground mb-2 text-2xl font-bold">
             Error Loading Studio
           </h1>
-          <p className="mb-6 text-muted-foreground">{error}</p>
+          <p className="text-muted-foreground mb-6">{error}</p>
           <Button onClick={() => router.push("/")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
@@ -150,15 +159,15 @@ export default function StudioPage({
 
   if (!data) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="mx-auto max-w-md px-4 text-center">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-            <FileAudio className="h-10 w-10 text-muted-foreground" />
+          <div className="bg-muted mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
+            <FileAudio className="text-muted-foreground h-10 w-10" />
           </div>
-          <h1 className="mb-2 text-2xl font-bold text-foreground">
+          <h1 className="text-foreground mb-2 text-2xl font-bold">
             No Transcription Found
           </h1>
-          <p className="mb-6 text-muted-foreground">
+          <p className="text-muted-foreground mb-6">
             Start a new transcription to use the studio.
           </p>
           <Button onClick={() => router.push("/")}>
@@ -171,13 +180,13 @@ export default function StudioPage({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       {/* Top bar */}
-      <div className="border-b border-border bg-card">
+      <div className="border-border bg-card border-b">
         <div className="container mx-auto flex items-center gap-4 px-4 py-3">
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Transcriptr

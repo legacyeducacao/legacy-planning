@@ -103,9 +103,7 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
   const generateCSV = (): string => {
     if (!segments || segments.length === 0) {
       return (
-        'id,start,end,text\n1,0,0,"' +
-        transcription.replace(/"/g, '""') +
-        '"'
+        'id,start,end,text\n1,0,0,"' + transcription.replace(/"/g, '""') + '"'
       )
     }
     const header = "id,start,end,duration,text"
@@ -140,9 +138,7 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
     if (segments && segments.length > 0) {
       md += "## Transcript\n\n"
       segments.forEach((seg) => {
-        const speakerPrefix = seg.speaker
-          ? `**Speaker ${seg.speaker}:** `
-          : ""
+        const speakerPrefix = seg.speaker ? `**Speaker ${seg.speaker}:** ` : ""
         md += `**[${formatDuration(seg.start)} - ${formatDuration(seg.end)}]** ${speakerPrefix}\n\n`
         md += `${seg.text.trim()}\n\n`
       })
@@ -178,9 +174,7 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
           .map(
             (line: string) =>
               new Paragraph({
-                children: [
-                  new TextRun(line.replace(/^[\-\*\u2022]\s*/, "")),
-                ],
+                children: [new TextRun(line.replace(/^[-*\u2022]\s*/, ""))],
               }),
           ),
         new Paragraph({ children: [new TextRun("")] }),
@@ -260,31 +254,34 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
 
     try {
       const timestamp = new Date().toISOString().split("T")[0]
-      const downloads: Array<{ content: Blob; filename: string }> = []
-
-      downloads.push({
-        content: new Blob([transcription], { type: "text/plain" }),
-        filename: `transcription_${timestamp}.txt`,
-      })
-      downloads.push({
-        content: new Blob([generateSRT()], { type: "text/plain" }),
-        filename: `transcription_${timestamp}.srt`,
-      })
-      downloads.push({
-        content: new Blob([generateVTT()], { type: "text/vtt" }),
-        filename: `transcription_${timestamp}.vtt`,
-      })
+      const baseDownloads: Array<{ content: Blob; filename: string }> = [
+        {
+          content: new Blob([transcription], { type: "text/plain" }),
+          filename: `transcription_${timestamp}.txt`,
+        },
+        {
+          content: new Blob([generateSRT()], { type: "text/plain" }),
+          filename: `transcription_${timestamp}.srt`,
+        },
+        {
+          content: new Blob([generateVTT()], { type: "text/vtt" }),
+          filename: `transcription_${timestamp}.vtt`,
+        },
+      ]
 
       const doc = new Document({
         sections: [{ children: buildDocxChildren() }],
       })
       const buffer = await Packer.toBuffer(doc)
-      downloads.push({
-        content: new Blob([new Uint8Array(buffer)], {
-          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        }),
-        filename: `transcription_${timestamp}.docx`,
-      })
+      const downloads = [
+        ...baseDownloads,
+        {
+          content: new Blob([new Uint8Array(buffer)], {
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          }),
+          filename: `transcription_${timestamp}.docx`,
+        },
+      ]
 
       for (let i = 0; i < downloads.length; i++) {
         downloadBlob(downloads[i].content, downloads[i].filename)
@@ -332,7 +329,8 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
           </div>
 
           <div className="rounded-md bg-blue-50 p-2 text-xs text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
-            {selectedFormat === "srt" && "SRT - Subtitle format with timestamps"}
+            {selectedFormat === "srt" &&
+              "SRT - Subtitle format with timestamps"}
             {selectedFormat === "vtt" && "WebVTT - Web subtitle format"}
             {selectedFormat === "txt" && "Plain text transcription"}
             {selectedFormat === "docx" && "Microsoft Word document"}
@@ -396,6 +394,6 @@ function downloadBlob(blob: Blob, filename: string) {
   a.download = filename
   document.body.appendChild(a)
   a.click()
-  document.body.removeChild(a)
+  a.remove()
   setTimeout(() => URL.revokeObjectURL(url), 100)
 }

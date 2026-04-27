@@ -20,7 +20,10 @@ import {
 import { getApiUrl } from "@/services/transcription"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
 import { useHistoryStore } from "@/stores/history-store"
-import type { TranscriptionSegment, TranscriptionIntelligence } from "@/types/transcription"
+import type {
+  TranscriptionSegment,
+  TranscriptionIntelligence,
+} from "@/types/transcription"
 
 type TranscribeStatus = "processing" | "completed" | "failed"
 
@@ -31,11 +34,18 @@ interface TranscribeResult {
   detectedLanguage?: string | null
 }
 
+function getStepClassName(isDone: boolean, isActive: boolean) {
+  if (isDone) return "bg-primary/10 text-primary"
+  if (isActive) return "bg-primary text-primary-foreground"
+
+  return "bg-muted text-muted-foreground"
+}
+
 export default function TranscribePage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ id: string }>
-}) {
+}>) {
   const { id } = use(params)
   const router = useRouter()
   const [status, setStatus] = useState<TranscribeStatus>("processing")
@@ -129,7 +139,19 @@ export default function TranscribePage({
             type: "file",
             url: audioUrl,
           },
-          options: { language: "auto", diarize: false, aiFeatures: { autoChapters: false, summarization: false, sentimentAnalysis: false, entityDetection: false, keyPhrases: false, contentModeration: false, topicDetection: false } },
+          options: {
+            language: "auto",
+            diarize: false,
+            aiFeatures: {
+              autoChapters: false,
+              summarization: false,
+              sentimentAnalysis: false,
+              entityDetection: false,
+              keyPhrases: false,
+              contentModeration: false,
+              topicDetection: false,
+            },
+          },
           status: "succeeded",
           createdAt: Date.now(),
           result: transcription.slice(0, 200),
@@ -182,7 +204,7 @@ export default function TranscribePage({
     a.download = `transcription_${id}.txt`
     document.body.appendChild(a)
     a.click()
-    document.body.removeChild(a)
+    a.remove()
     setTimeout(() => URL.revokeObjectURL(url), 100)
     toast.success("Downloaded!")
   }
@@ -197,19 +219,19 @@ export default function TranscribePage({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       {/* Top bar */}
-      <div className="border-b border-border bg-card">
+      <div className="border-border bg-card border-b">
         <div className="container mx-auto flex items-center gap-4 px-4 py-3">
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
           </Link>
-          <span className="text-sm text-muted-foreground">|</span>
-          <span className="truncate text-sm text-muted-foreground">
+          <span className="text-muted-foreground text-sm">|</span>
+          <span className="text-muted-foreground truncate text-sm">
             Transcription {id.slice(0, 8)}...
           </span>
         </div>
@@ -221,23 +243,23 @@ export default function TranscribePage({
           {status === "processing" && (
             <Card>
               <CardContent className="flex flex-col items-center py-16">
-                <Loader2 className="mb-6 h-12 w-12 animate-spin text-primary" />
-                <h2 className="mb-2 text-xl font-semibold text-foreground">
+                <Loader2 className="text-primary mb-6 h-12 w-12 animate-spin" />
+                <h2 className="text-foreground mb-2 text-xl font-semibold">
                   Transcribing your audio...
                 </h2>
-                <p className="mb-8 text-sm text-muted-foreground">
+                <p className="text-muted-foreground mb-8 text-sm">
                   This usually takes 1-3 minutes depending on file length
                 </p>
 
                 {/* Progress bar */}
                 <div className="w-full max-w-sm">
-                  <div className="mb-2 flex justify-between text-xs text-muted-foreground">
+                  <div className="text-muted-foreground mb-2 flex justify-between text-xs">
                     <span>Processing</span>
                     <span>{Math.floor(progress)}%</span>
                   </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
                     <div
-                      className="h-full rounded-full bg-primary transition-all duration-500"
+                      className="bg-primary h-full rounded-full transition-all duration-500"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -251,18 +273,11 @@ export default function TranscribePage({
                       (i === 1 && progress >= 40 && progress < 60) ||
                       (i === 2 && progress >= 60)
                     const isDone =
-                      (i === 0 && progress >= 40) ||
-                      (i === 1 && progress >= 60)
+                      (i === 0 && progress >= 40) || (i === 1 && progress >= 60)
                     return (
                       <span
                         key={step}
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          isDone
-                            ? "bg-primary/10 text-primary"
-                            : isActive
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted text-muted-foreground"
-                        }`}
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${getStepClassName(isDone, isActive)}`}
                       >
                         {step}
                       </span>
@@ -284,12 +299,13 @@ export default function TranscribePage({
                         <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <h2 className="text-lg font-semibold text-foreground">
+                        <h2 className="text-foreground text-lg font-semibold">
                           Transcription Complete
                         </h2>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           {result.transcription.split(/\s+/).length} words
-                          {result.detectedLanguage && ` · ${result.detectedLanguage}`}
+                          {result.detectedLanguage &&
+                            ` · ${result.detectedLanguage}`}
                         </p>
                       </div>
                     </div>
@@ -297,11 +313,11 @@ export default function TranscribePage({
 
                   {/* Summary snippet */}
                   {result.intelligence?.summary && (
-                    <div className="mb-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
-                      <h3 className="mb-1 text-sm font-semibold text-primary">
+                    <div className="border-primary/20 bg-primary/5 mb-4 rounded-lg border p-4">
+                      <h3 className="text-primary mb-1 text-sm font-semibold">
                         AI Summary
                       </h3>
-                      <p className="text-sm leading-relaxed text-foreground/80">
+                      <p className="text-foreground/80 text-sm leading-relaxed">
                         {result.intelligence.summary
                           .split("\n")
                           .filter(Boolean)
@@ -313,8 +329,8 @@ export default function TranscribePage({
                   )}
 
                   {/* Transcript preview */}
-                  <div className="rounded-lg border border-border bg-muted/50 p-4">
-                    <div className="max-h-64 overflow-y-auto font-mono text-sm leading-relaxed text-foreground/80 whitespace-pre-wrap">
+                  <div className="border-border bg-muted/50 rounded-lg border p-4">
+                    <div className="text-foreground/80 max-h-64 overflow-y-auto font-mono text-sm leading-relaxed whitespace-pre-wrap">
                       {result.transcription.slice(0, 2000)}
                       {result.transcription.length > 2000 && "..."}
                     </div>
@@ -350,7 +366,7 @@ export default function TranscribePage({
               <div className="text-center">
                 <Link
                   href="/"
-                  className="text-sm text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground text-sm"
                 >
                   <FileAudio className="mr-1 inline h-4 w-4" />
                   Start a new transcription
@@ -363,13 +379,13 @@ export default function TranscribePage({
           {status === "failed" && (
             <Card>
               <CardContent className="flex flex-col items-center py-16">
-                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-                  <AlertCircle className="h-8 w-8 text-destructive" />
+                <div className="bg-destructive/10 mb-6 flex h-16 w-16 items-center justify-center rounded-full">
+                  <AlertCircle className="text-destructive h-8 w-8" />
                 </div>
-                <h2 className="mb-2 text-xl font-semibold text-foreground">
+                <h2 className="text-foreground mb-2 text-xl font-semibold">
                   Transcription Failed
                 </h2>
-                <p className="mb-8 max-w-md text-center text-sm text-muted-foreground">
+                <p className="text-muted-foreground mb-8 max-w-md text-center text-sm">
                   {error || "Something went wrong during transcription."}
                 </p>
                 <div className="flex gap-3">

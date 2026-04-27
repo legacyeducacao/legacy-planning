@@ -12,7 +12,7 @@ export default function StudioRedirectPage() {
   // Now we use /studio/[id] route params
   // Redirect to home if no specific ID
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
+    const params = new URLSearchParams(globalThis.location.search)
     const session = params.get("session")
     if (session) {
       // Can't directly map old session IDs to prediction IDs
@@ -22,15 +22,15 @@ export default function StudioRedirectPage() {
   }, [router])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
+    <div className="bg-background flex min-h-screen items-center justify-center">
       <div className="mx-auto max-w-md px-4 text-center">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-          <FileAudio className="h-10 w-10 text-muted-foreground" />
+        <div className="bg-muted mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
+          <FileAudio className="text-muted-foreground h-10 w-10" />
         </div>
-        <h1 className="mb-2 text-2xl font-bold text-foreground">
+        <h1 className="text-foreground mb-2 text-2xl font-bold">
           Open Studio from a Transcription
         </h1>
-        <p className="mb-6 text-muted-foreground">
+        <p className="text-muted-foreground mb-6">
           Upload and transcribe audio first, then open the result in Studio.
         </p>
         <Button onClick={() => router.push("/")}>

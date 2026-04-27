@@ -424,7 +424,9 @@ export default function DocumentationPage() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => window.openFeedbackModal?.("general")}
+                  onClick={() =>
+                    globalThis.window?.openFeedbackModal?.("general")
+                  }
                   className="border-border text-foreground hover:bg-background mt-4 inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium"
                 >
                   <MessageSquareMore className="h-4 w-4" />

@@ -1,12 +1,9 @@
 "use client"
 
-import {
-  Analytics,
-  type BeforeSendEvent,
-} from "@vercel/analytics/react"
+import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react"
 
 function beforeSend(event: BeforeSendEvent) {
-  if (window.localStorage.getItem("analytics_opt_out") === "true") {
+  if (globalThis.localStorage.getItem("analytics_opt_out") === "true") {
     return null
   }
 

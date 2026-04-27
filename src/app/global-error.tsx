@@ -9,23 +9,23 @@ import { Button } from "@/components/ui/button"
 export default function GlobalError({
   error,
   reset,
-}: {
+}: Readonly<{
   error: Error & { digest?: string }
   reset: () => void
-}) {
+}>) {
   useEffect(() => {
     console.error("Global error boundary triggered:", error)
   }, [error])
 
   return (
     <html lang="en">
-      <body className="min-h-screen bg-background font-sans">
+      <body className="bg-background min-h-screen font-sans">
         <main className="flex min-h-screen items-center px-4 py-10">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
             <div className="px-1">
               <Link
                 href="/"
-                className="text-lg font-semibold tracking-tight text-foreground"
+                className="text-foreground text-lg font-semibold tracking-tight"
               >
                 Transcriptr
               </Link>

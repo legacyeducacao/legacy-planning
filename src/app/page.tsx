@@ -26,13 +26,17 @@ export default function UploadPage() {
 
       try {
         const requestBody: {
-          options: { language?: string; diarize?: boolean; aiFeatures?: AIFeatures } | null
+          options: {
+            language?: string
+            diarize?: boolean
+            aiFeatures?: AIFeatures
+          } | null
           audioUrl?: string
         } = { options: null }
 
-        let audioSourceName = "Audio"
+        let audioSourceName: string
         let audioSourceSize: number | undefined
-        let audioSourceType: "file" | "url" = "url"
+        let audioSourceType: "file" | "url"
         let audioUrl: string | undefined
 
         if (data instanceof FormData) {
@@ -74,7 +78,8 @@ export default function UploadPage() {
           let errorBody = "Unknown server error"
           try {
             const errorJson = await response.json()
-            errorBody = errorJson.error || errorJson.message || JSON.stringify(errorJson)
+            errorBody =
+              errorJson.error || errorJson.message || JSON.stringify(errorJson)
           } catch {
             errorBody = `Server error (${response.status})`
           }
@@ -117,13 +122,13 @@ export default function UploadPage() {
   )
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <Header />
 
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-2xl">
           <div className="mb-8 text-center">
-            <h1 className="mb-2 text-3xl font-bold text-foreground sm:text-4xl">
+            <h1 className="text-foreground mb-2 text-3xl font-bold sm:text-4xl">
               Transcriptr
             </h1>
             <p className="text-muted-foreground">
@@ -131,11 +136,11 @@ export default function UploadPage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm sm:p-8">
+          <div className="border-border/50 bg-card rounded-xl border p-6 shadow-sm sm:p-8">
             {isSubmitting ? (
               <div className="flex flex-col items-center justify-center py-12">
-                <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                <p className="text-sm text-muted-foreground">
+                <div className="border-primary mb-4 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
+                <p className="text-muted-foreground text-sm">
                   Preparing your transcription...
                 </p>
               </div>

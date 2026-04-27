@@ -25,12 +25,12 @@ const DB_VERSION = 2
 
 const initDb = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
-    if (typeof window === "undefined" || !window.indexedDB) {
+    if (typeof globalThis.window === "undefined" || !globalThis.indexedDB) {
       reject(new Error("IndexedDB not available"))
       return
     }
 
-    const request = window.indexedDB.open(DB_NAME, DB_VERSION)
+    const request = globalThis.indexedDB.open(DB_NAME, DB_VERSION)
 
     request.onerror = () => reject(new Error("Could not open IndexedDB"))
 
@@ -98,7 +98,10 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
     try {
       await dbOperation("readwrite", (store) => store.put(entry))
       set((state) => ({
-        entries: [entry, ...state.entries.filter((e) => e.predictionId !== entry.predictionId)],
+        entries: [
+          entry,
+          ...state.entries.filter((e) => e.predictionId !== entry.predictionId),
+        ],
       }))
     } catch (error) {
       console.error("Failed to add history entry:", error)

@@ -54,27 +54,51 @@ export default function HistoryPage() {
     }
   }
 
+  const getStatusIcon = (status: string) => {
+    if (status === "succeeded") {
+      return <FileAudio className="text-primary h-5 w-5" />
+    }
+
+    if (status === "processing") {
+      return <Clock className="h-5 w-5 text-amber-500" />
+    }
+
+    return <AlertCircle className="text-destructive h-5 w-5" />
+  }
+
+  const getStatusClassName = (status: string) => {
+    if (status === "succeeded") {
+      return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+    }
+
+    if (status === "processing") {
+      return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+    }
+
+    return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+  }
+
   if (!isLoaded) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="bg-background flex min-h-screen flex-col">
         <Header />
         <main className="flex flex-1 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
         </main>
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <Header />
 
       <main className="flex-1 px-4 py-8">
         <div className="container mx-auto max-w-4xl">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">History</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-foreground text-2xl font-bold">History</h1>
+              <p className="text-muted-foreground text-sm">
                 Your past transcriptions
               </p>
             </div>
@@ -95,7 +119,7 @@ export default function HistoryPage() {
 
           {entries.length > 0 && (
             <div className="relative mb-6">
-              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 placeholder="Search by name or content..."
                 value={searchTerm}
@@ -108,13 +132,15 @@ export default function HistoryPage() {
           {filtered.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center py-16">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                  <FileAudio className="h-8 w-8 text-muted-foreground" />
+                <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                  <FileAudio className="text-muted-foreground h-8 w-8" />
                 </div>
-                <h2 className="mb-2 text-lg font-semibold text-foreground">
-                  {entries.length === 0 ? "No transcriptions yet" : "No results"}
+                <h2 className="text-foreground mb-2 text-lg font-semibold">
+                  {entries.length === 0
+                    ? "No transcriptions yet"
+                    : "No results"}
                 </h2>
-                <p className="mb-6 text-sm text-muted-foreground">
+                <p className="text-muted-foreground mb-6 text-sm">
                   {entries.length === 0
                     ? "Start your first transcription to see it here."
                     : "Try a different search term."}
@@ -137,29 +163,18 @@ export default function HistoryPage() {
                 >
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-4 overflow-hidden">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted">
-                        {entry.status === "succeeded" ? (
-                          <FileAudio className="h-5 w-5 text-primary" />
-                        ) : entry.status === "processing" ? (
-                          <Clock className="h-5 w-5 text-amber-500" />
-                        ) : (
-                          <AlertCircle className="h-5 w-5 text-destructive" />
-                        )}
+                      <div className="bg-muted flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg">
+                        {getStatusIcon(entry.status)}
                       </div>
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-foreground">
-                          {entry.audioSource.name || `Transcription ${entry.predictionId.slice(0, 8)}`}
+                        <p className="text-foreground truncate text-sm font-medium">
+                          {entry.audioSource.name ||
+                            `Transcription ${entry.predictionId.slice(0, 8)}`}
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="text-muted-foreground flex items-center gap-2 text-xs">
                           <span>{formatDate(entry.createdAt)}</span>
                           <span
-                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                              entry.status === "succeeded"
-                                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                : entry.status === "processing"
-                                  ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                                  : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                            }`}
+                            className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusClassName(entry.status)}`}
                           >
                             {entry.status}
                           </span>
@@ -174,11 +189,11 @@ export default function HistoryPage() {
                           e.stopPropagation()
                           remove(entry.predictionId)
                         }}
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                        className="text-muted-foreground hover:text-destructive h-8 w-8 p-0"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                      <ExternalLink className="text-muted-foreground h-4 w-4" />
                     </div>
                   </CardContent>
                 </Card>
