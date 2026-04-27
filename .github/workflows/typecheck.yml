@@ -2,9 +2,11 @@ name: Typecheck
 
 on:
   push:
-    branches: ["**"]
+    branches:
+      - "**"
   pull_request:
-    branches: ["**"]
+    branches:
+      - "**"
 
 jobs:
   typecheck:
