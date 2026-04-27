@@ -1,6 +1,6 @@
-import express, { Request, Response, RequestHandler } from "express"
 // Remove the cors import
 import dotenv from "dotenv"
+import express, { Request, RequestHandler, Response } from "express"
 import path from "path"
 import { fileURLToPath } from "url"
 

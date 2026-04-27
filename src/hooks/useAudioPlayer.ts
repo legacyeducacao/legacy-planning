@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { toast } from "sonner"
 
 interface UseAudioPlayerOptions {

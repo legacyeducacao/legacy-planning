@@ -1,8 +1,8 @@
-import Link from "next/link"
 import { BookOpen, FileSearch, Home } from "lucide-react"
-import { Header } from "@/components/layout/Header"
-import { Footer } from "@/components/layout/Footer"
+import Link from "next/link"
 import { ErrorState } from "@/components/errors/ErrorState"
+import { Footer } from "@/components/layout/Footer"
+import { Header } from "@/components/layout/Header"
 import { Button } from "@/components/ui/button"
 
 export default function NotFound() {

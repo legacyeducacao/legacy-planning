@@ -1,8 +1,8 @@
 "use client"
 
+import { Keyboard, X } from "lucide-react"
 import React, { useEffect } from "react"
 import { Button } from "../ui/button"
-import { Keyboard, X } from "lucide-react"
 
 export interface KeyboardShortcutsModalProps {
   isOpen: boolean

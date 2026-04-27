@@ -5,8 +5,8 @@
 
 import { TranscriptionStatus } from "@/services/transcription"
 import type {
-  TranscriptionSegment,
   TranscriptionIntelligence,
+  TranscriptionSegment,
 } from "@/types/transcription"
 
 export type { TranscriptionSegment }

@@ -1,14 +1,13 @@
-import { useState, useRef } from "react"
+import { useRef, useState } from "react"
+import { Button } from "../ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "../ui/dialog"
-import { Button } from "../ui/button"
-import { Switch } from "../ui/switch"
 import { Label } from "../ui/label"
 import {
   Select,
@@ -17,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import { Switch } from "../ui/switch"
 
 const LANGUAGES = [
   { value: "auto", label: "Auto Detect" },

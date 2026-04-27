@@ -1,5 +1,5 @@
-import { initializeApp, getApps, type FirebaseApp } from "firebase/app"
-import { getStorage, type FirebaseStorage } from "firebase/storage"
+import { type FirebaseApp, getApps, initializeApp } from "firebase/app"
+import { type FirebaseStorage, getStorage } from "firebase/storage"
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -28,5 +28,5 @@ const getFirebaseStorage = (): FirebaseStorage => {
   return storage
 }
 
-export { getFirebaseStorage as getStorage, getApp }
+export { getApp, getFirebaseStorage as getStorage }
 export const getFirebaseConfig = () => firebaseConfig

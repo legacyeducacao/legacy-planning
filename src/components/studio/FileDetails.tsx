@@ -1,11 +1,11 @@
 "use client"
 
+import { Clock, FileText } from "lucide-react"
 import React from "react"
-import { Badge } from "../ui/badge"
-import { Card, CardHeader, CardContent } from "../ui/card"
-import { FileText, Clock } from "lucide-react"
 import { formatDuration, formatFileSize } from "@/lib/format-utils"
 import type { AudioSource } from "@/types/transcription"
+import { Badge } from "../ui/badge"
+import { Card, CardContent, CardHeader } from "../ui/card"
 
 export interface FileDetailsProps {
   audioSource?: AudioSource

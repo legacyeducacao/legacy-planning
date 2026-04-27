@@ -1,5 +1,5 @@
+import { AnimatePresence, motion } from "framer-motion"
 import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
 
 interface AnimatedListProps {
   items: React.ReactNode[]

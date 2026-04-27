@@ -1,21 +1,21 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import {
+  AlertCircle,
+  Clock,
+  ExternalLink,
+  FileAudio,
+  Search,
+  Trash2,
+} from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { Footer } from "@/components/layout/Footer"
+import { Header } from "@/components/layout/Header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Header } from "@/components/layout/Header"
-import { Footer } from "@/components/layout/Footer"
-import {
-  FileAudio,
-  Trash2,
-  ExternalLink,
-  Search,
-  Clock,
-  AlertCircle,
-} from "lucide-react"
-import { useHistoryStore, type HistoryEntry } from "@/stores/history-store"
+import { type HistoryEntry, useHistoryStore } from "@/stores/history-store"
 
 export default function HistoryPage() {
   const router = useRouter()

@@ -1,13 +1,13 @@
-import { useState, useCallback } from "react"
+import { Link as LinkIcon, UploadCloud } from "lucide-react"
+import { useCallback, useState } from "react"
+import { useFileInput } from "@/hooks/use-file-input"
+import { getAllSupportedFormats } from "@/lib/file-format-utils"
+import { FileUploadInput } from "./transcription/FileUploadInput"
+import type { AIFeatures } from "./transcription/TranscriptionOptions"
+import { TranscriptionOptions } from "./transcription/TranscriptionOptions"
+import { UrlInput } from "./transcription/UrlInput"
 import { AnimatedButton } from "./ui/animated-button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
-import { useFileInput } from "@/hooks/use-file-input"
-import { TranscriptionOptions } from "./transcription/TranscriptionOptions"
-import { UploadCloud, Link as LinkIcon } from "lucide-react"
-import { FileUploadInput } from "./transcription/FileUploadInput"
-import { UrlInput } from "./transcription/UrlInput"
-import { getAllSupportedFormats } from "@/lib/file-format-utils"
-import type { AIFeatures } from "./transcription/TranscriptionOptions"
 
 interface UploadAudioProps {
   onUpload: (

@@ -1,10 +1,10 @@
 "use client"
 
-import React, { useState } from "react"
-import { FeedbackForm } from "./FeedbackForm"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
+import React, { useState } from "react"
 import { AnimatedBackdrop } from "../ui/animated-backdrop"
+import { FeedbackForm } from "./FeedbackForm"
 
 type FeedbackType = "general" | "issue" | "feature"
 

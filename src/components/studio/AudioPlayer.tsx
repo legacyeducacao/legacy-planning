@@ -1,24 +1,24 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
-import { Button } from "../ui/button"
-import { Card, CardHeader, CardContent } from "../ui/card"
 import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  SkipBack,
-  SkipForward,
-  FileAudio,
-  Repeat,
   ChevronLeft,
   ChevronRight,
+  FileAudio,
+  Pause,
+  Play,
+  Repeat,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  VolumeX,
 } from "lucide-react"
+import React, { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
 import { formatDuration } from "@/lib/format-utils"
+import { cn } from "@/lib/utils"
 import type { TranscriptionSegment } from "@/types/transcription"
+import { Button } from "../ui/button"
+import { Card, CardContent, CardHeader } from "../ui/card"
 
 const PLAYBACK_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2]
 

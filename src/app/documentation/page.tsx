@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import {
   BookOpen,
   Brain,
@@ -18,6 +17,7 @@ import {
   ShieldCheck,
   Wrench,
 } from "lucide-react"
+import Link from "next/link"
 import { Footer } from "@/components/layout/Footer"
 import { Header } from "@/components/layout/Header"
 

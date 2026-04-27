@@ -1,11 +1,11 @@
 "use client"
 
+import { BookOpen, Home, RefreshCw, TriangleAlert } from "lucide-react"
 import Link from "next/link"
 import { useEffect } from "react"
-import { BookOpen, Home, RefreshCw, TriangleAlert } from "lucide-react"
+import { ErrorState } from "@/components/errors/ErrorState"
 import { Footer } from "@/components/layout/Footer"
 import { Header } from "@/components/layout/Header"
-import { ErrorState } from "@/components/errors/ErrorState"
 import { Button } from "@/components/ui/button"
 
 export default function RouteError({

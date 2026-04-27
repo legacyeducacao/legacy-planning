@@ -1,7 +1,7 @@
+import { Brain, Download, FileAudio, Languages, Users, Zap } from "lucide-react"
 import Link from "next/link"
-import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
-import { FileAudio, Languages, Brain, Download, Zap, Users } from "lucide-react"
+import { Header } from "@/components/layout/Header"
 
 const features = [
   {

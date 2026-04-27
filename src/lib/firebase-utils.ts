@@ -1,4 +1,4 @@
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { getStorage } from "@/lib/firebase"
 
 const generateUniqueFilename = (originalName: string): string => {

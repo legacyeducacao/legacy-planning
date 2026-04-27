@@ -1,7 +1,7 @@
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx"
+import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx"
 import type {
-  TranscriptionSegment,
   TranscriptionIntelligence,
+  TranscriptionSegment,
 } from "@/types/transcription"
 import { formatDuration } from "./format-utils"
 

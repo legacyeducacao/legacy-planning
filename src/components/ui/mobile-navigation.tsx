@@ -1,19 +1,19 @@
 "use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import {
-  Menu,
-  X,
-  Clock,
-  FileText,
-  MessageCircle,
-  Bug,
-  Lightbulb,
-  ExternalLink,
   BookOpen,
+  Bug,
+  Clock,
+  ExternalLink,
+  FileText,
+  Lightbulb,
+  Menu,
+  MessageCircle,
+  X,
 } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 import { Button } from "./button"
 
 interface MobileNavigationProps {

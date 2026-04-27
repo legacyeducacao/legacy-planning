@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
+import { AnimatePresence, motion } from "framer-motion"
+import { ChevronDown, X } from "lucide-react"
 import { marked } from "marked"
-import { Button } from "./ui/button"
-import { X, ChevronDown } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link"
+import { useState } from "react"
 import { changelogItems } from "../data/changelog"
+import { Button } from "./ui/button"
 
 interface ChangelogProps {
   readonly isModal?: boolean

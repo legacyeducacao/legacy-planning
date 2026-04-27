@@ -1,14 +1,14 @@
-import Link from "next/link"
 import type { LucideIcon } from "lucide-react"
 import {
+  Ban,
   BookOpen,
   Clock3,
   Home,
   ShieldAlert,
   TriangleAlert,
   WifiOff,
-  Ban,
 } from "lucide-react"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ErrorState } from "@/components/errors/ErrorState"
 import { Footer } from "@/components/layout/Footer"

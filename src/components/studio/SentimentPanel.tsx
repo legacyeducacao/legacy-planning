@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useMemo } from "react"
-import type { SentimentResult } from "@/types/transcription"
 import { cn } from "@/lib/utils"
+import type { SentimentResult } from "@/types/transcription"
 
 interface SentimentPanelProps {
   sentimentResults: SentimentResult[]

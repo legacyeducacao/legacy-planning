@@ -1,27 +1,27 @@
 "use client"
 
-import React, { useState, useRef, useCallback } from "react"
-import { Button } from "../ui/button"
-import { Card, CardContent } from "../ui/card"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs"
 import { FileAudio, Keyboard } from "lucide-react"
+import React, { useCallback, useRef, useState } from "react"
+import { useAudioPlayer } from "@/hooks/useAudioPlayer"
 import type {
-  TranscriptionSegment,
-  TranscriptionIntelligence,
   AudioSource,
+  TranscriptionIntelligence,
+  TranscriptionSegment,
 } from "@/types/transcription"
 import { AudioPlayer } from "../studio/AudioPlayer"
-import { FileDetails } from "../studio/FileDetails"
-import { TranscriptStatistics } from "../studio/TranscriptStatistics"
-import { ExportControls } from "../studio/ExportControls"
-import { EnhancedTranscript } from "../studio/EnhancedTranscript"
-import { KeyboardShortcutsModal } from "../studio/KeyboardShortcutsModal"
 import { ChaptersPanel } from "../studio/ChaptersPanel"
-import { SummaryPanel } from "../studio/SummaryPanel"
-import { SentimentPanel } from "../studio/SentimentPanel"
+import { EnhancedTranscript } from "../studio/EnhancedTranscript"
 import { EntitiesPanel } from "../studio/EntitiesPanel"
+import { ExportControls } from "../studio/ExportControls"
+import { FileDetails } from "../studio/FileDetails"
+import { KeyboardShortcutsModal } from "../studio/KeyboardShortcutsModal"
 import { KeyPhrasesPanel } from "../studio/KeyPhrasesPanel"
-import { useAudioPlayer } from "@/hooks/useAudioPlayer"
+import { SentimentPanel } from "../studio/SentimentPanel"
+import { SummaryPanel } from "../studio/SummaryPanel"
+import { TranscriptStatistics } from "../studio/TranscriptStatistics"
+import { Button } from "../ui/button"
+import { Card, CardContent } from "../ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 
 interface TranscriptionStudioProps {
   transcription: string

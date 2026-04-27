@@ -1,7 +1,7 @@
-import * as React from "react"
-import { motion } from "framer-motion"
-import { Button, buttonVariants } from "./button"
 import { VariantProps } from "class-variance-authority"
+import { motion } from "framer-motion"
+import * as React from "react"
+import { Button, buttonVariants } from "./button"
 
 type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {

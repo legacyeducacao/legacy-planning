@@ -1,8 +1,8 @@
 "use client"
 
+import { FileAudio } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { FileAudio } from "lucide-react"
 
 export default function StudioRedirectPage() {
   const router = useRouter()

@@ -1,6 +1,6 @@
+import { AlertTriangle } from "lucide-react"
 import React from "react"
 import { Input } from "@/components/ui/input"
-import { AlertTriangle } from "lucide-react"
 
 interface UrlInputProps {
   audioUrl: string

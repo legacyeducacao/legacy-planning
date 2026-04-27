@@ -1,28 +1,28 @@
 "use client"
 
-import { use, useState, useEffect, useRef, useCallback } from "react"
-import { useRouter } from "next/navigation"
+import {
+  AlertCircle,
+  ArrowLeft,
+  CheckCircle2,
+  Copy,
+  Download,
+  ExternalLink,
+  FileAudio,
+  Loader2,
+  RefreshCw,
+} from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { use, useCallback, useEffect, useRef, useState } from "react"
+import { Toaster, toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Toaster, toast } from "sonner"
-import {
-  ArrowLeft,
-  FileAudio,
-  Download,
-  Copy,
-  ExternalLink,
-  RefreshCw,
-  AlertCircle,
-  CheckCircle2,
-  Loader2,
-} from "lucide-react"
-import { getApiUrl } from "@/services/transcription"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
+import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
 import type {
-  TranscriptionSegment,
   TranscriptionIntelligence,
+  TranscriptionSegment,
 } from "@/types/transcription"
 
 type TranscribeStatus = "processing" | "completed" | "failed"

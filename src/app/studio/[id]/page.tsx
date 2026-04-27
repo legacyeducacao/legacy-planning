@@ -1,17 +1,17 @@
 "use client"
 
-import { use, useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { AlertCircle, ArrowLeft, FileAudio } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { use, useEffect, useState } from "react"
+import { Toaster } from "sonner"
 import { TranscriptionStudio } from "@/components/transcription/TranscriptionStudio"
 import { Button } from "@/components/ui/button"
-import { Toaster } from "sonner"
-import { ArrowLeft, FileAudio, AlertCircle } from "lucide-react"
 import { getApiUrl } from "@/services/transcription"
 import type {
-  TranscriptionSegment,
-  TranscriptionIntelligence,
   AudioSource,
+  TranscriptionIntelligence,
+  TranscriptionSegment,
 } from "@/types/transcription"
 
 interface StudioData {

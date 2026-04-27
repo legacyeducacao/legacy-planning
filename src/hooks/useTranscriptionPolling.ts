@@ -1,6 +1,6 @@
-import { useRef, useEffect } from "react"
-import { TranscriptionStatus, getApiUrl } from "../services/transcription"
+import { useCallback, useEffect, useRef } from "react"
 import { getUserFriendlyErrorMessage } from "../lib/error-utils"
+import { getApiUrl, TranscriptionStatus } from "../services/transcription"
 
 interface UseTranscriptionPollingProps {
   predictionId: string | null
@@ -37,6 +37,158 @@ export function useTranscriptionPolling({
     }
   }, [])
 
+  const stopPolling = useCallback(() => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current)
+      pollIntervalRef.current = null
+    }
+    if (firstPollTimeoutRef.current) {
+      clearTimeout(firstPollTimeoutRef.current)
+      firstPollTimeoutRef.current = null
+    }
+  }, [])
+
+  const startPolling = useCallback(
+    (id: string) => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current)
+      }
+
+      let attempts = 0
+      let consecutiveErrors = 0
+      const maxAttempts = 120 // 10 minutes at 5s interval
+      const maxConsecutiveErrors = 5
+      const pollIntervalMs = 5000
+
+      // Create poll function that uses the closure over id
+      const poll = async () => {
+        attempts++
+
+        try {
+          const response = await fetch(getApiUrl(`prediction/${id}`))
+
+          if (!response.ok) {
+            let errorBody = `${response.status} ${response.statusText}`
+            try {
+              const errorJson = await response.json()
+              errorBody = errorJson.error || JSON.stringify(errorJson)
+            } catch {
+              // response body not readable
+            }
+            throw new Error(`Failed to check prediction status: ${errorBody}`)
+          }
+
+          const data = await response.json()
+          consecutiveErrors = 0
+          onApiResponse({ timestamp: new Date(), data })
+
+          // Update progress based on status
+          let newProgress = 50 // Default starting point for polling
+
+          if (data.status === "starting") {
+            // 25%-50% range for starting status
+            onStatusChange("starting")
+            const startingProgressMax = 25
+            const startingProgress =
+              (Math.min(attempts, 20) / 20) * startingProgressMax
+            newProgress = 25 + Math.floor(startingProgress)
+            onProgress(newProgress)
+          } else if (data.status === "processing") {
+            // 50%-98% range for processing status (estimate-based)
+            onStatusChange("processing")
+            const processingProgressMax = 48
+            const processingProgress =
+              (Math.min(attempts, 30) / 30) * processingProgressMax
+            newProgress = 50 + Math.floor(processingProgress)
+            onProgress(newProgress)
+          } else if (data.status === "succeeded") {
+            onProgress(100)
+            stopPolling()
+            onSuccess(data.output)
+          } else if (data.status === "failed") {
+            console.error("Transcription failed:", data.error)
+            stopPolling()
+            onStatusChange("failed")
+            onProgress(0)
+            const transcriptionError =
+              data.error || "Unknown transcription error"
+            onError(`Transcription failed: ${transcriptionError}`)
+            onApiResponse({
+              timestamp: new Date(),
+              data: { error: `Transcription Error: ${transcriptionError}` },
+            })
+          } else if (data.status === "canceled") {
+            console.warn("Transcription canceled")
+            stopPolling()
+            onStatusChange("canceled")
+            onProgress(0)
+            onError("Transcription was canceled")
+            onApiResponse({
+              timestamp: new Date(),
+              data: { message: "Transcription canceled" },
+            })
+          }
+
+          // Timeout check
+          if (
+            attempts >= maxAttempts &&
+            (data.status === "starting" || data.status === "processing")
+          ) {
+            stopPolling()
+            onError("Transcription timed out after several minutes.")
+            onStatusChange("failed")
+            onProgress(0)
+            onApiResponse({
+              timestamp: new Date(),
+              data: { error: "Polling timed out" },
+            })
+          }
+        } catch (error) {
+          consecutiveErrors++
+          console.error(
+            `Polling error (${consecutiveErrors}/${maxConsecutiveErrors}):`,
+            error,
+          )
+
+          if (consecutiveErrors >= maxConsecutiveErrors) {
+            const errorInfo = getUserFriendlyErrorMessage(error)
+            stopPolling()
+            onError(errorInfo.userMessage)
+            onStatusChange("failed")
+            onProgress(0)
+            onApiResponse({
+              timestamp: new Date(),
+              data: {
+                error: `Polling Error: ${errorInfo.userMessage}`,
+                isNetworkError: errorInfo.isNetworkError,
+              },
+            })
+          } else {
+            onApiResponse({
+              timestamp: new Date(),
+              data: {
+                error: `Polling retry ${consecutiveErrors}/${maxConsecutiveErrors}: ${error instanceof Error ? error.message : "Unknown error"}`,
+              },
+            })
+          }
+        }
+      }
+
+      // Set up the interval
+      pollIntervalRef.current = setInterval(poll, pollIntervalMs)
+
+      firstPollTimeoutRef.current = setTimeout(() => poll(), 500)
+    },
+    [
+      stopPolling,
+      onApiResponse,
+      onError,
+      onProgress,
+      onStatusChange,
+      onSuccess,
+    ],
+  )
+
   // Start polling when predictionId changes
   useEffect(() => {
     if (predictionId) {
@@ -49,147 +201,6 @@ export function useTranscriptionPolling({
       }
     }
   }, [predictionId, startPolling])
-
-  const startPolling = useCallback((id: string) => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current)
-    }
-
-    let attempts = 0
-    let consecutiveErrors = 0
-    const maxAttempts = 120 // 10 minutes at 5s interval
-    const maxConsecutiveErrors = 5
-    const pollIntervalMs = 5000
-
-    // Create poll function that uses the closure over id
-    const poll = async () => {
-      attempts++
-
-      try {
-        const response = await fetch(getApiUrl(`prediction/${id}`))
-
-        if (!response.ok) {
-          let errorBody = `${response.status} ${response.statusText}`
-          try {
-            const errorJson = await response.json()
-            errorBody = errorJson.error || JSON.stringify(errorJson)
-          } catch {
-            // response body not readable
-          }
-          throw new Error(`Failed to check prediction status: ${errorBody}`)
-        }
-
-        const data = await response.json()
-        consecutiveErrors = 0
-        onApiResponse({ timestamp: new Date(), data })
-
-        // Update progress based on status
-        let newProgress = 50 // Default starting point for polling
-
-        if (data.status === "starting") {
-          // 25%-50% range for starting status
-          onStatusChange("starting")
-          const startingProgressMax = 25
-          const startingProgress =
-            (Math.min(attempts, 20) / 20) * startingProgressMax
-          newProgress = 25 + Math.floor(startingProgress)
-          onProgress(newProgress)
-        } else if (data.status === "processing") {
-          // 50%-98% range for processing status (estimate-based)
-          onStatusChange("processing")
-          const processingProgressMax = 48
-          const processingProgress =
-            (Math.min(attempts, 30) / 30) * processingProgressMax
-          newProgress = 50 + Math.floor(processingProgress)
-          onProgress(newProgress)
-        } else if (data.status === "succeeded") {
-          onProgress(100)
-          stopPolling()
-          onSuccess(data.output)
-        } else if (data.status === "failed") {
-          console.error("Transcription failed:", data.error)
-          stopPolling()
-          onStatusChange("failed")
-          onProgress(0)
-          const transcriptionError = data.error || "Unknown transcription error"
-          onError(`Transcription failed: ${transcriptionError}`)
-          onApiResponse({
-            timestamp: new Date(),
-            data: { error: `Transcription Error: ${transcriptionError}` },
-          })
-        } else if (data.status === "canceled") {
-          console.warn("Transcription canceled")
-          stopPolling()
-          onStatusChange("canceled")
-          onProgress(0)
-          onError("Transcription was canceled")
-          onApiResponse({
-            timestamp: new Date(),
-            data: { message: "Transcription canceled" },
-          })
-        }
-
-        // Timeout check
-        if (
-          attempts >= maxAttempts &&
-          (data.status === "starting" || data.status === "processing")
-        ) {
-          stopPolling()
-          onError("Transcription timed out after several minutes.")
-          onStatusChange("failed")
-          onProgress(0)
-          onApiResponse({
-            timestamp: new Date(),
-            data: { error: "Polling timed out" },
-          })
-        }
-      } catch (error) {
-        consecutiveErrors++
-        console.error(
-          `Polling error (${consecutiveErrors}/${maxConsecutiveErrors}):`,
-          error,
-        )
-
-        if (consecutiveErrors >= maxConsecutiveErrors) {
-          const errorInfo = getUserFriendlyErrorMessage(error)
-          stopPolling()
-          onError(errorInfo.userMessage)
-          onStatusChange("failed")
-          onProgress(0)
-          onApiResponse({
-            timestamp: new Date(),
-            data: {
-              error: `Polling Error: ${errorInfo.userMessage}`,
-              isNetworkError: errorInfo.isNetworkError,
-            },
-          })
-        } else {
-          onApiResponse({
-            timestamp: new Date(),
-            data: {
-              error: `Polling retry ${consecutiveErrors}/${maxConsecutiveErrors}: ${error instanceof Error ? error.message : "Unknown error"}`,
-            },
-          })
-        }
-      }
-    }
-
-    // Set up the interval
-    pollIntervalRef.current = setInterval(poll, pollIntervalMs)
-
-    firstPollTimeoutRef.current = setTimeout(() => poll(), 500)
-  }, [])
-
-  const stopPolling = () => {
-    if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current)
-      pollIntervalRef.current = null
-    }
-    if (firstPollTimeoutRef.current) {
-      clearTimeout(firstPollTimeoutRef.current)
-      firstPollTimeoutRef.current = null
-    }
-  }
 
   return { stopPolling }
 }

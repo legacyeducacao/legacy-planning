@@ -1,5 +1,5 @@
-import React from "react"
 import { motion, Variants } from "framer-motion"
+import React from "react"
 import { useScrollAnimation } from "@/hooks/useScrollAnimation"
 
 interface ScrollRevealSectionProps {

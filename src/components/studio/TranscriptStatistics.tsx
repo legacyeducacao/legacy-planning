@@ -1,9 +1,9 @@
 "use client"
 
-import React from "react"
-import { Card, CardHeader, CardContent } from "../ui/card"
 import { BarChart3 } from "lucide-react"
+import React from "react"
 import type { TranscriptionSegment } from "@/types/transcription"
+import { Card, CardContent, CardHeader } from "../ui/card"
 
 export interface TranscriptStatisticsProps {
   transcription: string

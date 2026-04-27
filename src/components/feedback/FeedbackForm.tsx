@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react"
 import DeviceDetector from "device-detector-js"
 import { AlertCircle, ExternalLink, Loader2 } from "lucide-react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "../ui/button"
 
 type FeedbackType = "general" | "issue" | "feature" | "other"

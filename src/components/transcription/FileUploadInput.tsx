@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useEffect } from "react"
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion"
+import { FileCheck2, UploadCloud, XCircle } from "lucide-react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { UploadCloud, FileCheck2, XCircle } from "lucide-react"
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
-import { expandCenter, springTransition } from "../../lib/animations"
 import { getAcceptedMimeTypes } from "@/lib/file-format-utils"
+import { expandCenter, springTransition } from "../../lib/animations"
 
 interface FileUploadInputProps {
   fileName: string | null

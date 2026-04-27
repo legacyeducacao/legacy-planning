@@ -1,8 +1,8 @@
 "use client"
 
 import React from "react"
-import type { Chapter } from "@/types/transcription"
 import { cn } from "@/lib/utils"
+import type { Chapter } from "@/types/transcription"
 
 interface ChaptersPanelProps {
   chapters: Chapter[]

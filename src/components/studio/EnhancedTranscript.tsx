@@ -1,20 +1,21 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 const escapeRegExp = (s: string) =>
   s.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { Search, Copy } from "lucide-react"
+
+import { Copy, Search } from "lucide-react"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
-import { getSpeakerColor } from "@/lib/speaker-colors"
 import { formatDuration } from "@/lib/format-utils"
+import { getSpeakerColor } from "@/lib/speaker-colors"
+import { cn } from "@/lib/utils"
 import type {
   TranscriptionSegment,
   TranscriptionWord,
 } from "@/types/transcription"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
 
 // Binary search to find active word index
 const findActiveWordIndex = (

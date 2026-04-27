@@ -1,17 +1,17 @@
 "use client"
 
+import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx"
+import { Copy, Download } from "lucide-react"
 import React, { useState } from "react"
-import { Button } from "../ui/button"
-import { Card, CardHeader, CardContent } from "../ui/card"
-import { Download, Copy } from "lucide-react"
 import { toast } from "sonner"
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx"
-import { formatDuration } from "@/lib/format-utils"
 import { formatTimeForSRT, formatTimeForVTT } from "@/lib/export-formats"
+import { formatDuration } from "@/lib/format-utils"
 import type {
-  TranscriptionSegment,
   TranscriptionIntelligence,
+  TranscriptionSegment,
 } from "@/types/transcription"
+import { Button } from "../ui/button"
+import { Card, CardContent, CardHeader } from "../ui/card"
 
 export interface ExportControlsProps {
   transcription: string
