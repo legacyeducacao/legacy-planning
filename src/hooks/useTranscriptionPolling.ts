@@ -31,6 +31,9 @@ export function useTranscriptionPolling({
       if (pollIntervalRef.current) {
         clearInterval(pollIntervalRef.current)
       }
+      if (firstPollTimeoutRef.current) {
+        clearTimeout(firstPollTimeoutRef.current)
+      }
     }
   }, [])
 

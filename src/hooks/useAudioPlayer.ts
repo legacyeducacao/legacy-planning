@@ -22,7 +22,10 @@ function isEditableTarget(target: EventTarget | null) {
     (tag === "A" && target.hasAttribute("href")) ||
     target.isContentEditable ||
     target.getAttribute("role") === "button" ||
-    target.getAttribute("role") === "slider"
+    target.getAttribute("role") === "link" ||
+    target.getAttribute("role") === "slider" ||
+    target.getAttribute("role") === "combobox" ||
+    target.getAttribute("role") === "option"
   )
 }
 
