@@ -9,9 +9,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "format:check": "biome format .",
-    "preview": "vite preview",
-    "setup-firebase-cors": "node scripts/setup-firebase-cors.js"
+    "format:check": "biome format ."
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
