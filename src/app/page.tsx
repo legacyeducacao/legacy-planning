@@ -6,6 +6,7 @@ import { Toaster, toast } from "sonner"
 import { Footer } from "@/components/layout/Footer"
 import { Header } from "@/components/layout/Header"
 import { UploadAudio } from "@/components/UploadAudio"
+import { ReleaseModal } from "@/components/ui/ReleaseModal"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
 import { uploadLargeFile } from "@/lib/storage-service"
 import { getApiUrl } from "@/services/transcription"
@@ -164,6 +165,7 @@ export default function UploadPage() {
       <Footer />
 
       <Toaster />
+      <ReleaseModal />
     </div>
   )
 }
