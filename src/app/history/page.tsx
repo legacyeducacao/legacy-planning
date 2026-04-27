@@ -155,12 +155,15 @@ export default function HistoryPage() {
             </Card>
           ) : (
             <div className="space-y-3">
-              {filtered.map((entry) => (
+              {filtered.map((entry) => {
+                const fallbackName = `Transcription ${entry.predictionId.slice(0, 8)}`
+                const ariaLabel = `Open transcription: ${entry.audioSource.name || fallbackName}`
+                return (
                 <Card
                   key={entry.predictionId}
                   role="button"
                   tabIndex={0}
-                  aria-label={`Open transcription: ${entry.audioSource.name || `Transcription ${entry.predictionId.slice(0, 8)}`}`}
+                  aria-label={ariaLabel}
                   className="cursor-pointer transition-shadow hover:shadow-md"
                   onClick={() => handleOpen(entry)}
                   onKeyDown={(e) => {
@@ -206,7 +209,8 @@ export default function HistoryPage() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>

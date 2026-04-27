@@ -308,7 +308,7 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="mb-2 block text-xs text-gray-600">Format</label>
+            <p className="mb-2 text-xs text-gray-600">Format</p>
             <div className="grid grid-cols-4 gap-1">
               {(
                 ["txt", "docx", "srt", "vtt", "json", "csv", "md"] as const

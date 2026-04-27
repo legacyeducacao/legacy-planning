@@ -32,7 +32,7 @@ export const getSpeakerColor = (speaker: string) => {
   // Hash all chars so any speaker label (numeric, empty-prefix, etc.) maps stably
   let hash = 0
   for (let i = 0; i < speaker.length; i++) {
-    hash = (hash * 31 + speaker.charCodeAt(i)) >>> 0
+    hash = (hash * 31 + (speaker.codePointAt(i) ?? 0)) >>> 0
   }
   return SPEAKER_COLORS[hash % SPEAKER_COLORS.length]
 }

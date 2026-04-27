@@ -26,7 +26,7 @@ const DB_VERSION = 2
 
 const initDb = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
-    if (typeof globalThis.window === "undefined" || !globalThis.indexedDB) {
+    if (globalThis.window === undefined || !globalThis.indexedDB) {
       reject(new Error("IndexedDB not available"))
       return
     }

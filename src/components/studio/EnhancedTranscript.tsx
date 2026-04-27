@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react"
 
-const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Search, Copy } from "lucide-react"
@@ -113,7 +113,7 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
 
       return (
         <span
-          key={idx}
+          key={`${word.word}-${word.start}-${idx}`}
           className={cn(
             "transition-colors duration-100",
             isActive &&
@@ -133,7 +133,7 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
     isHighlighted: boolean,
   ) => {
     if (isCurrentSegment && segment.words && segment.words.length > 0) {
-      return renderKaraokeWords(segment.words as TranscriptionWord[])
+      return renderKaraokeWords(segment.words)
     }
 
     if (searchTerm && isHighlighted) {
@@ -141,7 +141,7 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
         .split(new RegExp(`(${escapeRegExp(searchTerm)})`, "gi"))
         .map((part, partIndex) =>
           part.toLowerCase() === searchTerm.toLowerCase() ? (
-            <mark key={partIndex} className="rounded bg-yellow-200 px-1">
+            <mark key={`part-${partIndex}-${part}`} className="rounded bg-yellow-200 px-1">
               {part}
             </mark>
           ) : (
@@ -206,7 +206,7 @@ export const EnhancedTranscript: React.FC<EnhancedTranscriptProps> = ({
       {searchResults.length > 0 && (
         <p className="text-xs text-gray-500">
           Found {searchResults.length} result
-          {searchResults.length !== 1 ? "s" : ""}
+          {searchResults.length === 1 ? "" : "s"}
         </p>
       )}
 

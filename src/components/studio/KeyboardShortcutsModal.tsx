@@ -47,11 +47,11 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
         onClick={onClose}
         aria-label="Close keyboard shortcuts"
       />
-      <div
-        role="dialog"
+      <dialog
+        open
         aria-modal="true"
         aria-labelledby="keyboard-shortcuts-title"
-        className="relative mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
+        className="relative mx-4 w-full max-w-md rounded-lg border-0 bg-white p-6 shadow-xl dark:bg-gray-800"
       >
         <div className="mb-4 flex items-center justify-between">
           <h3
@@ -84,7 +84,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
             </div>
           ))}
         </div>
-      </div>
+      </dialog>
     </div>
   )
 }

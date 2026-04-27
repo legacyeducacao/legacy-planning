@@ -34,6 +34,43 @@ interface TranscribeResult {
   detectedLanguage?: string | null
 }
 
+function parseTranscriptionOutput(output: {
+  segments?: unknown[]
+  intelligence?: TranscriptionIntelligence
+  detected_language?: string | null
+}): Pick<TranscribeResult, "transcription" | "segments" | "intelligence"> {
+  if (!output?.segments || !Array.isArray(output.segments)) {
+    return { transcription: "", segments: undefined, intelligence: undefined }
+  }
+
+  const segments = output.segments.map(
+    (
+      seg: {
+        start: number
+        end: number
+        text: string
+        speaker?: string
+        words?: unknown[]
+      },
+      idx: number,
+    ) => ({
+      id: idx,
+      start: seg.start,
+      end: seg.end,
+      text: seg.text,
+      speaker: seg.speaker,
+      words: seg.words,
+    }),
+  ) as TranscriptionSegment[]
+
+  const transcription = output.segments
+    .map((seg) => (seg as { text: string }).text)
+    .join(" ")
+    .trim()
+
+  return { transcription, segments, intelligence: output.intelligence }
+}
+
 function getStepClassName(isDone: boolean, isActive: boolean) {
   if (isDone) return "bg-primary/10 text-primary"
   if (isActive) return "bg-primary text-primary-foreground"
@@ -90,39 +127,8 @@ export default function TranscribePage({
         stopPolling()
 
         const output = data.output
-        let transcription = ""
-        let segments: TranscriptionSegment[] | undefined
-        let intelligence: TranscriptionIntelligence | undefined
-
-        if (output?.segments && Array.isArray(output.segments)) {
-          segments = output.segments.map(
-            (
-              seg: {
-                start: number
-                end: number
-                text: string
-                speaker?: string
-                words?: unknown[]
-              },
-              idx: number,
-            ) => ({
-              id: idx,
-              start: seg.start,
-              end: seg.end,
-              text: seg.text,
-              speaker: seg.speaker,
-              words: seg.words,
-            }),
-          )
-          transcription = output.segments
-            .map((seg: { text: string }) => seg.text)
-            .join(" ")
-            .trim()
-
-          if (output.intelligence) {
-            intelligence = output.intelligence
-          }
-        }
+        const { transcription, segments, intelligence } =
+          parseTranscriptionOutput(output)
 
         setResult({
           transcription,

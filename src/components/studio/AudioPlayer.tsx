@@ -124,7 +124,7 @@ function LoopPoints({
           onClick={() => onSetLoopPoint("start")}
           className="h-6 px-2 text-xs"
         >
-          A: {loopStart !== null ? formatDuration(loopStart) : "--:--"}
+          A: {loopStart === null ? "--:--" : formatDuration(loopStart)}
         </Button>
         <Button
           variant="outline"
@@ -132,7 +132,7 @@ function LoopPoints({
           onClick={() => onSetLoopPoint("end")}
           className="h-6 px-2 text-xs"
         >
-          B: {loopEnd !== null ? formatDuration(loopEnd) : "--:--"}
+          B: {loopEnd === null ? "--:--" : formatDuration(loopEnd)}
         </Button>
       </div>
       <Button
@@ -225,15 +225,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }
 
   useEffect(() => {
-    if (
-      isLooping &&
-      loopStart !== null &&
-      loopEnd !== null &&
-      audioRef.current
-    ) {
-      if (currentTime >= loopEnd) {
-        audioRef.current.currentTime = loopStart
-      }
+    if (isLooping && loopStart !== null && loopEnd !== null && audioRef.current && currentTime >= loopEnd) {
+      audioRef.current.currentTime = loopStart
     }
   }, [currentTime, isLooping, loopStart, loopEnd, audioRef])
 

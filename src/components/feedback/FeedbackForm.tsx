@@ -37,17 +37,19 @@ export function FeedbackForm({
       const deviceDetector = new DeviceDetector()
       const device = deviceDetector.parse(navigator.userAgent)
 
-      const browser = device.client?.name
-        ? device.client.version
+      let browser = navigator.userAgent
+      if (device.client?.name) {
+        browser = device.client.version
           ? `${device.client.name} ${device.client.version}`
           : device.client.name
-        : navigator.userAgent
+      }
 
-      const operatingSystem = device.os?.name
-        ? device.os.version
+      let operatingSystem = "Unknown"
+      if (device.os?.name) {
+        operatingSystem = device.os.version
           ? `${device.os.name} ${device.os.version}`
           : device.os.name
-        : navigator.platform || "Unknown"
+      }
 
       const params = new URLSearchParams()
       params.set("alignLeft", "1")
@@ -137,7 +139,7 @@ export function FeedbackForm({
   }, [embedSrc, isReady])
 
   useEffect(() => {
-    if (typeof globalThis.window === "undefined") {
+    if (globalThis.window === undefined) {
       return
     }
 
