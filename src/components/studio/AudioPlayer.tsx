@@ -480,14 +480,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               )}
 
               {/* Loop Points Display */}
-              {(loopStart !== null || loopEnd !== null) && (
-                <LoopPoints
-                  loopStart={loopStart}
-                  loopEnd={loopEnd}
-                  onSetLoopPoint={setLoopPoint}
-                  onClearLoop={clearLoop}
-                />
-              )}
+              <LoopPoints
+                loopStart={loopStart}
+                loopEnd={loopEnd}
+                onSetLoopPoint={setLoopPoint}
+                onClearLoop={clearLoop}
+              />
             </div>
           </>
         ) : (
