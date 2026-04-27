@@ -10,7 +10,7 @@ import {
   MessageCircle,
   Bug,
   Lightbulb,
-  Github,
+  ExternalLink,
   BookOpen,
 } from "lucide-react";
 import Link from "next/link";
@@ -266,7 +266,7 @@ export function MobileNavigation({
                     onClick={closeMenu}
                     className="mb-3 flex w-full items-center justify-start rounded-md p-4 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                   >
-                    <Github className="mr-3 h-5 w-5" />
+                    <ExternalLink className="mr-3 h-5 w-5" />
                     Star on GitHub
                   </a>
                 </motion.div>
