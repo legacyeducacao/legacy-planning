@@ -305,8 +305,14 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <p id="format-label" className="mb-2 text-xs text-gray-600">Format</p>
-            <div role="group" aria-labelledby="format-label" className="grid grid-cols-4 gap-1">
+            <p id="format-label" className="mb-2 text-xs text-gray-600">
+              Format
+            </p>
+            <div
+              role="group"
+              aria-labelledby="format-label"
+              className="grid grid-cols-4 gap-1"
+            >
               {(
                 ["txt", "docx", "srt", "vtt", "json", "csv", "md"] as const
               ).map((format) => (
