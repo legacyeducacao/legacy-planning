@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server"
-import { uploadBase64ToFirebase } from "@/lib/firebase-utils"
-import { assemblyai } from "@/lib/assemblyai-client"
 import type { TranscriptParams } from "assemblyai"
+import { NextResponse } from "next/server"
+import { assemblyai } from "@/lib/assemblyai-client"
+import { uploadBase64ToFirebase } from "@/lib/firebase-utils"
 
 // Helper to prepare audio input for the transcription service
 async function prepareAudioInput(
@@ -64,10 +64,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { audioFileUrl, firebaseFilePath, firebaseUrl } = await prepareAudioInput(
-      audioData,
-      audioUrl,
-    )
+    const { audioFileUrl, firebaseFilePath, firebaseUrl } =
+      await prepareAudioInput(audioData, audioUrl)
 
     if (!audioFileUrl) {
       throw new Error("No audio URL available for transcription.")

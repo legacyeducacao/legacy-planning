@@ -35,9 +35,7 @@ export const KeyPhrasesPanel: React.FC<KeyPhrasesPanelProps> = ({
               <span className="text-sm font-medium text-gray-900 dark:text-white">
                 {phrase.text}
               </span>
-              <span className="text-xs text-gray-500">
-                {phrase.count}x
-              </span>
+              <span className="text-xs text-gray-500">{phrase.count}x</span>
             </div>
             {/* Relevance bar */}
             <div className="h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">

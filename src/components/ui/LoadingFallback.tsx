@@ -6,4 +6,4 @@ export const LoadingFallback = () => (
       <div className="animate-pulse-dot-3 h-3 w-3 rounded-full bg-blue-500"></div>
     </div>
   </div>
-);
+)

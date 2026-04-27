@@ -1,232 +1,127 @@
-"use client";
+import Link from "next/link"
+import { AnalyticsOptOut } from "@/components/analytics/AnalyticsOptOut"
+import { Footer } from "@/components/layout/Footer"
+import { Header } from "@/components/layout/Header"
 
-import Link from "next/link";
-import { AnalyticsOptOut } from "@/components/analytics/AnalyticsOptOut";
+const LAST_UPDATED = "April 27, 2026"
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-linear-to-b from-sky-50 to-white py-12 text-gray-900 dark:from-gray-900 dark:to-gray-800 dark:text-gray-100">
-      <div className="mx-auto max-w-4xl px-4">
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="flex items-center gap-2 font-medium text-blue-600 hover:underline dark:text-blue-400"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to Transcriptr
-          </Link>
-        </div>
+    <div className="bg-background flex min-h-screen flex-col">
+      <Header />
 
-        <div className="mb-12 rounded-xl bg-white p-8 shadow-lg dark:bg-gray-800">
-          <div className="prose dark:prose-invert max-w-none">
-            <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100">
-              Privacy Policy
-            </h1>
-            <p className="mb-8 text-gray-500 dark:text-gray-400">
-              Last updated: {new Date().toLocaleDateString()}
+      <main className="flex-1 px-4 py-8 sm:py-10">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-muted-foreground mb-6 flex flex-wrap items-center gap-3 text-sm">
+            <Link href="/" className="hover:text-foreground hover:underline">
+              Back to Transcriptr
+            </Link>
+            <span>|</span>
+            <Link
+              href="/terms"
+              className="hover:text-foreground hover:underline"
+            >
+              Terms
+            </Link>
+          </div>
+
+          <article className="legal-doc max-w-none">
+            <h1>Privacy Policy</h1>
+            <p className="legal-updated">Last updated: {LAST_UPDATED}</p>
+
+            <p>
+              This page explains what Transcriptr collects, how we use it, and
+              which third-party services are involved when you use the app.
             </p>
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                1. Introduction
-              </h2>
-              <p className="mb-4">
-                This Privacy Policy explains how Transcriptr ("we", "our", or
-                "us") collects, uses, and shares your information when you use
-                our service. We respect your privacy and are committed to
-                protecting your personal data.
-              </p>
-            </section>
+            <h2>1. Information We Collect</h2>
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                2. Information We Collect
-              </h2>
+            <h3>Audio and media you submit</h3>
+            <p>
+              When you upload a file or provide a supported media source for
+              transcription, we process that content to generate transcript
+              output. Some requests may require temporary cloud handling to
+              complete the transcription workflow.
+            </p>
 
-              <div className="mb-6">
-                <h3 className="mb-3 text-xl font-medium text-gray-800 dark:text-gray-300">
-                  2.1 Audio Files
-                </h3>
-                <p className="mb-4">
-                  When you upload audio files for transcription, we process this
-                  content to generate textual transcriptions. For files below
-                  our size threshold, processing occurs directly in your
-                  browser. For larger files, we temporarily upload them to
-                  Firebase Storage to facilitate processing.
-                </p>
-              </div>
+            <h3>Feedback submissions</h3>
+            <p>
+              When you open the in-app feedback form, the embedded Tally form
+              can receive the information you enter along with extra context we
+              pass through the embed URL. That context currently includes:
+            </p>
+            <ul>
+              <li>The feedback type you selected</li>
+              <li>Your browser and operating system details</li>
+              <li>The current page path and full page URL</li>
+              <li>Any query parameters already present in the page URL</li>
+            </ul>
 
-              <div className="mb-6">
-                <h3 className="mb-3 text-xl font-medium text-gray-800 dark:text-gray-300">
-                  2.2 Analytics and Usage Data
-                </h3>
-                <p className="mb-4">
-                  With your consent, we collect usage data through Google
-                  Analytics and Microsoft Clarity to improve our service. This
-                  includes:
-                </p>
-                <ul className="mb-4 list-disc space-y-2 pl-6">
-                  <li>Usage statistics (pages visited, features used)</li>
-                  <li>
-                    Technical information (browser type, operating system)
-                  </li>
-                  <li>Performance metrics and error data</li>
-                </ul>
-              </div>
+            <h3>Usage analytics</h3>
+            <p>
+              We use Vercel Web Analytics to understand basic product usage and
+              performance. We strip query strings from tracked page URLs before
+              events are sent, and you can disable analytics for your browser on
+              this page.
+            </p>
 
-              <div className="mb-6">
-                <h3 className="mb-3 text-xl font-medium text-gray-800 dark:text-gray-300">
-                  2.3 Feedback Information
-                </h3>
-                <p className="mb-4">
-                  When you submit feedback, report issues, or suggest features,
-                  we collect the information you provide, which may include:
-                </p>
-                <ul className="mb-4 list-disc space-y-2 pl-6">
-                  <li>Your name (if provided)</li>
-                  <li>Your email address (optional)</li>
-                  <li>
-                    Browser and operating system information for issue reports
-                  </li>
-                  <li>The content of your feedback or issue report</li>
-                </ul>
-              </div>
-            </section>
+            <h2>2. How We Use Information</h2>
+            <p>We use collected information to:</p>
+            <ul>
+              <li>Process transcription requests</li>
+              <li>Operate and troubleshoot the app</li>
+              <li>Understand product usage and improve reliability</li>
+              <li>Review feedback, bug reports, and feature requests</li>
+            </ul>
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                3. How We Use Your Information
-              </h2>
-              <p className="mb-4">We use the information we collect to:</p>
-              <ul className="mb-4 list-disc space-y-2 pl-6">
-                <li>
-                  Process and generate transcriptions from your audio files
-                </li>
-                <li>Improve and optimize our service</li>
-                <li>Respond to your feedback and fix reported issues</li>
-                <li>Understand how users interact with our application</li>
-              </ul>
-            </section>
+            <h2>3. Storage and Retention</h2>
+            <p>
+              We do not intend Transcriptr to be long-term storage for your
+              uploaded media. When a workflow requires Firebase Storage, files
+              are stored temporarily to complete processing and are intended to
+              be deleted afterward.
+            </p>
+            <p>
+              Deletion is not guaranteed to be instantaneous. Operational
+              issues, failed cleanup, or provider-side delays can occasionally
+              cause temporary files to remain longer than intended.
+            </p>
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                4. Data Retention
-              </h2>
-              <p className="mb-4">
-                We do not permanently store your audio files or transcriptions
-                on our servers. Data is processed and then:
-              </p>
-              <ul className="mb-4 list-disc space-y-2 pl-6">
-                <li>
-                  For browser-based processing: Data remains in your browser
-                  only
-                </li>
-                <li>
-                  For cloud processing: Temporarily stored files are deleted
-                  after processing is complete (typically within minutes)
-                </li>
-              </ul>
-              <p className="mb-4">
-                While we are committed to the timely deletion of your data,
-                unforeseen technical issues or operational anomalies may, on
-                occasion, cause audio files stored in Firebase Storage to be
-                retained for longer than the intended period. We take active
-                measures to minimize such occurrences and ensure that any
-                retained data is identified and purged as quickly as possible.
-              </p>
-            </section>
+            <h2>4. Third-Party Services</h2>
+            <p>Transcriptr currently relies on these third-party services:</p>
+            <ul>
+              <li>AssemblyAI for transcription processing</li>
+              <li>Firebase Storage for temporary file handling when needed</li>
+              <li>Vercel Web Analytics for anonymized usage analytics</li>
+              <li>Tally for embedded feedback form submissions</li>
+            </ul>
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                5. Third-Party Services
-              </h2>
-              <p className="mb-4">We use the following third-party services:</p>
-              <ul className="mb-4 list-disc space-y-2 pl-6">
-                <li>AssemblyAI: Processes audio files for transcription</li>
-                <li>Firebase Storage: Temporarily stores larger audio files</li>
-                <li>
-                  Google Analytics: Tracks usage patterns (with consent only)
-                </li>
-                <li>
-                  Microsoft Clarity: Monitors user experience (with consent
-                  only)
-                </li>
-                <li>
-                  Netlify: Hosts the application and processes form submissions
-                </li>
-              </ul>
-            </section>
+            <h2>5. Your Choices</h2>
+            <p>You can:</p>
+            <ul>
+              <li>Choose not to submit feedback through the embedded form</li>
+              <li>Disable Vercel Web Analytics for this browser</li>
+              <li>Contact us with questions about data handling or deletion</li>
+            </ul>
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                6. Your Rights
-              </h2>
-              <p className="mb-4">You have the right to:</p>
-              <ul className="mb-4 list-disc space-y-2 pl-6">
-                <li>Decline analytics cookies and tracking</li>
-                <li>Request deletion of any data we hold about you</li>
-                <li>Access information about what data we process</li>
-              </ul>
-            </section>
+            <AnalyticsOptOut />
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                7. Analytics Opt-Out
-              </h2>
-              <p className="mb-4">
-                You can opt out of analytics tracking by declining cookies when
-                prompted. You can also use browser extensions that block
-                tracking or enable "Do Not Track" settings in your browser.
-              </p>
-              <AnalyticsOptOut />
-            </section>
+            <h2>6. Changes to This Policy</h2>
+            <p>
+              We may update this policy as the product changes. When we make
+              material updates, we will revise the date at the top of this page.
+            </p>
 
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                8. Changes to This Policy
-              </h2>
-              <p className="mb-4">
-                We may update this Privacy Policy from time to time. We will
-                notify users of significant changes by posting a notice on our
-                website.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                9. Contact Us
-              </h2>
-              <p className="mb-4">
-                If you have questions or concerns about this Privacy Policy,
-                please contact us at{" "}
-                <a
-                  href="mailto:contact@aramb.dev"
-                  className="text-blue-600 hover:underline dark:text-blue-400"
-                >
-                  contact@aramb.dev
-                </a>
-                {"."}
-              </p>
-            </section>
-          </div>
+            <h2>7. Contact</h2>
+            <p>
+              Questions about this policy can be sent to{" "}
+              <a href="mailto:contact@aramb.dev">contact@aramb.dev</a>.
+            </p>
+          </article>
         </div>
+      </main>
 
-        <footer className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>© {new Date().getFullYear()} Transcriptr. All rights reserved.</p>
-        </footer>
-      </div>
+      <Footer />
     </div>
-  );
+  )
 }

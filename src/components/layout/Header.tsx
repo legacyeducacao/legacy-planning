@@ -1,115 +1,192 @@
-import { MobileHeader } from "./MobileHeader";
+"use client"
 
-interface HeaderProps {
-  onOpenChangelog: () => void;
-  onShowHistory?: () => void;
-  onOpenFeedbackModal?: (type: "general" | "issue" | "feature") => void;
-  onShowV3?: () => void;
+import {
+  BookOpen,
+  Clock,
+  ExternalLink,
+  Heart,
+  Home,
+  MessageCircle,
+  MoreHorizontal,
+  ScrollText,
+} from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
+
+const NAV_ITEMS = [
+  { href: "/history", label: "History" },
+  { href: "/about", label: "About" },
+  { href: "/documentation", label: "Docs" },
+  { href: "/changelog", label: "Changelog" },
+]
+
+const MOBILE_TABS = [
+  { href: "/", label: "Transcribe", icon: Home },
+  { href: "/history", label: "History", icon: Clock },
+  { href: "/documentation", label: "Docs", icon: BookOpen },
+]
+
+const MOBILE_MENU_ITEMS = [
+  { href: "/about", label: "About", icon: ScrollText },
+  { href: "/changelog", label: "Changelog", icon: ScrollText },
+  { href: "/terms", label: "Terms", icon: ScrollText },
+  { href: "/privacy", label: "Privacy", icon: ScrollText },
+]
+
+function isRouteActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/"
+
+  return pathname === href || pathname.startsWith(`${href}/`)
 }
 
-export function Header({
-  onOpenChangelog,
-  onShowHistory,
-  onOpenFeedbackModal,
-  onShowV3,
-}: HeaderProps) {
+export function Header() {
+  const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const isMoreActive = MOBILE_MENU_ITEMS.some((item) =>
+    isRouteActive(pathname, item.href),
+  )
+
+  const openFeedback = () => {
+    if (globalThis.window?.openFeedbackModal) {
+      globalThis.window.openFeedbackModal("general")
+    }
+  }
+
+  const mobileMenuContent = (
+    <DropdownMenuContent align="end" className="w-48">
+      {MOBILE_MENU_ITEMS.map((item) => {
+        const Icon = item.icon
+        const isActive = isRouteActive(pathname, item.href)
+
+        return (
+          <DropdownMenuItem
+            key={item.href}
+            className={cn(
+              isActive &&
+                "bg-accent text-accent-foreground **:text-accent-foreground",
+            )}
+            asChild
+          >
+            <Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
+              <Icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          </DropdownMenuItem>
+        )
+      })}
+      <DropdownMenuSeparator />
+      <DropdownMenuItem
+        onClick={() => {
+          openFeedback()
+          setMobileMenuOpen(false)
+        }}
+      >
+        <MessageCircle className="h-4 w-4" />
+        Feedback
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <a
+          href="https://github.com/aramb-dev/transcriptr"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <ExternalLink className="h-4 w-4" />
+          GitHub
+        </a>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <a
+          href="https://donate.stripe.com/3cIeVe2e5dHxeEh7BKfUQ0h"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Heart className="h-4 w-4" />
+          Donate
+        </a>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  )
+
   return (
-    <>
-      {/* Mobile Header */}
-      {onOpenFeedbackModal && (
-        <MobileHeader
-          onOpenChangelog={onOpenChangelog}
-          onShowHistory={onShowHistory}
-          onOpenFeedbackModal={onOpenFeedbackModal}
-          onShowV3={onShowV3}
-        />
-      )}
+    <header className="border-border bg-card/80 sticky top-0 z-40 border-b backdrop-blur-sm">
+      <div className="container mx-auto flex h-12 items-center justify-between px-4 md:h-14">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-foreground text-lg font-bold">Transcriptr</span>
+        </Link>
 
-      {/* Desktop Header */}
-      <header className="mb-8 hidden text-center md:block">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-1 justify-start">
-            {onShowHistory && (
-              <button
-                onClick={onShowHistory}
-                className="flex items-center text-sm text-blue-600 hover:underline dark:text-blue-400"
-                aria-label="View transcription history"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mr-1 h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                History
-              </button>
-            )}
-          </div>
-
-          <div className="flex-1">
-            <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
-              Transcriptr
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              Convert audio to text with AI-powered transcription
-            </p>
-          </div>
-
-          <div className="flex flex-1 items-center justify-end gap-3">
-            {onShowV3 && (
-              <button
-                onClick={onShowV3}
-                className="group relative flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1 text-sm font-medium text-white shadow-md transition-all hover:bg-blue-700 hover:shadow-lg hover:scale-105"
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-white"></span>
-                </span>
-                V3.2
-              </button>
-            )}
-            <a
-              href="#changelog"
-              onClick={(e) => {
-                e.preventDefault();
-                onOpenChangelog();
-              }}
-              className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+        <nav className="hidden items-center gap-1 md:flex">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "rounded-md px-3 py-1.5 text-sm transition-colors",
+                isRouteActive(pathname, item.href)
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+              )}
             >
-              Changelog
-            </a>
-          </div>
-        </div>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Developed by{" "}
-          <a
-            href="https://aramb.dev"
-            className="text-blue-600 hover:underline dark:text-blue-400"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Abdur-Rahman Bilal (aramb-dev)
-          </a>{" "}
-          and AI |{" "}
-          <a
-            href="https://github.com/aramb-dev/transcriptr"
-            className="text-blue-600 hover:underline dark:text-blue-400"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View on Github
-          </a>
-        </p>
-      </header>
-    </>
-  );
+        {/* Spacer to balance the logo on the left in mobile layout */}
+        <div className="h-8 w-8 md:hidden" aria-hidden="true" />
+      </div>
+
+      <nav className="border-border grid grid-cols-4 gap-1 border-t px-2 py-1.5 md:hidden">
+        {MOBILE_TABS.map((item) => {
+          const Icon = item.icon
+          const isActive = isRouteActive(pathname, item.href)
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex h-10 min-w-0 flex-col items-center justify-center gap-0.5 rounded-md text-xs transition-colors",
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              <span className="max-w-full truncate">{item.label}</span>
+            </Link>
+          )
+        })}
+
+        <DropdownMenu open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                "flex h-10 min-w-0 flex-col items-center justify-center gap-0.5 rounded-md text-xs transition-colors",
+                mobileMenuOpen || isMoreActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+              )}
+              aria-label="Open more navigation"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span>More</span>
+            </button>
+          </DropdownMenuTrigger>
+          {mobileMenuContent}
+        </DropdownMenu>
+      </nav>
+    </header>
+  )
 }

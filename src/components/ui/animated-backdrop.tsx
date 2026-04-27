@@ -1,10 +1,10 @@
-import * as React from "react";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"
+import * as React from "react"
 
 interface AnimatedBackdropProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
+  children: React.ReactNode
+  onClick?: () => void
+  className?: string
 }
 
 export function AnimatedBackdrop({
@@ -14,13 +14,20 @@ export function AnimatedBackdrop({
 }: AnimatedBackdropProps) {
   return (
     <motion.div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm ${className}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center px-3 py-4 sm:p-6 ${className}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={onClick}
     >
-      {children}
+      {onClick && (
+        <button
+          type="button"
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={onClick}
+          aria-label="Close overlay"
+        />
+      )}
+      <div className="relative z-10">{children}</div>
     </motion.div>
-  );
+  )
 }

@@ -48,7 +48,7 @@ export interface KeyPhrase {
   text: string
   count: number
   rank: number
-  timestamps: { start: number, end: number }[]
+  timestamps: { start: number; end: number }[]
 }
 
 export interface ContentSafety {
@@ -75,4 +75,28 @@ export interface TranscriptionOutput {
   segments: TranscriptionSegment[]
   detected_language: string | null
   intelligence?: TranscriptionIntelligence
+}
+
+export interface AIFeatures {
+  autoChapters: boolean
+  summarization: boolean
+  sentimentAnalysis: boolean
+  entityDetection: boolean
+  keyPhrases: boolean
+  contentModeration: boolean
+  topicDetection: boolean
+}
+
+export interface TranscriptionOptions {
+  language: string
+  diarize: boolean
+  aiFeatures: AIFeatures
+}
+
+export interface AudioSource {
+  name?: string
+  url?: string
+  duration?: number
+  size?: number
+  type: "file" | "url"
 }

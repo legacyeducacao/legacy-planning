@@ -1,38 +1,31 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Button } from "../ui/button";
-import { disableAnalytics, enableAnalytics } from "../../lib/analytics";
-import { toast } from "sonner";
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import { Button } from "../ui/button"
 
 export const AnalyticsOptOut = () => {
-  const [isOptedOut, setIsOptedOut] = useState<boolean | null>(null);
+  const [isOptedOut, setIsOptedOut] = useState<boolean | null>(null)
 
   useEffect(() => {
-    // Ensure this runs only on the client
-    const optOutStatus = localStorage.getItem("analytics_opt_out");
-    setIsOptedOut(optOutStatus === "true");
-  }, []);
+    const optOutStatus = localStorage.getItem("analytics_opt_out")
+    setIsOptedOut(optOutStatus === "true")
+  }, [])
 
   const handleOptOut = () => {
-    localStorage.setItem("analytics_opt_out", "true");
-    setIsOptedOut(true);
-    disableAnalytics();
-    toast.success("You have successfully opted out of analytics tracking.");
-  };
+    localStorage.setItem("analytics_opt_out", "true")
+    setIsOptedOut(true)
+    toast.success("Analytics tracking is now disabled for this browser.")
+  }
 
   const handleOptIn = () => {
-    localStorage.setItem("analytics_opt_out", "false");
-    setIsOptedOut(false);
-    if (localStorage.getItem("cookieConsent") === "true") {
-      enableAnalytics();
-    }
-    toast.success("You have opted back in to analytics tracking.");
-  };
+    localStorage.setItem("analytics_opt_out", "false")
+    setIsOptedOut(false)
+    toast.success("Analytics tracking is enabled again for this browser.")
+  }
 
   if (isOptedOut === null) {
-    // Render nothing or a loading skeleton until client-side state is determined
-    return null;
+    return null
   }
 
   return (
@@ -40,9 +33,8 @@ export const AnalyticsOptOut = () => {
       {isOptedOut ? (
         <div>
           <p className="mb-3 text-base">
-            You are currently opted out of analytics tracking. We respect your
-            privacy and will not collect any non-essential data during your
-            visits.
+            Analytics are currently disabled for this browser. You can opt back
+            in at any time.
           </p>
           <Button onClick={handleOptIn} variant="outline" size="sm">
             Opt-In to Analytics
@@ -51,9 +43,8 @@ export const AnalyticsOptOut = () => {
       ) : (
         <div>
           <p className="mb-3 text-base">
-            You can withdraw your consent for analytics tracking at any time.
-            This will stop the collection of non-essential data used to improve
-            our service.
+            You can disable Vercel Web Analytics for this browser at any time.
+            We already strip query strings before events are sent.
           </p>
           <Button onClick={handleOptOut} variant="secondary" size="sm">
             Opt-Out of Analytics
@@ -61,5 +52,5 @@ export const AnalyticsOptOut = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}

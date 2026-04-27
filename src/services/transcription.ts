@@ -17,37 +17,37 @@ export const statusMessages: Record<TranscriptionStatus, string> = {
 }
 
 export const getApiUrl = (endpoint: string) => {
-  return `/api/${endpoint}`;
-};
+  return `/api/${endpoint}`
+}
 
 // Convert file to base64
 export const fileToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
     reader.onload = () => {
       if (typeof reader.result === "string") {
-        resolve(reader.result);
+        resolve(reader.result)
       } else {
-        reject(new Error("Failed to convert file to base64"));
+        reject(new Error("Failed to convert file to base64"))
       }
-    };
-    reader.onerror = (error) => reject(error);
-  });
-};
+    }
+    reader.onerror = (error) => reject(error)
+  })
+}
 
 export const formatErrorMessage = (error: string): string => {
   if (
     error.includes("Unsupported file format") ||
     error.includes("File format not supported")
   ) {
-    return "Unsupported file format. Please convert to MP3, WAV, or FLAC before uploading.";
+    return "Unsupported file format. Please convert to MP3, WAV, or FLAC before uploading."
   }
   if (error.includes("Soundfile is either not in the correct format")) {
-    return "The audio file format is not supported. Please try a different file or format (MP3, WAV, FLAC recommended).";
+    return "The audio file format is not supported. Please try a different file or format (MP3, WAV, FLAC recommended)."
   }
-  return error;
-};
+  return error
+}
 
 export const formatTimestamp = (date: Date) => {
   return date.toLocaleTimeString([], {
@@ -55,5 +55,5 @@ export const formatTimestamp = (date: Date) => {
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
-  });
-};
+  })
+}

@@ -19,7 +19,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary }) => {
         <ul className="space-y-2">
           {lines.map((line, index) => {
             // Strip leading bullet characters (-, *, etc.)
-            const cleaned = line.replace(/^[\s\-\*\u2022]+/, "").trim()
+            const cleaned = line.replace(/^[\s\-*\u2022]+/, "").trim()
             if (!cleaned) return null
 
             return (

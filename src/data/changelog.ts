@@ -1,14 +1,43 @@
 export interface ChangeItem {
-  date: string;
-  version: string;
+  date: string
+  version: string
   changes: {
-    new?: string[];
-    improved?: string[];
-    fixed?: string[];
-  };
+    new?: string[]
+    improved?: string[]
+    fixed?: string[]
+  }
 }
 
 export const changelogItems: ChangeItem[] = [
+  {
+    date: "Mon, 27 Apr 2026",
+    version: "3.4.0",
+    changes: {
+      new: [
+        "**Route-Based App Flow**: Added dedicated routes for upload, history, transcription progress, studio review, about, documentation, legal pages, and error states",
+        "**Top Mobile Navigation**: Replaced the mobile drawer-first pattern with top tabs for Transcribe, History, Docs, and More",
+        "**More Menu**: Mobile secondary links now live in a More menu with active parent highlighting for About, Changelog, Terms, and Privacy",
+        "**Support and Error Pages**: Added polished not-found, app error, global error, and status-code error pages with clearer recovery actions",
+        "**Feedback Telemetry**: Feedback submissions now include useful page, device, browser, and workflow context for easier debugging",
+      ],
+      improved: [
+        "**Documentation Layout**: Reworked the documentation page from a landing-page style layout into a quieter reference guide with a table of contents, structured sections, troubleshooting, and expandable FAQ",
+        "**Legal Page Readability**: Updated Privacy and Terms pages with Markdown-like document styling, clearer headers, highlighted update dates, and easier-to-scan lists",
+        "**Studio Architecture**: Extracted audio playback, transcript review, export controls, file details, statistics, and keyboard shortcuts into focused Studio components",
+        "**State Management**: Introduced dedicated Zustand stores for transcription history and option persistence",
+        "**Shared Utilities**: Consolidated export formatting, file formatting, speaker colors, Firebase helpers, transcription types, and debounce logic into focused modules",
+        "**Design Tokens**: Refreshed Tailwind and CSS variables for a cleaner theme foundation and more consistent component styling",
+        "**Codebase Cleanup**: Removed legacy mobile-only duplicate components, old announcement code, unused layout wrappers, and stale transcription result flows",
+        "**Dependencies**: Refreshed package versions and simplified app dependencies around the current Next.js workflow",
+      ],
+      fixed: [
+        "**Studio Audio Source**: Studio and transcription review now use the AssemblyAI audio URL as the source of truth when available",
+        "**Feedback Modal Fit**: The embedded feedback form now scales correctly inside the viewport on smaller screens",
+        "**Mobile Footer Duplication**: Footer support/legal links are no longer repeated on mobile now that they live in the More menu",
+        "**Active Navigation States**: Nested routes now correctly keep their parent navigation item highlighted",
+      ],
+    },
+  },
   {
     date: "Fri, 14 Feb 2026",
     version: "3.2.0",
@@ -439,4 +468,4 @@ export const changelogItems: ChangeItem[] = [
       fixed: [],
     },
   },
-];
+]

@@ -1,26 +1,26 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { UploadCloud, FileCheck2, XCircle } from "lucide-react";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { expandCenter, springTransition } from "../../lib/animations";
-import { getAcceptedMimeTypes } from "@/lib/file-format-utils";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion"
+import { FileCheck2, UploadCloud, XCircle } from "lucide-react"
+import React, { useCallback, useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { getAcceptedMimeTypes } from "@/lib/file-format-utils"
+import { expandCenter, springTransition } from "../../lib/animations"
 
 interface FileUploadInputProps {
-  fileName: string | null;
-  fileSize: number;
-  fileError: string | null;
-  fileInputRef: React.RefObject<HTMLInputElement>;
-  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onButtonClick: () => void;
-  onReset: () => void;
-  validateAndSetFile: (file: File) => void; // Function to handle dragged files
+  fileName: string | null
+  fileSize: number
+  fileError: string | null
+  fileInputRef: React.RefObject<HTMLInputElement>
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onButtonClick: () => void
+  onReset: () => void
+  validateAndSetFile: (file: File) => void // Function to handle dragged files
 }
 
 const formatFileSize = (size: number) => {
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-};
+  if (size < 1024) return `${size} B`
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`
+}
 
 export function FileUploadInput({
   fileName,
@@ -33,78 +33,76 @@ export function FileUploadInput({
   validateAndSetFile,
 }: FileUploadInputProps) {
   // State for drag and drop
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = useState(false)
 
   // Counter to track multiple drag events (browsers fire multiple events)
-  const dragCounter = React.useRef(0);
+  const dragCounter = React.useRef(0)
 
   // Drag event handlers with improved counter logic
   const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounter.current++;
-    setIsDragging(true);
-  }, []);
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounter.current++
+    setIsDragging(true)
+  }, [])
 
   const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounter.current--;
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounter.current--
     if (dragCounter.current === 0) {
-      setIsDragging(false);
+      setIsDragging(false)
     }
-  }, []);
+  }, [])
 
   const handleDragOver = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
       // Ensure dragging state is true when dragging over
       if (!isDragging) {
-        setIsDragging(true);
+        setIsDragging(true)
       }
     },
     [isDragging],
-  );
+  )
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(false);
-      dragCounter.current = 0;
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragging(false)
+      dragCounter.current = 0
 
-      const files = e.dataTransfer.files;
-
-      console.log("File dropped:", files?.[0]?.name);
+      const files = e.dataTransfer.files
 
       if (files && files.length > 0) {
-        validateAndSetFile(files[0]);
+        validateAndSetFile(files[0])
       }
     },
     [validateAndSetFile],
-  );
+  )
 
   // Reset the drag counter when component unmounts
   useEffect(() => {
     return () => {
-      dragCounter.current = 0;
-    };
-  }, []);
+      dragCounter.current = 0
+    }
+  }, [])
 
   // Handle when the component loses focus to reset dragging state
   // This helps with edge cases where dragLeave might not fire
   useEffect(() => {
     const handleWindowDragEnd = () => {
-      dragCounter.current = 0;
-      setIsDragging(false);
-    };
+      dragCounter.current = 0
+      setIsDragging(false)
+    }
 
-    window.addEventListener("dragend", handleWindowDragEnd);
+    window.addEventListener("dragend", handleWindowDragEnd)
     return () => {
-      window.removeEventListener("dragend", handleWindowDragEnd);
-    };
-  }, []);
+      window.removeEventListener("dragend", handleWindowDragEnd)
+    }
+  }, [])
 
   return (
     <LayoutGroup id="file-upload-container">
@@ -196,8 +194,8 @@ export function FileUploadInput({
                     size="sm"
                     className="mt-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the click on the parent div
-                      onReset();
+                      e.stopPropagation() // Prevent triggering the click on the parent div
+                      onReset()
                     }}
                   >
                     Remove file
@@ -229,8 +227,8 @@ export function FileUploadInput({
                     size="sm"
                     className="mt-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the click on the parent div
-                      onReset();
+                      e.stopPropagation() // Prevent triggering the click on the parent div
+                      onReset()
                     }}
                   >
                     Try again
@@ -262,5 +260,5 @@ export function FileUploadInput({
         </motion.div>
       </div>
     </LayoutGroup>
-  );
+  )
 }
