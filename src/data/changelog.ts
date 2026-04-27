@@ -11,6 +11,48 @@ export interface ChangeItem {
 export const changelogItems: ChangeItem[] = [
   {
     date: "Mon, 27 Apr 2026",
+    version: "3.4.1",
+    changes: {
+      improved: [
+        "**CI Workflows**: Added GitHub Actions workflows for type-checking and linting on every push and pull request",
+        "**Tooling**: Migrated from ESLint to Biome for faster, unified linting and formatting",
+        "**Audio Streaming**: Express server now streams audio responses instead of fully buffering them in memory",
+        "**Input Validation**: Server-side validation added for `audioUrl` and `options` on the transcribe endpoint",
+      ],
+      fixed: [
+        "**CSV Formula Injection**: CSV export cells with leading formula characters are now safely escaped to prevent injection",
+        "**CORS Hardening**: Removed wildcard CORS headers from the Firebase proxy API route",
+        "**Server Fingerprinting**: Express no longer exposes its version via the `X-Powered-By` response header",
+        "**Log Injection**: Removed user-controlled transcription ID from server logs",
+        "**Feedback URL Safety**: Tally embed URL is now built from an allowlist only, dropping raw query params",
+        "**Double Submit Guard**: Upload form is protected against concurrent double-submits",
+        "**Poll Overlap**: In-flight guard prevents duplicate concurrent transcription status poll requests",
+        "**SRT/VTT Timestamps**: Fixed invalid timestamps when milliseconds round to 1000",
+        "**Word Count**: Correctly counts words for empty or whitespace-only transcriptions in exports and statistics",
+        "**Audio Source**: Studio audio URL is now stored in localStorage keyed by prediction ID to prevent stale playback",
+        "**History Migration**: Completed sessions from the old DB store are correctly migrated on upgrade",
+        "**History Patching**: History entries are patched on update instead of being overwritten with defaults",
+        "**History Status**: `starting` status is now treated as in-progress rather than a failure",
+        "**History Persistence**: Failed status is persisted to IndexedDB on all failure paths",
+        "**Keyboard Access**: History cards are now fully keyboard-operable with correct role and key handlers",
+        "**Studio Redirect Flash**: Replaced router redirect with `useSearchParams` to prevent empty-state flash on load",
+        "**Audio Playback**: `isPlaying` is only set to true after `play()` resolves successfully",
+        "**A/B Loop Controls**: Loop controls are always rendered when audio is loaded",
+        "**Speaker Colors**: Full speaker string is hashed for stable, always-valid color assignment",
+        "**Transcript Search**: Regex metacharacters in the search term are now safely escaped",
+        "**Design Tokens**: Hardcoded blue values in AudioPlayer replaced with theme design tokens",
+        "**File Size Formatting**: `0 bytes` now formats correctly instead of falling back to a placeholder",
+        "**Duration Formatting**: `0 seconds` now formats correctly instead of falling back to a placeholder",
+        "**Download All Formats**: JSON, CSV, and Markdown are now correctly included in the bulk export",
+        "**Export Timestamps**: Shared SRT/VTT time formatter is now reused consistently across all export formats",
+        "**Retry Polling**: Existing poll interval is cleared before restarting on retry",
+        "**Keyboard Shortcuts Modal**: Corrected dialog semantics; audio shortcuts are properly guarded against firing in inputs",
+        "**Word Frequency Statistics**: Uses locale-aware lowercase for accurate word frequency counts",
+      ],
+    },
+  },
+  {
+    date: "Mon, 27 Apr 2026",
     version: "3.4.0",
     changes: {
       new: [
