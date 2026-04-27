@@ -54,7 +54,7 @@ function SpeedMenu({
           onClick={() => onSpeedChange(speed)}
           className={cn(
             "block w-full rounded px-3 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700",
-            playbackSpeed === speed && "bg-blue-100 dark:bg-blue-900",
+            playbackSpeed === speed && "bg-primary/10 dark:bg-primary/20",
           )}
         >
           {speed}x
@@ -312,7 +312,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     <Card className="mb-4">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <FileAudio className="h-4 w-4 text-blue-600" />
+          <FileAudio className="h-4 w-4 text-primary" />
           <h3 className="text-sm font-medium">Audio Player</h3>
         </div>
       </CardHeader>
@@ -387,7 +387,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   aria-valuenow={currentTime}
                 >
                   <div
-                    className="h-full rounded-full bg-blue-600 transition-all duration-100"
+                    className="h-full rounded-full bg-primary transition-all duration-100"
                     style={{
                       width:
                         duration && duration > 0
