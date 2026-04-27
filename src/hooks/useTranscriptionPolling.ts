@@ -23,6 +23,7 @@ export function useTranscriptionPolling({
   onApiResponse,
 }: UseTranscriptionPollingProps) {
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const firstPollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Clean up interval on unmount
   useEffect(() => {
@@ -171,13 +172,17 @@ export function useTranscriptionPolling({
     // Set up the interval
     pollIntervalRef.current = setInterval(poll, pollIntervalMs)
 
-    setTimeout(() => poll(), 500)
+    firstPollTimeoutRef.current = setTimeout(() => poll(), 500)
   }
 
   const stopPolling = () => {
     if (pollIntervalRef.current) {
       clearInterval(pollIntervalRef.current)
       pollIntervalRef.current = null
+    }
+    if (firstPollTimeoutRef.current) {
+      clearTimeout(firstPollTimeoutRef.current)
+      firstPollTimeoutRef.current = null
     }
   }
 
