@@ -195,6 +195,10 @@ export default function TranscribePage({
   }
 
   const handleRetry = () => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current)
+      pollRef.current = null
+    }
     setStatus("processing")
     setError(null)
     setProgress(30)
