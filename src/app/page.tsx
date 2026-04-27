@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { UploadAudio } from "@/components/UploadAudio"
 import { Header } from "@/components/layout/Header"
@@ -15,6 +15,7 @@ import type { AIFeatures } from "@/types/transcription"
 export default function UploadPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const isSubmittingRef = useRef(false)
   const addToHistory = useHistoryStore((s) => s.add)
 
   const handleUpload = useCallback(
@@ -22,6 +23,8 @@ export default function UploadPage() {
       data: FormData | { audioUrl: string },
       options: { language: string; diarize: boolean; aiFeatures: AIFeatures },
     ) => {
+      if (isSubmittingRef.current) return
+      isSubmittingRef.current = true
       setIsSubmitting(true)
 
       try {
@@ -117,6 +120,7 @@ export default function UploadPage() {
         console.error("Upload failed:", err)
         const errorInfo = getUserFriendlyErrorMessage(err)
         toast.error(errorInfo.userMessage)
+        isSubmittingRef.current = false
         setIsSubmitting(false)
       }
     },
