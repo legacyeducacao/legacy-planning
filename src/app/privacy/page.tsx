@@ -7,24 +7,27 @@ const LAST_UPDATED = "April 27, 2026"
 
 export default function PrivacyPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <Header />
 
       <main className="flex-1 px-4 py-8 sm:py-10">
         <div className="container mx-auto max-w-4xl">
-          <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <div className="text-muted-foreground mb-6 flex flex-wrap items-center gap-3 text-sm">
             <Link href="/" className="hover:text-foreground hover:underline">
               Back to Transcriptr
             </Link>
             <span>|</span>
-            <Link href="/terms" className="hover:text-foreground hover:underline">
+            <Link
+              href="/terms"
+              className="hover:text-foreground hover:underline"
+            >
               Terms
             </Link>
           </div>
 
-          <article className="prose prose-slate max-w-none dark:prose-invert">
+          <article className="legal-doc max-w-none">
             <h1>Privacy Policy</h1>
-            <p>Last updated: {LAST_UPDATED}</p>
+            <p className="legal-updated">Last updated: {LAST_UPDATED}</p>
 
             <p>
               This page explains what Transcriptr collects, how we use it, and
@@ -106,8 +109,7 @@ export default function PrivacyPage() {
             <h2>6. Changes to This Policy</h2>
             <p>
               We may update this policy as the product changes. When we make
-              material updates, we will revise the date at the top of this
-              page.
+              material updates, we will revise the date at the top of this page.
             </p>
 
             <h2>7. Contact</h2>

@@ -4,9 +4,9 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground">
+    <footer className="border-border text-muted-foreground border-t py-6 text-center text-sm">
       <div className="container mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        <div className="hidden flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:flex">
           <a
             href="#"
             onClick={(e) => {
@@ -46,7 +46,7 @@ export function Footer() {
             Donate
           </a>
         </div>
-        <p className="mt-4">
+        <p className="sm:mt-4">
           © {new Date().getFullYear()} Transcriptr. All rights reserved.
         </p>
       </div>

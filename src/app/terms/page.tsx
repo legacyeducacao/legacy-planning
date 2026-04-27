@@ -6,12 +6,12 @@ const LAST_UPDATED = "April 27, 2026"
 
 export default function TermsPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <Header />
 
       <main className="flex-1 px-4 py-8 sm:py-10">
         <div className="container mx-auto max-w-4xl">
-          <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <div className="text-muted-foreground mb-6 flex flex-wrap items-center gap-3 text-sm">
             <Link href="/" className="hover:text-foreground hover:underline">
               Back to Transcriptr
             </Link>
@@ -24,9 +24,9 @@ export default function TermsPage() {
             </Link>
           </div>
 
-          <article className="prose prose-slate max-w-none dark:prose-invert">
+          <article className="legal-doc max-w-none">
             <h1>Terms of Service</h1>
-            <p>Last updated: {LAST_UPDATED}</p>
+            <p className="legal-updated">Last updated: {LAST_UPDATED}</p>
 
             <p>
               By using Transcriptr, you agree to these terms. If you do not
@@ -41,13 +41,17 @@ export default function TermsPage() {
             </p>
 
             <h2>2. Your Responsibilities</h2>
-            <p>You are responsible for the content you submit to the service.</p>
+            <p>
+              You are responsible for the content you submit to the service.
+            </p>
             <p>You must not submit content that:</p>
             <ul>
               <li>You do not have the right to upload, share, or process</li>
               <li>Violates applicable law or another party&apos;s rights</li>
               <li>Contains malicious code or attempts to abuse the service</li>
-              <li>Includes sensitive material you are not authorized to share</li>
+              <li>
+                Includes sensitive material you are not authorized to share
+              </li>
             </ul>
 
             <h2>3. Acceptable Use</h2>
@@ -71,9 +75,9 @@ export default function TermsPage() {
 
             <h2>5. Accuracy and Availability</h2>
             <p>
-              The service is provided on an &quot;as is&quot; basis. Transcript accuracy
-              depends on the quality and characteristics of the source audio,
-              provider behavior, and other technical factors. We do not
+              The service is provided on an &quot;as is&quot; basis. Transcript
+              accuracy depends on the quality and characteristics of the source
+              audio, provider behavior, and other technical factors. We do not
               guarantee that outputs will be complete, accurate, or available at
               all times.
             </p>
