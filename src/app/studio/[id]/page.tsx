@@ -121,13 +121,13 @@ export default function StudioPage({
           router.replace(`/transcribe/${id}`)
           return
         } else if (result.status === "failed") {
-          setError(result.error || "Transcription failed")
+          setError(result.error || "Transcrição falhou")
         } else {
-          setError("Transcription not found or not yet completed")
+          setError("Transcrição não encontrada ou ainda não concluída")
         }
       } catch (err) {
         console.error("Failed to load studio data:", err)
-        setError("Failed to load transcription data")
+        setError("Falha ao carregar dados da transcrição")
       } finally {
         if (!didRedirect) setIsLoading(false)
       }
@@ -146,12 +146,12 @@ export default function StudioPage({
             <AlertCircle className="text-destructive h-10 w-10" />
           </div>
           <h1 className="text-foreground mb-2 text-2xl font-bold">
-            Error Loading Studio
+            Erro ao carregar o Studio
           </h1>
           <p className="text-muted-foreground mb-6">{error}</p>
           <Button onClick={() => router.push("/")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
+            Voltar pro início
           </Button>
         </div>
       </div>
@@ -166,14 +166,14 @@ export default function StudioPage({
             <FileAudio className="text-muted-foreground h-10 w-10" />
           </div>
           <h1 className="text-foreground mb-2 text-2xl font-bold">
-            No Transcription Found
+            Nenhuma transcrição encontrada
           </h1>
           <p className="text-muted-foreground mb-6">
-            Start a new transcription to use the studio.
+            Começa uma nova transcrição pra usar o studio.
           </p>
           <Button onClick={() => router.push("/")}>
             <FileAudio className="mr-2 h-4 w-4" />
-            New Transcription
+            Nova transcrição
           </Button>
         </div>
       </div>
@@ -190,12 +190,13 @@ export default function StudioPage({
             className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Transcriptr
+            Voltar pro LegacyPlanning
           </Link>
         </div>
       </div>
 
       <TranscriptionStudio
+        transcriptionId={id}
         transcription={data.transcription}
         audioSource={data.audioSource}
         segments={data.segments}

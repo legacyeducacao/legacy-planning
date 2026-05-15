@@ -28,72 +28,72 @@ interface ErrorCodeConfig {
 const errorCodePages: Record<string, ErrorCodeConfig> = {
   "401": {
     code: "401",
-    status: "Authentication required",
-    title: "You need to sign in before continuing",
+    status: "Autenticação necessária",
+    title: "Você precisa fazer login antes de continuar",
     description:
-      "This resource expects an authenticated session before it can be accessed.",
+      "Este recurso exige uma sessão autenticada antes de poder ser acessado.",
     tone: "warning",
     icon: ShieldAlert,
     hints: [
-      "Verify that your session or credential flow has completed successfully.",
-      "Start again from a stable route if you were redirected here unexpectedly.",
-      "Check whether the upstream service expired your session silently.",
+      "Verifica se o fluxo de sessão ou credencial completou com sucesso.",
+      "Começa de novo a partir de uma rota estável se foi redirecionado pra cá sem querer.",
+      "Confere se o serviço upstream expirou tua sessão silenciosamente.",
     ],
   },
   "403": {
     code: "403",
-    status: "Access forbidden",
-    title: "Your current access level can't open this",
+    status: "Acesso negado",
+    title: "Teu nível de acesso atual não consegue abrir isso",
     description:
-      "The route exists, but the request was blocked by a permission check or policy rule.",
+      "A rota existe, mas a requisição foi bloqueada por uma checagem de permissão ou política.",
     tone: "warning",
     icon: Ban,
     hints: [
-      "Confirm that the account or token being used has the expected permissions.",
-      "Go back to a route that doesn't require elevated access.",
-      "If this is unexpected, inspect the access policy or environment settings behind the request.",
+      "Confirma que a conta ou token usado tem as permissões esperadas.",
+      "Volta pra uma rota que não exija acesso elevado.",
+      "Se for inesperado, revisa a política de acesso ou as configs de ambiente.",
     ],
   },
   "429": {
     code: "429",
-    status: "Too many requests",
-    title: "The workflow needs a minute",
+    status: "Muitas requisições",
+    title: "O fluxo precisa de um minuto",
     description:
-      "The request rate is temporarily above the allowed limit, so the system is asking you to slow down.",
+      "A taxa de requisições está acima do limite permitido temporariamente, então o sistema tá pedindo pra esperar.",
     tone: "warning",
     icon: Clock3,
     hints: [
-      "Wait briefly before retrying the same action.",
-      "Avoid rapid repeated refreshes or repeated submissions.",
-      "If this happens often, reduce polling or request bursts from the client.",
+      "Espera um pouquinho antes de tentar a mesma ação de novo.",
+      "Evita refresh ou submissões repetidas rapidamente.",
+      "Se acontece sempre, reduz polling ou rajadas de requisições do cliente.",
     ],
   },
   "500": {
     code: "500",
-    status: "Internal server error",
-    title: "The server hit an unexpected fault",
+    status: "Erro interno do servidor",
+    title: "O servidor teve uma falha inesperada",
     description:
-      "The request reached the backend, but something failed before a successful response could be returned.",
+      "A requisição chegou ao backend, mas algo falhou antes de retornar uma resposta válida.",
     tone: "danger",
     icon: TriangleAlert,
     hints: [
-      "Retry once in case the fault was transient.",
-      "Use the changelog and recent changes as the first place to narrow regressions.",
-      "Capture the failing action path so it can be reproduced and traced quickly.",
+      "Tenta de novo uma vez — pode ter sido falha transitória.",
+      "Usa as novidades como primeiro lugar pra investigar regressões recentes.",
+      "Anota o caminho da ação que falhou pra ajudar a reproduzir.",
     ],
   },
   "503": {
     code: "503",
-    status: "Service unavailable",
-    title: "The transcription service is temporarily offline",
+    status: "Serviço indisponível",
+    title: "O serviço de transcrição está fora do ar temporariamente",
     description:
-      "A required upstream system is unavailable or still warming back up, so this request cannot complete yet.",
+      "Um serviço upstream necessário está indisponível ou ainda aquecendo, então a requisição não pode completar agora.",
     tone: "danger",
     icon: WifiOff,
     hints: [
-      "Wait and retry after the service has had time to recover.",
-      "Return to a stable route if you only need browsing or review right now.",
-      "If the outage persists, treat it as an infrastructure issue rather than a client-side bug.",
+      "Aguarda e tenta de novo depois do serviço se recuperar.",
+      "Volta pra uma rota estável se só precisa navegar ou revisar.",
+      "Se o problema persistir, é questão de infra, não do cliente.",
     ],
   },
 }
@@ -133,13 +133,13 @@ export default async function ErrorCodePage({
                 <Button asChild>
                   <Link href="/">
                     <Home className="h-4 w-4" />
-                    Back to home
+                    Voltar pro início
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link href="/documentation">
                     <BookOpen className="h-4 w-4" />
-                    Open docs
+                    Abrir docs
                   </Link>
                 </Button>
               </>

@@ -110,9 +110,9 @@ export function FileUploadInput({
         <motion.div
           className={`w-full border-2 border-dashed ${
             isDragging
-              ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20"
-              : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50"
-          } cursor-pointer rounded-xl p-8 transition-all`}
+              ? "border-foreground bg-muted"
+              : "border-border bg-muted/50"
+          } cursor-pointer rounded-2xl p-8 transition-all`}
           variants={expandCenter}
           initial="initial"
           animate="animate"
@@ -130,7 +130,7 @@ export function FileUploadInput({
           onClick={onButtonClick} // Make entire area clickable
         >
           <label htmlFor="audio-file" className="sr-only">
-            Upload audio file
+            Enviar arquivo de áudio
           </label>
           <input
             id="audio-file"
@@ -152,22 +152,22 @@ export function FileUploadInput({
                   transition={{ duration: 0.2 }}
                   layout
                 >
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
+                  <div className="bg-foreground mx-auto flex h-16 w-16 items-center justify-center rounded-full">
                     <UploadCloud
-                      className={`h-8 w-8 ${
+                      className={`text-background h-8 w-8 ${
                         isDragging
-                          ? "scale-110 text-blue-500 transition-transform duration-200 dark:text-blue-300"
-                          : "text-blue-600 dark:text-blue-400"
+                          ? "scale-110 transition-transform duration-200"
+                          : ""
                       }`}
                     />
                   </div>
-                  <h3 className="mt-2 text-lg font-semibold">
+                  <h3 className="text-foreground mt-2 text-lg font-semibold">
                     {isDragging
-                      ? "Drop your file here"
-                      : "Drop your audio file here"}
+                      ? "Solta o arquivo aqui"
+                      : "Arraste o arquivo de áudio aqui"}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    MP3, WAV, FLAC or OGG file up to 100MB
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    Arquivo MP3, WAV, FLAC ou OGG até 100MB
                   </p>
                 </motion.div>
               )}
@@ -198,7 +198,7 @@ export function FileUploadInput({
                       onReset()
                     }}
                   >
-                    Remove file
+                    Remover arquivo
                   </Button>
                 </motion.div>
               )}
@@ -217,7 +217,7 @@ export function FileUploadInput({
                     <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
                   </div>
                   <h3 className="mt-2 text-lg font-semibold text-red-500 dark:text-red-400">
-                    Error
+                    Erro
                   </h3>
                   <p className="mt-1 text-sm text-red-500 dark:text-red-400">
                     {fileError}
@@ -225,13 +225,13 @@ export function FileUploadInput({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="mt-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                    className="text-foreground hover:text-foreground/70 mt-2"
                     onClick={(e) => {
                       e.stopPropagation() // Prevent triggering the click on the parent div
                       onReset()
                     }}
                   >
-                    Try again
+                    Tentar de novo
                   </Button>
                 </motion.div>
               )}
@@ -254,7 +254,9 @@ export function FileUploadInput({
           >
             <span className="flex items-center justify-center">
               <UploadCloud className="mr-2 h-5 w-5" />
-              {!fileName ? "Click to browse files" : "Choose a different file"}
+              {!fileName
+                ? "Clique pra escolher um arquivo"
+                : "Escolher outro arquivo"}
             </span>
           </Button>
         </motion.div>

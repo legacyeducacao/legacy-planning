@@ -8,6 +8,7 @@ import type {
   TranscriptionIntelligence,
   TranscriptionSegment,
 } from "@/types/transcription"
+import { AtaPanel } from "../studio/AtaPanel"
 import { AudioPlayer } from "../studio/AudioPlayer"
 import { ChaptersPanel } from "../studio/ChaptersPanel"
 import { EnhancedTranscript } from "../studio/EnhancedTranscript"
@@ -24,6 +25,7 @@ import { Card, CardContent } from "../ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 
 interface TranscriptionStudioProps {
+  transcriptionId?: string
   transcription: string
   audioSource?: AudioSource
   segments?: TranscriptionSegment[]
@@ -32,6 +34,7 @@ interface TranscriptionStudioProps {
 }
 
 export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
+  transcriptionId,
   transcription,
   audioSource,
   segments,
@@ -40,6 +43,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
 }) => {
   const [currentTime, setCurrentTime] = useState(0)
   const [showShortcuts, setShowShortcuts] = useState(false)
+  const [activeTab, setActiveTab] = useState<string>("transcript")
   const audioRef = useRef<HTMLVideoElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -61,17 +65,17 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
     if (!intelligence) return []
     const tabs: { value: string; label: string }[] = []
     if (intelligence.chapters && intelligence.chapters.length > 0)
-      tabs.push({ value: "chapters", label: "Chapters" })
-    if (intelligence.summary) tabs.push({ value: "summary", label: "Summary" })
+      tabs.push({ value: "chapters", label: "Capítulos" })
+    if (intelligence.summary) tabs.push({ value: "summary", label: "Resumo" })
     if (
       intelligence.sentimentAnalysis &&
       intelligence.sentimentAnalysis.length > 0
     )
-      tabs.push({ value: "sentiment", label: "Sentiment" })
+      tabs.push({ value: "sentiment", label: "Sentimento" })
     if (intelligence.entities && intelligence.entities.length > 0)
-      tabs.push({ value: "entities", label: "Entities" })
+      tabs.push({ value: "entities", label: "Entidades" })
     if (intelligence.keyPhrases && intelligence.keyPhrases.length > 0)
-      tabs.push({ value: "phrases", label: "Key Phrases" })
+      tabs.push({ value: "phrases", label: "Frases-chave" })
     return tabs
   }, [intelligence])
 
@@ -88,19 +92,19 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
           <div className="mb-4 flex flex-shrink-0 flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">
-                Transcription Studio
+                Studio de Transcrição
               </h1>
               <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">
-                Professional audio transcription workspace
+                Workspace profissional pra transcrição de áudio
                 <button
                   onClick={() => setShowShortcuts(true)}
                   className="ml-2 hidden text-xs text-gray-400 hover:text-gray-600 lg:inline dark:hover:text-gray-300"
                 >
-                  • Press{" "}
+                  • Tecla{" "}
                   <kbd className="rounded bg-gray-200 px-1 dark:bg-gray-700">
                     ?
                   </kbd>{" "}
-                  for shortcuts
+                  pra atalhos
                 </button>
               </p>
             </div>
@@ -111,7 +115,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                 size="sm"
                 onClick={() => setShowShortcuts(true)}
                 className="hidden lg:flex"
-                title="Keyboard shortcuts"
+                title="Atalhos de teclado"
               >
                 <Keyboard className="h-4 w-4" />
               </Button>
@@ -122,8 +126,8 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                 size="sm"
               >
                 <FileAudio className="h-4 w-4" />
-                <span className="hidden sm:inline">New Transcription</span>
-                <span className="sm:hidden">New</span>
+                <span className="hidden sm:inline">Nova transcrição</span>
+                <span className="sm:hidden">Nova</span>
               </Button>
             </div>
           </div>
@@ -153,6 +157,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                   transcription={transcription}
                   segments={segments}
                   intelligence={intelligence}
+                  onShowAta={() => setActiveTab("ata")}
                 />
               </div>
             </div>
@@ -161,105 +166,106 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
             <div className="order-2 flex min-h-[400px] flex-col lg:order-1 lg:col-span-2">
               <Card className="flex flex-1 flex-col">
                 <CardContent className="flex-1 overflow-hidden p-4 lg:p-6">
-                  {intelligenceTabs.length > 0 ? (
-                    <Tabs
-                      defaultValue="transcript"
-                      className="flex h-full flex-col"
+                  <Tabs
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    className="flex h-full flex-col"
+                  >
+                    <TabsList className="mb-4 flex-shrink-0 flex-wrap">
+                      <TabsTrigger value="transcript">Transcrição</TabsTrigger>
+                      <TabsTrigger value="ata">Ata</TabsTrigger>
+                      {intelligenceTabs.map((tab) => (
+                        <TabsTrigger key={tab.value} value={tab.value}>
+                          {tab.label}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+
+                    <TabsContent
+                      value="transcript"
+                      className="flex-1 overflow-hidden"
                     >
-                      <TabsList className="mb-4 flex-shrink-0 flex-wrap">
-                        <TabsTrigger value="transcript">Transcript</TabsTrigger>
-                        {intelligenceTabs.map((tab) => (
-                          <TabsTrigger key={tab.value} value={tab.value}>
-                            {tab.label}
-                          </TabsTrigger>
-                        ))}
-                      </TabsList>
+                      <EnhancedTranscript
+                        transcription={transcription}
+                        segments={segments}
+                        onSegmentClick={handleSeek}
+                        currentTime={currentTime}
+                        searchInputRef={searchInputRef}
+                      />
+                    </TabsContent>
 
-                      <TabsContent
-                        value="transcript"
-                        className="flex-1 overflow-hidden"
-                      >
-                        <EnhancedTranscript
-                          transcription={transcription}
-                          segments={segments}
-                          onSegmentClick={handleSeek}
-                          currentTime={currentTime}
-                          searchInputRef={searchInputRef}
-                        />
-                      </TabsContent>
+                    <TabsContent value="ata" className="flex-1 overflow-auto">
+                      <AtaPanel
+                        transcriptionId={transcriptionId}
+                        transcription={transcription}
+                        segments={segments}
+                        intelligence={intelligence}
+                      />
+                    </TabsContent>
 
-                      {intelligence?.chapters &&
-                        intelligence.chapters.length > 0 && (
-                          <TabsContent
-                            value="chapters"
-                            className="flex-1 overflow-auto"
-                          >
-                            <ChaptersPanel
-                              chapters={intelligence.chapters}
-                              currentTime={currentTime}
-                              onSeek={handleSeek}
-                            />
-                          </TabsContent>
-                        )}
-
-                      {intelligence?.summary && (
+                    {intelligence?.chapters &&
+                      intelligence.chapters.length > 0 && (
                         <TabsContent
-                          value="summary"
+                          value="chapters"
                           className="flex-1 overflow-auto"
                         >
-                          <SummaryPanel summary={intelligence.summary} />
+                          <ChaptersPanel
+                            chapters={intelligence.chapters}
+                            currentTime={currentTime}
+                            onSeek={handleSeek}
+                          />
                         </TabsContent>
                       )}
 
-                      {intelligence?.sentimentAnalysis &&
-                        intelligence.sentimentAnalysis.length > 0 && (
-                          <TabsContent
-                            value="sentiment"
-                            className="flex-1 overflow-auto"
-                          >
-                            <SentimentPanel
-                              sentimentResults={intelligence.sentimentAnalysis}
-                              currentTime={currentTime}
-                              onSeek={handleSeek}
-                            />
-                          </TabsContent>
-                        )}
+                    {intelligence?.summary && (
+                      <TabsContent
+                        value="summary"
+                        className="flex-1 overflow-auto"
+                      >
+                        <SummaryPanel summary={intelligence.summary} />
+                      </TabsContent>
+                    )}
 
-                      {intelligence?.entities &&
-                        intelligence.entities.length > 0 && (
-                          <TabsContent
-                            value="entities"
-                            className="flex-1 overflow-auto"
-                          >
-                            <EntitiesPanel
-                              entities={intelligence.entities}
-                              onSeek={handleSeek}
-                            />
-                          </TabsContent>
-                        )}
+                    {intelligence?.sentimentAnalysis &&
+                      intelligence.sentimentAnalysis.length > 0 && (
+                        <TabsContent
+                          value="sentiment"
+                          className="flex-1 overflow-auto"
+                        >
+                          <SentimentPanel
+                            sentimentResults={intelligence.sentimentAnalysis}
+                            currentTime={currentTime}
+                            onSeek={handleSeek}
+                          />
+                        </TabsContent>
+                      )}
 
-                      {intelligence?.keyPhrases &&
-                        intelligence.keyPhrases.length > 0 && (
-                          <TabsContent
-                            value="phrases"
-                            className="flex-1 overflow-auto"
-                          >
-                            <KeyPhrasesPanel
-                              keyPhrases={intelligence.keyPhrases}
-                              onSeek={handleSeek}
-                            />
-                          </TabsContent>
-                        )}
-                    </Tabs>
-                  ) : (
-                    <EnhancedTranscript
-                      transcription={transcription}
-                      segments={segments}
-                      onSegmentClick={handleSeek}
-                      currentTime={currentTime}
-                      searchInputRef={searchInputRef}
-                    />
-                  )}
+                    {intelligence?.entities &&
+                      intelligence.entities.length > 0 && (
+                        <TabsContent
+                          value="entities"
+                          className="flex-1 overflow-auto"
+                        >
+                          <EntitiesPanel
+                            entities={intelligence.entities}
+                            onSeek={handleSeek}
+                          />
+                        </TabsContent>
+                      )}
+
+                    {intelligence?.keyPhrases &&
+                      intelligence.keyPhrases.length > 0 && (
+                        <TabsContent
+                          value="phrases"
+                          className="flex-1 overflow-auto"
+                        >
+                          <KeyPhrasesPanel
+                            keyPhrases={intelligence.keyPhrases}
+                            onSeek={handleSeek}
+                          />
+                        </TabsContent>
+                      )}
+                  </Tabs>
                 </CardContent>
               </Card>
             </div>

@@ -10,6 +10,7 @@ import {
   FileAudio,
   Loader2,
   RefreshCw,
+  Sparkles,
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -17,6 +18,7 @@ import { use, useCallback, useEffect, useRef, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { generateAta } from "@/lib/ata-service"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
@@ -90,6 +92,7 @@ export default function TranscribePage({
   const [result, setResult] = useState<TranscribeResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [copySuccess, setCopySuccess] = useState(false)
+  const [isGeneratingAta, setIsGeneratingAta] = useState(false)
   const pollRef = useRef<NodeJS.Timeout | null>(null)
   const attemptsRef = useRef(0)
   const patchHistory = useHistoryStore((s) => s.patch)
@@ -131,7 +134,7 @@ export default function TranscribePage({
 
     try {
       const response = await fetch(getApiUrl(`prediction/${id}`))
-      if (!response.ok) throw new Error(`Server error: ${response.status}`)
+      if (!response.ok) throw new Error(`Erro do servidor: ${response.status}`)
 
       const data = await response.json()
       const audioUrl =
@@ -152,14 +155,14 @@ export default function TranscribePage({
       } else if (data.status === "failed") {
         stopPolling()
         setStatus("failed")
-        setError(data.error || "Transcription failed")
+        setError(data.error || "Transcrição falhou")
         patchHistory(id, { status: "failed" })
       }
 
       if (attemptsRef.current >= 120) {
         stopPolling()
         setStatus("failed")
-        setError("Transcription timed out")
+        setError("Tempo limite da transcrição esgotado")
         patchHistory(id, { status: "failed" })
       }
     } catch (err) {
@@ -184,10 +187,10 @@ export default function TranscribePage({
     try {
       await navigator.clipboard.writeText(result.transcription)
       setCopySuccess(true)
-      toast.success("Copied to clipboard!")
+      toast.success("Copiado pra área de transferência!")
       setTimeout(() => setCopySuccess(false), 2000)
     } catch {
-      toast.error("Failed to copy")
+      toast.error("Falha ao copiar")
     }
   }
 
@@ -197,12 +200,40 @@ export default function TranscribePage({
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = `transcription_${id}.txt`
+    a.download = `transcricao_${id}.txt`
     document.body.appendChild(a)
     a.click()
     a.remove()
     setTimeout(() => URL.revokeObjectURL(url), 100)
-    toast.success("Downloaded!")
+    toast.success("Download iniciado!")
+  }
+
+  const handleGerarAta = async () => {
+    if (!result?.transcription) return
+    setIsGeneratingAta(true)
+    try {
+      const gen = await generateAta({
+        transcription: result.transcription,
+        segments: result.segments,
+        intelligence: result.intelligence,
+      })
+      try {
+        localStorage.setItem(`ata_${id}`, JSON.stringify(gen.ata))
+      } catch {
+        // ignore quota
+      }
+      if (gen.source === "llm") {
+        toast.success("Ata gerada com IA. Abrindo no Studio...")
+      } else {
+        toast.warning("Ata gerada localmente. Abrindo no Studio...", {
+          description: gen.reason ? `Sem IA: ${gen.reason}` : undefined,
+        })
+      }
+      router.push(`/studio/${id}`)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao gerar a ata")
+      setIsGeneratingAta(false)
+    }
   }
 
   const handleRetry = () => {
@@ -228,33 +259,34 @@ export default function TranscribePage({
             className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            Voltar
           </Link>
           <span className="text-muted-foreground text-sm">|</span>
           <span className="text-muted-foreground truncate text-sm">
-            Transcription {id.slice(0, 8)}...
+            Transcrição {id.slice(0, 8)}...
           </span>
         </div>
       </div>
 
       <main className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-2xl">
-          {/* Processing State */}
+          {/* Processando */}
           {status === "processing" && (
             <Card>
               <CardContent className="flex flex-col items-center py-16">
                 <Loader2 className="text-primary mb-6 h-12 w-12 animate-spin" />
                 <h2 className="text-foreground mb-2 text-xl font-semibold">
-                  Transcribing your audio...
+                  Transcrevendo teu áudio...
                 </h2>
                 <p className="text-muted-foreground mb-8 text-sm">
-                  This usually takes 1-3 minutes depending on file length
+                  Costuma levar de 1 a 3 minutos dependendo do tamanho do
+                  arquivo
                 </p>
 
-                {/* Progress bar */}
+                {/* Barra de progresso */}
                 <div className="w-full max-w-sm">
                   <div className="text-muted-foreground mb-2 flex justify-between text-xs">
-                    <span>Processing</span>
+                    <span>Processando</span>
                     <span>{Math.floor(progress)}%</span>
                   </div>
                   <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
@@ -265,9 +297,9 @@ export default function TranscribePage({
                   </div>
                 </div>
 
-                {/* Step indicators */}
+                {/* Etapas */}
                 <div className="mt-8 flex gap-3">
-                  {["Uploading", "Queued", "Processing"].map((step, i) => {
+                  {["Enviando", "Na fila", "Processando"].map((step, i) => {
                     const isActive =
                       (i === 0 && progress < 40) ||
                       (i === 1 && progress >= 40 && progress < 60) ||
@@ -288,7 +320,7 @@ export default function TranscribePage({
             </Card>
           )}
 
-          {/* Completed State */}
+          {/* Completo */}
           {status === "completed" && result && (
             <div className="space-y-6">
               <Card>
@@ -300,7 +332,7 @@ export default function TranscribePage({
                       </div>
                       <div>
                         <h2 className="text-foreground text-lg font-semibold">
-                          Transcription Complete
+                          Transcrição concluída
                         </h2>
                         <p className="text-muted-foreground text-sm">
                           {
@@ -309,7 +341,7 @@ export default function TranscribePage({
                               .split(/\s+/)
                               .filter(Boolean).length
                           }{" "}
-                          words
+                          palavras
                           {result.detectedLanguage &&
                             ` · ${result.detectedLanguage}`}
                         </p>
@@ -317,24 +349,24 @@ export default function TranscribePage({
                     </div>
                   </div>
 
-                  {/* Summary snippet */}
+                  {/* Resumo */}
                   {result.intelligence?.summary && (
                     <div className="border-primary/20 bg-primary/5 mb-4 rounded-lg border p-4">
                       <h3 className="text-primary mb-1 text-sm font-semibold">
-                        AI Summary
+                        Resumo gerado por IA
                       </h3>
                       <p className="text-foreground/80 text-sm leading-relaxed">
                         {result.intelligence.summary
                           .split("\n")
                           .filter(Boolean)
                           .slice(0, 3)
-                          .map((line) => line.replace(/^[-*\u2022]\s*/, ""))
+                          .map((line) => line.replace(/^[-*•]\s*/, ""))
                           .join(" ")}
                       </p>
                     </div>
                   )}
 
-                  {/* Transcript preview */}
+                  {/* Prévia da transcrição */}
                   <div className="border-border bg-muted/50 rounded-lg border p-4">
                     <div className="text-foreground/80 max-h-64 overflow-y-auto font-mono text-sm leading-relaxed whitespace-pre-wrap">
                       {result.transcription.slice(0, 2000)}
@@ -344,15 +376,28 @@ export default function TranscribePage({
                 </CardContent>
               </Card>
 
-              {/* Actions */}
+              {/* Ações */}
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button
                   size="lg"
                   className="flex-1"
+                  onClick={handleGerarAta}
+                  disabled={isGeneratingAta}
+                >
+                  {isGeneratingAta ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="mr-2 h-4 w-4" />
+                  )}
+                  {isGeneratingAta ? "Gerando ata..." : "Gerar ata"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
                   onClick={() => router.push(`/studio/${id}`)}
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  Open in Studio
+                  Abrir Studio
                 </Button>
                 <Button
                   variant="outline"
@@ -361,11 +406,11 @@ export default function TranscribePage({
                   disabled={copySuccess}
                 >
                   <Copy className="mr-2 h-4 w-4" />
-                  {copySuccess ? "Copied!" : "Copy"}
+                  {copySuccess ? "Copiado!" : "Copiar"}
                 </Button>
                 <Button variant="outline" size="lg" onClick={handleDownloadTxt}>
                   <Download className="mr-2 h-4 w-4" />
-                  Download TXT
+                  Baixar TXT
                 </Button>
               </div>
 
@@ -375,13 +420,13 @@ export default function TranscribePage({
                   className="text-muted-foreground hover:text-foreground text-sm"
                 >
                   <FileAudio className="mr-1 inline h-4 w-4" />
-                  Start a new transcription
+                  Nova transcrição
                 </Link>
               </div>
             </div>
           )}
 
-          {/* Failed State */}
+          {/* Falhou */}
           {status === "failed" && (
             <Card>
               <CardContent className="flex flex-col items-center py-16">
@@ -389,19 +434,19 @@ export default function TranscribePage({
                   <AlertCircle className="text-destructive h-8 w-8" />
                 </div>
                 <h2 className="text-foreground mb-2 text-xl font-semibold">
-                  Transcription Failed
+                  Transcrição falhou
                 </h2>
                 <p className="text-muted-foreground mb-8 max-w-md text-center text-sm">
-                  {error || "Something went wrong during transcription."}
+                  {error || "Algo deu errado durante a transcrição."}
                 </p>
                 <div className="flex gap-3">
                   <Button onClick={handleRetry}>
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    Retry
+                    Tentar de novo
                   </Button>
                   <Button variant="outline" onClick={() => router.push("/")}>
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Start Over
+                    Recomeçar
                   </Button>
                 </div>
               </CardContent>

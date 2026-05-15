@@ -3,12 +3,12 @@ import { FeedbackForm } from "./FeedbackForm"
 
 export function Feedback() {
   return (
-    <div className="min-h-screen bg-linear-to-b from-sky-50 to-white py-12 text-gray-900 dark:from-gray-900 dark:to-gray-800 dark:text-gray-100">
+    <div className="bg-background text-foreground min-h-screen py-12">
       <div className="container mx-auto max-w-2xl px-4">
         <div className="mb-8">
           <Link
             href="/"
-            className="flex items-center gap-2 font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="text-foreground hover:text-foreground/70 flex items-center gap-2 font-medium underline-offset-4 hover:underline"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -23,18 +23,18 @@ export function Feedback() {
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            Back to Transcriptr
+            Back to LegacyPlanning
           </Link>
         </div>
 
-        <div className="mb-12 rounded-xl bg-white p-8 shadow-lg dark:bg-gray-800">
-          <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="border-border bg-card mb-12 rounded-2xl border p-8">
+          <h1 className="text-foreground mb-6 text-3xl font-semibold tracking-tight">
             Feedback
           </h1>
-          <p className="mb-8 text-gray-700 dark:text-gray-300">
-            We appreciate your feedback to improve Transcriptr. Please fill out
-            the form below to let us know your thoughts, report issues, or
-            suggest new features.
+          <p className="text-muted-foreground mb-8">
+            We appreciate your feedback to improve LegacyPlanning. Please
+            fill out the form below to let us know your thoughts, report issues,
+            or suggest new features.
           </p>
 
           <div className="mb-4">
@@ -42,8 +42,11 @@ export function Feedback() {
           </div>
         </div>
 
-        <footer className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>© {new Date().getFullYear()} Transcriptr. All rights reserved.</p>
+        <footer className="text-muted-foreground py-4 text-center text-sm">
+          <p>
+            © {new Date().getFullYear()} LegacyPlanning. All rights
+            reserved.
+          </p>
         </footer>
       </div>
     </div>

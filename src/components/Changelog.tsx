@@ -151,7 +151,7 @@ export function Changelog({ isModal = false, onClose }: ChangelogProps) {
         <div className="flex justify-center border-t border-gray-200 p-4 dark:border-gray-700">
           <Link href="/">
             <Button variant="outline" className="gap-2">
-              Back to Transcriptr
+              Back to LegacyPlanning
             </Button>
           </Link>
         </div>

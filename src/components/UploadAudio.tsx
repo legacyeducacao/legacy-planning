@@ -69,10 +69,10 @@ export function UploadAudio({ onUpload }: UploadAudioProps) {
     audioUrl && isValidUrlFormat(audioUrl) && hasAudioExtension(audioUrl)
   let urlError: string | null = null
   if (audioUrl && !isValidUrlFormat(audioUrl)) {
-    urlError = "Please enter a valid URL (starting with http:// or https://)"
+    urlError = "Insira uma URL válida (começando com http:// ou https://)"
   } else if (audioUrl && !hasAudioExtension(audioUrl)) {
     const supportedFormats = getAllSupportedFormats().join(", ")
-    urlError = `URL does not seem to point to a supported audio file (${supportedFormats})`
+    urlError = `A URL não parece apontar para um arquivo de áudio suportado (${supportedFormats})`
   }
 
   const handleFileChange = useCallback(
@@ -174,15 +174,15 @@ export function UploadAudio({ onUpload }: UploadAudioProps) {
             className="mobile:text-sm mobile:font-medium"
           >
             <UploadCloud className="mobile:h-3 mobile:w-3 mr-2 h-4 w-4" />
-            <span className="mobile:hidden">Upload File</span>
-            <span className="mobile:inline hidden">Upload</span>
+            <span className="mobile:hidden">Enviar arquivo</span>
+            <span className="mobile:inline hidden">Arquivo</span>
           </TabsTrigger>
           <TabsTrigger
             value="url"
             className="mobile:text-sm mobile:font-medium"
           >
             <LinkIcon className="mobile:h-3 mobile:w-3 mr-2 h-4 w-4" />
-            <span className="mobile:hidden">Paste URL</span>
+            <span className="mobile:hidden">Colar URL</span>
             <span className="mobile:inline hidden">URL</span>
           </TabsTrigger>
         </TabsList>
@@ -220,8 +220,8 @@ export function UploadAudio({ onUpload }: UploadAudioProps) {
             size="lg"
           >
             {activeTab === "file"
-              ? "Upload and Transcribe File"
-              : "Transcribe from URL"}
+              ? "Enviar e transcrever arquivo"
+              : "Transcrever via URL"}
           </AnimatedButton>
         </>
       )}

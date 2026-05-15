@@ -1,85 +1,124 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
+/* ──────────────────────────────────────────────────────────────────
+   LegacyPlanning — Editorial Cream + Legacy Blue stamp
+   Cream canvas, bone tiles, white cards, dark code-wells.
+   Pill-everything for interactive elements. Legacy Blue used scarcely.
+   ────────────────────────────────────────────────────────────────── */
+
 :root {
-  --background: #fafbfc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #eff6ff;
-  --accent-foreground: #1e40af;
+  /* Brand */
+  --r-primary: #2d5fde;
+  --r-primary-deep: #1f49b8;
+
+  /* Surfaces */
+  --r-canvas: #f9f7f3;
+  --r-surface-bone: #f3f0e8;
+  --r-surface-card: #ffffff;
+  --r-surface-dark: #202020;
+  --r-surface-deep: #000000;
+
+  /* Lines */
+  --r-hairline: rgba(32, 32, 32, 0.12);
+  --r-hairline-strong: #202020;
+
+  /* Text */
+  --r-ink: #202020;
+  --r-body: #3a3a3a;
+  --r-charcoal: #575757;
+  --r-mute: #646464;
+  --r-ash: #8d8d8d;
+  --r-stone: #bbbbbb;
+  --r-on-dark: #fcfcfc;
+  --r-on-dark-mute: rgba(252, 252, 252, 0.72);
+
+  --r-success: #2b9a66;
+
+  /* Font stacks */
+  --font-display:
+    "Bricolage Grotesque", "Inter", -apple-system, system-ui, sans-serif;
+  --font-body: "Inter", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* shadcn token bridge — maps legacy tokens to LegacyPlanning palette */
+  --background: var(--r-canvas);
+  --foreground: var(--r-ink);
+  --card: var(--r-surface-card);
+  --card-foreground: var(--r-ink);
+  --popover: var(--r-surface-card);
+  --popover-foreground: var(--r-ink);
+
+  --primary: var(--r-primary);
+  --primary-foreground: var(--r-on-dark);
+  --secondary: var(--r-surface-bone);
+  --secondary-foreground: var(--r-ink);
+  --muted: var(--r-surface-bone);
+  --muted-foreground: var(--r-mute);
+  --accent: var(--r-surface-bone);
+  --accent-foreground: var(--r-ink);
+
   --destructive: #dc2626;
-  --success: #16a34a;
+  --success: var(--r-success);
   --warning: #d97706;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #2563eb;
-  --radius: 0.625rem;
-  --chart-1: oklch(0.87 0.12 207);
-  --chart-2: oklch(0.8 0.13 212);
-  --chart-3: oklch(0.71 0.13 215);
-  --chart-4: oklch(0.61 0.11 222);
-  --chart-5: oklch(0.52 0.09 223);
-  --sidebar: #fafbfc;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eff6ff;
-  --sidebar-accent-foreground: #1e40af;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #2563eb;
-  font-family: "Space Grotesk", sans-serif;
+
+  --border: var(--r-hairline);
+  --input: var(--r-hairline);
+  --ring: var(--r-primary);
+
+  /* Pill is the default radius for interactive elements */
+  --radius: 9999px;
+
+  --shadow-ambient: 0 8px 24px rgba(32, 32, 32, 0.08);
+  --shadow-lifted: 0 12px 32px rgba(32, 32, 32, 0.12);
+
+  /* Sidebar */
+  --sidebar: var(--r-surface-bone);
+  --sidebar-foreground: var(--r-ink);
+  --sidebar-primary: var(--r-surface-dark);
+  --sidebar-primary-foreground: var(--r-on-dark);
+  --sidebar-accent: rgba(32, 32, 32, 0.05);
+  --sidebar-accent-foreground: var(--r-ink);
+  --sidebar-border: var(--r-hairline);
+  --sidebar-ring: var(--r-primary);
+
+  font-family: var(--font-body);
 }
 
 .dark {
-  --background: #0b0f1a;
-  --foreground: #e2e8f0;
-  --card: #131926;
-  --card-foreground: #e2e8f0;
-  --popover: #131926;
-  --popover-foreground: #e2e8f0;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #e2e8f0;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #172554;
-  --accent-foreground: #93c5fd;
-  --destructive: #ef4444;
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #3b82f6;
-  --chart-1: oklch(0.87 0.12 207);
-  --chart-2: oklch(0.8 0.13 212);
-  --chart-3: oklch(0.71 0.13 215);
-  --chart-4: oklch(0.61 0.11 222);
-  --chart-5: oklch(0.52 0.09 223);
-  --sidebar: #131926;
-  --sidebar-foreground: #e2e8f0;
-  --sidebar-primary: #3b82f6;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #172554;
-  --sidebar-accent-foreground: #93c5fd;
-  --sidebar-border: #1e293b;
-  --sidebar-ring: #3b82f6;
+  --background: var(--r-surface-dark);
+  --foreground: var(--r-on-dark);
+  --card: #2a2a2a;
+  --card-foreground: var(--r-on-dark);
+  --popover: var(--r-surface-dark);
+  --popover-foreground: var(--r-on-dark);
+
+  --secondary: #2a2a2a;
+  --secondary-foreground: var(--r-on-dark);
+  --muted: #2a2a2a;
+  --muted-foreground: var(--r-on-dark-mute);
+  --accent: #2a2a2a;
+  --accent-foreground: var(--r-on-dark);
+
+  --border: rgba(252, 252, 252, 0.12);
+  --input: rgba(252, 252, 252, 0.12);
+  --ring: var(--r-primary);
+
+  --sidebar: #1a1a1a;
+  --sidebar-foreground: var(--r-on-dark);
+  --sidebar-primary: var(--r-primary);
+  --sidebar-primary-foreground: var(--r-on-dark);
+  --sidebar-accent: rgba(252, 252, 252, 0.06);
+  --sidebar-accent-foreground: var(--r-on-dark);
+  --sidebar-border: rgba(252, 252, 252, 0.12);
+  --sidebar-ring: var(--r-primary);
 }
 
-/* Dark mode text fixes for native form elements */
+/* Dark mode native form elements */
 .dark select,
 .dark option,
 .dark input[type="text"],
@@ -90,16 +129,18 @@
 .dark input[type="tel"],
 .dark input[type="url"],
 .dark textarea {
-  color: #e2e8f0;
+  color: var(--r-on-dark);
 }
-
 .dark select option {
-  background-color: #1e293b;
-  color: #e2e8f0;
+  background-color: #2a2a2a;
+  color: var(--r-on-dark);
 }
 
 @theme inline {
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+  --font-mono: var(--font-mono);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -108,11 +149,7 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -133,13 +170,17 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Radii — content cards step from 4 → 16, but interactive is pill */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+
+  --shadow-ambient: var(--shadow-ambient);
 }
 
 @layer base {
@@ -148,43 +189,117 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01";
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    color: var(--r-ink);
   }
 }
 
 @layer components {
+  /* Display typography helpers — Bricolage Grotesque tight */
+  .display-hero {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.034em; /* ~-3px @ 88px */
+  }
+  .display-section {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.022em; /* ~-0.7px @ 32px */
+  }
+  .display-greeting {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+  }
+  .mono-eyebrow {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    text-transform: lowercase;
+    letter-spacing: 0;
+  }
+
+  /* Legal docs — keep readable */
   .legal-doc {
     @apply text-foreground space-y-5 leading-7;
   }
-
   .legal-doc h1 {
-    @apply text-foreground text-3xl font-bold tracking-normal sm:text-4xl;
+    @apply text-foreground text-3xl font-semibold tracking-tight sm:text-4xl;
   }
-
   .legal-doc h2 {
-    @apply border-border text-foreground mt-10 border-b pb-2 text-xl font-semibold tracking-normal;
+    @apply text-foreground mt-10 pb-2 text-xl font-semibold tracking-tight;
+    border-bottom: 1px solid var(--r-hairline);
   }
-
   .legal-doc h3 {
-    @apply text-primary mt-6 text-base font-semibold tracking-normal;
+    @apply text-foreground mt-6 text-base font-semibold tracking-tight;
   }
-
   .legal-doc p {
     @apply text-muted-foreground;
   }
-
   .legal-doc a {
-    @apply text-primary font-medium underline-offset-4 hover:underline;
+    color: var(--r-primary);
+    text-underline-offset: 4px;
   }
-
+  .legal-doc a:hover {
+    text-decoration: underline;
+  }
   .legal-doc ul {
-    @apply border-border bg-card/70 text-muted-foreground space-y-2 rounded-md border p-4 pl-8;
+    @apply text-muted-foreground space-y-2 rounded-md p-4 pl-8;
+    background: var(--r-surface-bone);
+    border: 1px solid var(--r-hairline);
   }
-
   .legal-doc li {
     @apply list-disc pl-1;
   }
-
   .legal-doc .legal-updated {
-    @apply border-border bg-muted text-muted-foreground inline-flex rounded-md border px-2.5 py-1 text-sm leading-none;
+    @apply text-muted-foreground inline-flex rounded-full px-2.5 py-1 text-sm leading-none;
+    background: var(--r-surface-bone);
+    border: 1px solid var(--r-hairline);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-ambient);
+  }
+  .shadow-lifted {
+    box-shadow: var(--shadow-lifted);
+  }
+
+  /* Primary CTA — pill, Legacy Blue */
+  .btn-gradient {
+    background: var(--r-primary);
+    color: var(--r-on-dark);
+    border: none;
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: background 160ms ease;
+  }
+  .btn-gradient:hover {
+    background: var(--r-primary-deep);
+  }
+
+  /* Pulsing live dot for "processing" status */
+  @keyframes lp-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+  .live-dot {
+    animation: lp-pulse 1.2s ease-in-out infinite;
   }
 }

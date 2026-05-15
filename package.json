@@ -15,6 +15,9 @@
     "ci": "biome ci ."
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.73",
+    "@ai-sdk/openai": "^3.0.63",
+    "@ai-sdk/react": "^3.0.182",
     "@base-ui/react": "^1.4.1",
     "@google-cloud/storage": "^7.19.0",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -28,6 +31,7 @@
     "@tabler/icons-react": "^3.41.1",
     "@tailwindcss/typography": "^0.5.19",
     "@vercel/analytics": "^2.0.1",
+    "ai": "^6.0.180",
     "assemblyai": "^4.30.0",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",

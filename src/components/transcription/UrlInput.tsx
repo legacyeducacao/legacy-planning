@@ -16,12 +16,12 @@ export function UrlInput({ audioUrl, urlError, onUrlChange }: UrlInputProps) {
           htmlFor="audio-url"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Audio URL
+          URL do áudio
         </label>
         <Input
           id="audio-url"
           type="url"
-          placeholder="https://example.com/audio.mp3"
+          placeholder="https://exemplo.com/audio.mp3"
           value={audioUrl}
           onChange={onUrlChange}
           className={
@@ -39,8 +39,8 @@ export function UrlInput({ audioUrl, urlError, onUrlChange }: UrlInputProps) {
           </p>
         )}
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Paste a direct link to an MP3, WAV, FLAC, or OGG file. The link must
-          end with the file extension.
+          Cola um link direto pra arquivo MP3, WAV, FLAC ou OGG. O link tem que
+          terminar com a extensão do arquivo.
         </p>
       </div>
     </div>

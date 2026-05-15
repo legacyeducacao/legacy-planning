@@ -34,8 +34,8 @@ export function Documentation() {
             <section className="mb-8">
               <h2 className="mb-4 text-2xl font-semibold">Features</h2>
               <p className="mb-4 text-gray-700 dark:text-gray-300">
-                Explore the powerful features Transcriptr offers to enhance your
-                transcription experience.
+                Explore the powerful features LegacyPlanning offers to
+                enhance your transcription experience.
               </p>
               <ul className="list-disc space-y-2 pl-5 text-gray-700 dark:text-gray-300">
                 <li>

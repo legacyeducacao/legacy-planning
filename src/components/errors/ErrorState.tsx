@@ -86,7 +86,7 @@ export function ErrorState({
 
                 <div>
                   <p className="text-muted-foreground text-sm font-medium">
-                    HTTP status
+                    Status HTTP
                   </p>
                   <h1 className="text-foreground text-4xl font-bold tracking-tight sm:text-5xl">
                     {title}
@@ -101,7 +101,7 @@ export function ErrorState({
                 )}
               >
                 <span className="text-[0.65rem] font-medium tracking-[0.22em] uppercase opacity-80">
-                  Code
+                  Código
                 </span>
                 <span className="text-3xl font-semibold tracking-tight">
                   {code}
@@ -126,7 +126,7 @@ export function ErrorState({
         <Card className="border-border/60 shadow-none">
           <CardHeader>
             <CardTitle className="text-muted-foreground text-sm font-semibold tracking-[0.22em] uppercase">
-              Next steps
+              Próximos passos
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">

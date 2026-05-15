@@ -153,7 +153,7 @@ export function MobileNavigation({
                     <Button
                       variant="ghost"
                       onClick={handleHistoryClick}
-                      className="mb-3 w-full justify-start p-4 text-left text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                      className="text-foreground hover:bg-muted mb-3 w-full justify-start p-4 text-left"
                     >
                       <Clock className="mr-3 h-5 w-5" />
                       View History
@@ -167,7 +167,7 @@ export function MobileNavigation({
                     <Button
                       variant="ghost"
                       onClick={handleV3Click}
-                      className="mb-3 w-full justify-start bg-blue-600 p-4 text-left font-medium text-white hover:bg-blue-700"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 mb-3 w-full justify-start p-4 text-left font-medium"
                     >
                       <span className="relative mr-3 flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
@@ -183,7 +183,7 @@ export function MobileNavigation({
                   <Button
                     variant="ghost"
                     onClick={handleChangelogClick}
-                    className="mb-3 w-full justify-start p-4 text-left text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                    className="text-foreground hover:bg-muted mb-3 w-full justify-start p-4 text-left"
                   >
                     <FileText className="mr-3 h-5 w-5" />
                     Changelog

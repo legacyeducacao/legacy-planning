@@ -1,79 +1,107 @@
 import type { TranscriptParams } from "assemblyai"
 import { NextResponse } from "next/server"
 import { assemblyai } from "@/lib/assemblyai-client"
-import { uploadBase64ToFirebase } from "@/lib/firebase-utils"
 
-// Helper to prepare audio input for the transcription service
-async function prepareAudioInput(
-  audioData: string | undefined,
-  audioUrl: string | undefined,
-) {
-  let audioFileUrl: string | undefined
-  let firebaseFilePath: string | null = null
-  let firebaseUrl: string | null = null
+// Roda em Node runtime (precisa de Buffer + SDK do AssemblyAI).
+export const runtime = "nodejs"
+// Bumpa o tempo máximo da função pra acomodar uploads grandes em dev.
+export const maxDuration = 300
 
-  if (audioUrl) {
-    console.log("Using provided audio URL for transcription input.")
-    audioFileUrl = audioUrl
-    firebaseUrl = audioUrl
-  } else if (audioData) {
-    console.log("Uploading audio to Firebase for Studio access...")
-    const uploadResult = await uploadBase64ToFirebase(audioData)
-    audioFileUrl = uploadResult.url
-    firebaseFilePath = uploadResult.path
-    firebaseUrl = uploadResult.url
-    console.log("Using Firebase URL for transcription input:", audioFileUrl)
+interface TranscribeOptions {
+  language?: string
+  diarize?: boolean
+  aiFeatures?: {
+    autoChapters?: boolean
+    summarization?: boolean
+    sentimentAnalysis?: boolean
+    entityDetection?: boolean
+    keyPhrases?: boolean
+    contentModeration?: boolean
+    topicDetection?: boolean
+  }
+}
+
+interface PreparedInput {
+  audioFileUrl: string
+  audioUrlForClient: string
+}
+
+/**
+ * Lê o request e devolve a URL pública do áudio (já no CDN da AssemblyAI)
+ * mais a URL que a UI vai usar pra playback no Studio.
+ *
+ * Caminho 1: multipart/form-data com `file` → uploada via SDK AssemblyAI.
+ * Caminho 2: application/json com `audioUrl` → usa a URL direto.
+ */
+async function readRequest(
+  request: Request,
+): Promise<{ input: PreparedInput; options: TranscribeOptions }> {
+  const contentType = request.headers.get("content-type") || ""
+
+  // --- Caminho 1: upload de arquivo ---
+  if (contentType.startsWith("multipart/form-data")) {
+    const formData = await request.formData()
+    const file = formData.get("file")
+    const optionsRaw = formData.get("options")
+
+    if (!(file instanceof File)) {
+      throw new Error("Campo 'file' ausente ou inválido no multipart")
+    }
+
+    const options: TranscribeOptions = optionsRaw
+      ? JSON.parse(optionsRaw.toString())
+      : {}
+
+    console.log(
+      `Recebido arquivo "${file.name}" (${(file.size / 1024 / 1024).toFixed(2)}MB). Uploadando pro AssemblyAI...`,
+    )
+
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const uploadUrl = await assemblyai.files.upload(buffer)
+
+    console.log("Upload pro AssemblyAI concluído:", uploadUrl)
+
+    return {
+      input: { audioFileUrl: uploadUrl, audioUrlForClient: uploadUrl },
+      options,
+    }
   }
 
-  return { audioFileUrl, firebaseFilePath, firebaseUrl }
+  // --- Caminho 2: URL direta (JSON) ---
+  const body = await request.json()
+  const { audioUrl, options = {} } = body as {
+    audioUrl?: string
+    options?: TranscribeOptions
+  }
+
+  if (!audioUrl) {
+    throw new Error("Nenhum audioUrl fornecido no JSON")
+  }
+
+  return {
+    input: { audioFileUrl: audioUrl, audioUrlForClient: audioUrl },
+    options,
+  }
 }
 
 export async function POST(request: Request) {
   console.log("Transcribe function invoked.")
 
-  let requestBody
+  let prepared: { input: PreparedInput; options: TranscribeOptions }
   try {
-    requestBody = await request.json()
-  } catch (parseError: unknown) {
-    console.error("Error parsing request body:", parseError)
-    const errorMessage =
-      parseError instanceof Error ? parseError.message : "Invalid JSON format"
-    return NextResponse.json(
-      { error: "Invalid JSON", details: errorMessage },
-      { status: 400 },
-    )
+    prepared = await readRequest(request)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Erro ao ler request"
+    console.error("Falha ao preparar input:", message)
+    return NextResponse.json({ error: message }, { status: 400 })
   }
 
-  const { audioData, audioUrl, options = {} } = requestBody
-
-  console.log("Request received:", {
-    hasAudioData: !!audioData,
-    hasAudioUrl: !!audioUrl,
-    audioDataLength: audioData
-      ? `${(audioData.length / 1024 / 1024).toFixed(2)}MB`
-      : "N/A",
-    options,
-  })
-
-  if (!audioData && !audioUrl) {
-    console.error("Validation Error: No audio data or URL provided.")
-    return NextResponse.json(
-      { error: "No audio data or URL provided" },
-      { status: 400 },
-    )
-  }
+  const { input, options } = prepared
 
   try {
-    const { audioFileUrl, firebaseFilePath, firebaseUrl } =
-      await prepareAudioInput(audioData, audioUrl)
-
-    if (!audioFileUrl) {
-      throw new Error("No audio URL available for transcription.")
-    }
-
-    // Build AssemblyAI params using the SDK types
+    // Monta params do AssemblyAI usando os tipos do SDK
     const params: TranscriptParams = {
-      audio_url: audioFileUrl,
+      audio_url: input.audioFileUrl,
       speech_models: ["universal-3-pro", "universal-2"],
     }
 
@@ -81,65 +109,76 @@ export async function POST(request: Request) {
       params.speaker_labels = true
     }
 
-    if (options.language && options.language !== "auto") {
-      params.language_code = options.language
+    // Recursos de IA da AssemblyAI hoje só rodam em inglês. Se a língua
+    // pedida não for `en*` (ou auto-detect), descartamos esses params pra
+    // evitar 400 "The following models are not available in this language".
+    const langCode = options.language?.trim() ?? ""
+    const isEnglish = langCode === "auto" || langCode.startsWith("en")
+    const useAutoDetect = !langCode || langCode === "auto"
+
+    if (!useAutoDetect) {
+      params.language_code = langCode
     } else {
       params.language_detection = true
     }
 
-    // AI Intelligence features — opt-in, mutually exclusive where noted
     const aiFeatures = options.aiFeatures || {}
+    const stripped: string[] = []
 
-    // auto_chapters and summarization are mutually exclusive in AssemblyAI
-    if (aiFeatures.autoChapters) {
-      params.auto_chapters = true
-    } else if (aiFeatures.summarization) {
-      params.summarization = true
-      params.summary_model = "informative"
-      params.summary_type = "bullets"
-    }
-    if (aiFeatures.sentimentAnalysis) {
-      params.sentiment_analysis = true
-    }
-    if (aiFeatures.entityDetection) {
-      params.entity_detection = true
-    }
-    if (aiFeatures.keyPhrases) {
-      params.auto_highlights = true
-    }
-    if (aiFeatures.contentModeration) {
-      params.content_safety = true
-    }
-    if (aiFeatures.topicDetection) {
-      params.iab_categories = true
+    if (isEnglish) {
+      // auto_chapters e summarization são mutuamente exclusivos
+      if (aiFeatures.autoChapters) {
+        params.auto_chapters = true
+      } else if (aiFeatures.summarization) {
+        params.summarization = true
+        params.summary_model = "informative"
+        params.summary_type = "bullets"
+      }
+      if (aiFeatures.sentimentAnalysis) params.sentiment_analysis = true
+      if (aiFeatures.entityDetection) params.entity_detection = true
+      if (aiFeatures.keyPhrases) params.auto_highlights = true
+      if (aiFeatures.contentModeration) params.content_safety = true
+      if (aiFeatures.topicDetection) params.iab_categories = true
+    } else {
+      // Coleta o que foi descartado pra log e diagnóstico
+      if (aiFeatures.autoChapters) stripped.push("autoChapters")
+      if (aiFeatures.summarization) stripped.push("summarization")
+      if (aiFeatures.sentimentAnalysis) stripped.push("sentimentAnalysis")
+      if (aiFeatures.entityDetection) stripped.push("entityDetection")
+      if (aiFeatures.keyPhrases) stripped.push("keyPhrases")
+      if (aiFeatures.contentModeration) stripped.push("contentModeration")
+      if (aiFeatures.topicDetection) stripped.push("topicDetection")
+      if (stripped.length > 0) {
+        console.log(
+          `[transcribe] língua '${langCode}' não suporta os recursos: ${stripped.join(", ")}. Descartados.`,
+        )
+      }
     }
 
-    console.log("Starting AssemblyAI transcription via SDK...")
+    console.log("Iniciando transcrição AssemblyAI via SDK...")
     console.log("Params:", JSON.stringify(params, null, 2))
 
-    // submit() returns immediately with queued transcript (no polling)
+    // submit() retorna imediatamente com transcript queued (sem polling aqui)
     const transcript = await assemblyai.transcripts.submit(params)
 
-    const responseData: Record<string, unknown> = {
-      id: transcript.id,
-      status: transcript.status,
-    }
-
-    if (firebaseFilePath) {
-      responseData.firebaseFilePath = firebaseFilePath
-    }
-    if (firebaseUrl) {
-      responseData.audioUrl = firebaseUrl
-    }
-
     console.log("AssemblyAI transcription submitted:", transcript.id)
-    return NextResponse.json(responseData, { status: 200 })
-  } catch (error: unknown) {
-    console.error("Error processing transcription request:", error)
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error"
+
     return NextResponse.json(
-      { error: `Transcription failed: ${errorMessage}` },
+      {
+        id: transcript.id,
+        status: transcript.status,
+        audioUrl: input.audioUrlForClient,
+        warnings:
+          stripped.length > 0 ? { unsupportedFeatures: stripped } : undefined,
+      },
+      { status: 200 },
+    )
+  } catch (error: unknown) {
+    console.error("Erro ao processar transcrição:", error)
+    const errorMessage =
+      error instanceof Error ? error.message : "Erro desconhecido"
+    return NextResponse.json(
+      { error: `Transcrição falhou: ${errorMessage}` },
       { status: 502 },
     )
   }

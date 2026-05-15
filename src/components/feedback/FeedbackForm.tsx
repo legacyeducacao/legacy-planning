@@ -71,7 +71,7 @@ export function FeedbackForm({
 
   const displayError =
     loadError ||
-    (embedSrc ? "" : "Unable to prepare the feedback form right now.")
+    (embedSrc ? "" : "Não consegui preparar o formulário de feedback agora.")
 
   useEffect(() => {
     if (!embedSrc) return
@@ -106,7 +106,7 @@ export function FeedbackForm({
     script.onload = loadEmbeds
     script.onerror = () => {
       setLoadError(
-        "The embedded form failed to load. Try opening it in a new tab.",
+        "O formulário embutido não carregou. Tenta abrir em nova aba.",
       )
       loadEmbeds()
     }
@@ -171,7 +171,7 @@ export function FeedbackForm({
             <AlertCircle className="mt-0.5 mr-3 h-5 w-5 text-red-500" />
             <div>
               <p className="font-medium text-red-700 dark:text-red-300">
-                Failed to load form
+                Falha ao carregar o formulário
               </p>
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                 {displayError}
@@ -183,7 +183,7 @@ export function FeedbackForm({
             <Button asChild className="w-full">
               <a href={embedSrc} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4" />
-                Open feedback form
+                Abrir formulário de feedback
               </a>
             </Button>
           )}
@@ -193,7 +193,7 @@ export function FeedbackForm({
           {!isReady && (
             <div className="border-border bg-muted/40 text-muted-foreground flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Loading feedback form...
+              Carregando formulário de feedback...
             </div>
           )}
 
@@ -213,7 +213,7 @@ export function FeedbackForm({
                 frameBorder="0"
                 marginHeight={0}
                 marginWidth={0}
-                title="Transcriptr Feedback"
+                title="Feedback do LegacyPlanning"
                 onLoad={() => setIsReady(true)}
                 className={
                   isReady
@@ -238,7 +238,7 @@ export function FeedbackForm({
                 onClick={onClose}
                 className="w-full sm:flex-1"
               >
-                Cancel
+                Cancelar
               </Button>
             )}
 
@@ -250,7 +250,7 @@ export function FeedbackForm({
               >
                 <a href={embedSrc} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
-                  Open in new tab
+                  Abrir em nova aba
                 </a>
               </Button>
             )}

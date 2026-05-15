@@ -1,10 +1,10 @@
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion"
 import confetti from "canvas-confetti"
-import { X, Sparkles, ExternalLink } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { ExternalLink, Sparkles, X } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
 import { AnimatedBackdrop } from "./animated-backdrop"
 
 const STORAGE_KEY = "seen_v3_4_release"
@@ -12,28 +12,33 @@ const STORAGE_KEY = "seen_v3_4_release"
 const highlights = [
   {
     icon: "🗺️",
-    title: "Route-Based App Flow",
-    description: "Dedicated routes for upload, history, studio, docs, and error states",
+    title: "Fluxo do app baseado em rotas",
+    description:
+      "Rotas dedicadas pra upload, histórico, studio, docs e telas de erro",
   },
   {
     icon: "📱",
-    title: "Top Mobile Navigation",
-    description: "New top tab bar with a More menu replacing the old drawer pattern",
+    title: "Navegação mobile no topo",
+    description:
+      "Nova barra de abas no topo com menu 'Mais' substituindo o drawer antigo",
   },
   {
     icon: "🎛️",
-    title: "Rebuilt Studio",
-    description: "Audio, transcript, export, and stats split into focused components",
+    title: "Studio reconstruído",
+    description:
+      "Áudio, transcrição, exportação e estatísticas separados em componentes focados",
   },
   {
     icon: "⚡",
-    title: "Zustand State Management",
-    description: "Dedicated stores for transcription history and option persistence",
+    title: "Gerenciamento de estado com Zustand",
+    description:
+      "Stores dedicados pro histórico de transcrições e persistência de opções",
   },
   {
     icon: "🎨",
-    title: "Design Token Refresh",
-    description: "Cleaner Tailwind theme and more consistent component styling",
+    title: "Atualização dos design tokens",
+    description:
+      "Tema Tailwind mais limpo e estilo de componentes mais consistente",
   },
 ]
 
@@ -48,7 +53,7 @@ export function ReleaseModal() {
         setOpen(true)
       }
     } catch {
-      // localStorage unavailable (e.g. private browsing with strict settings) — skip
+      // localStorage indisponível (ex: navegação privada) — pula
     }
   }, [])
 
@@ -83,7 +88,7 @@ export function ReleaseModal() {
     try {
       localStorage.setItem(STORAGE_KEY, "true")
     } catch {
-      // ignore
+      // ignora
     }
     setOpen(false)
   }
@@ -112,16 +117,19 @@ export function ReleaseModal() {
             <div className="rounded-t-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-violet-600 px-6 py-6 text-white">
               <div className="mb-3 flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-yellow-300" aria-hidden="true" />
+                  <Sparkles
+                    className="h-5 w-5 text-yellow-300"
+                    aria-hidden="true"
+                  />
                   <span className="text-xs font-semibold uppercase tracking-widest text-indigo-200">
-                    What&apos;s new
+                    Novidades
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={dismiss}
                   className="rounded-full p-1 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
-                  aria-label="Close release notes"
+                  aria-label="Fechar novidades"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -130,22 +138,26 @@ export function ReleaseModal() {
                 id="release-modal-title"
                 className="text-2xl font-bold leading-tight"
               >
-                Transcriptr v3.4 is here
+                LegacyPlanning v3.4 chegou
               </h2>
               <p className="mt-1 text-sm text-indigo-200">
-                A major architecture update with a cleaner app flow and rebuilt studio.
+                Atualização grande de arquitetura: fluxo do app mais limpo e
+                studio reconstruído.
               </p>
             </div>
 
             {/* Highlights */}
             <div className="px-6 py-4">
-              <ul className="space-y-3" aria-label="v3.4 highlights">
+              <ul className="space-y-3" aria-label="Destaques da v3.4">
                 {highlights.map((item) => (
                   <li
                     key={item.title}
                     className="flex items-start gap-3 rounded-xl bg-gray-50 px-4 py-3 dark:bg-gray-800"
                   >
-                    <span className="mt-0.5 text-xl leading-none" aria-hidden="true">
+                    <span
+                      className="mt-0.5 text-xl leading-none"
+                      aria-hidden="true"
+                    >
                       {item.icon}
                     </span>
                     <div>
@@ -162,7 +174,7 @@ export function ReleaseModal() {
 
               {/* 3.4.1 secondary note */}
               <p className="mt-4 text-center text-xs text-gray-400 dark:text-gray-500">
-                Plus 30+ security &amp; bug fixes in v3.4.1
+                Mais 30+ correções de bug e segurança na v3.4.1
               </p>
             </div>
 
@@ -173,7 +185,7 @@ export function ReleaseModal() {
                 onClick={handleChangelog}
                 className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
               >
-                View full changelog
+                Ver changelog completo
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
               <button
@@ -181,7 +193,7 @@ export function ReleaseModal() {
                 onClick={dismiss}
                 className="flex flex-1 items-center justify-center rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
               >
-                Dismiss
+                Dispensar
               </button>
             </div>
           </motion.div>

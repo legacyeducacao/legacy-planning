@@ -6,57 +6,57 @@ import { Header } from "@/components/layout/Header"
 const features = [
   {
     icon: Brain,
-    title: "AI-Powered Analysis",
+    title: "Análise com IA",
     description:
-      "Auto chapters, summarization, sentiment analysis, entity detection, and key phrase extraction.",
+      "Capítulos automáticos, resumo, análise de sentimento, detecção de entidades e extração de frases-chave.",
   },
   {
     icon: Languages,
-    title: "30+ Languages",
+    title: "Mais de 30 idiomas",
     description:
-      "Support for English, Spanish, French, German, Arabic, Chinese, Japanese, and many more.",
+      "Suporte pra português, inglês, espanhol, francês, alemão, árabe, chinês, japonês e muito mais.",
   },
   {
     icon: Download,
-    title: "Multiple Export Formats",
+    title: "Múltiplos formatos de exportação",
     description:
-      "Export as TXT, DOCX, SRT, VTT, JSON, CSV, or Markdown with full timestamps.",
+      "Exporta em TXT, DOCX, SRT, VTT, JSON, CSV ou Markdown com timestamps.",
   },
   {
     icon: Zap,
-    title: "Fast Processing",
+    title: "Processamento rápido",
     description:
-      "Powered by AssemblyAI with state-of-the-art speech recognition models.",
+      "Powered by AssemblyAI com modelos de reconhecimento de fala state-of-the-art.",
   },
   {
     icon: Users,
-    title: "Speaker Diarization",
+    title: "Identificação de falantes",
     description:
-      "Identify and label different speakers in conversations, interviews, and meetings.",
+      "Identifica e separa falantes em conversas, entrevistas e reuniões.",
   },
   {
     icon: FileAudio,
-    title: "Studio Workspace",
+    title: "Workspace Studio",
     description:
-      "Full studio experience with audio playback, karaoke highlighting, and keyboard shortcuts.",
+      "Experiência completa de studio com playback de áudio, highlight estilo karaokê e atalhos de teclado.",
   },
 ]
 
 const steps = [
   {
     step: "1",
-    title: "Upload",
-    description: "Drop a file or paste an audio URL",
+    title: "Envia",
+    description: "Solta um arquivo ou cola uma URL de áudio",
   },
   {
     step: "2",
-    title: "Transcribe",
-    description: "AI processes your audio in minutes",
+    title: "Transcreve",
+    description: "A IA processa teu áudio em minutos",
   },
   {
     step: "3",
-    title: "Explore",
-    description: "View, search, export, and analyze",
+    title: "Explora",
+    description: "Visualiza, busca, exporta e analisa",
   },
 ]
 
@@ -70,28 +70,28 @@ export default function AboutPage() {
         <section className="px-4 py-20 text-center">
           <div className="mx-auto max-w-3xl">
             <h1 className="mb-4 text-4xl font-bold text-foreground sm:text-5xl">
-              Audio to Text, <span className="text-primary">Powered by AI</span>
+              Áudio para texto, <span className="text-primary">com IA</span>
             </h1>
             <p className="mb-8 text-lg text-muted-foreground">
-              Transcriptr converts your audio files into accurate, searchable
-              text with AI-powered transcription, speaker identification, and
-              intelligent analysis.
+              O LegacyPlanning converte teus arquivos de áudio em texto
+              preciso e pesquisável, com transcrição por IA, identificação de
+              falantes e análise inteligente.
             </p>
             <Link
               href="/"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               <FileAudio className="h-4 w-4" />
-              Start Transcribing
+              Começar a transcrever
             </Link>
           </div>
         </section>
 
-        {/* Features */}
+        {/* Recursos */}
         <section className="border-t border-border px-4 py-16">
           <div className="mx-auto max-w-5xl">
             <h2 className="mb-12 text-center text-2xl font-bold text-foreground">
-              Features
+              Recursos
             </h2>
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((feature) => (
@@ -112,11 +112,11 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* How it works */}
+        {/* Como funciona */}
         <section className="border-t border-border px-4 py-16">
           <div className="mx-auto max-w-3xl">
             <h2 className="mb-12 text-center text-2xl font-bold text-foreground">
-              How It Works
+              Como funciona
             </h2>
             <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-center">
               {steps.map((s, i) => (
@@ -146,16 +146,16 @@ export default function AboutPage() {
         <section className="border-t border-border px-4 py-16 text-center">
           <div className="mx-auto max-w-xl">
             <h2 className="mb-4 text-2xl font-bold text-foreground">
-              Ready to get started?
+              Pronto pra começar?
             </h2>
             <p className="mb-6 text-muted-foreground">
-              Free to use. No account required.
+              Gratuito. Sem cadastro.
             </p>
             <Link
               href="/"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Start Transcribing
+              Começar a transcrever
             </Link>
           </div>
         </section>

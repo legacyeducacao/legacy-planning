@@ -97,9 +97,9 @@ export default function HistoryPage() {
         <div className="container mx-auto max-w-4xl">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-foreground text-2xl font-bold">History</h1>
+              <h1 className="text-foreground text-2xl font-bold">Histórico</h1>
               <p className="text-muted-foreground text-sm">
-                Your past transcriptions
+                Tuas transcrições anteriores
               </p>
             </div>
             {entries.length > 0 && (
@@ -107,12 +107,12 @@ export default function HistoryPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  if (confirm("Clear all history?")) clear()
+                  if (confirm("Limpar todo o histórico?")) clear()
                 }}
                 className="text-destructive"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Clear All
+                Limpar tudo
               </Button>
             )}
           </div>
@@ -121,7 +121,7 @@ export default function HistoryPage() {
             <div className="relative mb-6">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
-                placeholder="Search by name or content..."
+                placeholder="Buscar por nome ou conteúdo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -137,18 +137,18 @@ export default function HistoryPage() {
                 </div>
                 <h2 className="text-foreground mb-2 text-lg font-semibold">
                   {entries.length === 0
-                    ? "No transcriptions yet"
-                    : "No results"}
+                    ? "Nenhuma transcrição ainda"
+                    : "Sem resultados"}
                 </h2>
                 <p className="text-muted-foreground mb-6 text-sm">
                   {entries.length === 0
-                    ? "Start your first transcription to see it here."
-                    : "Try a different search term."}
+                    ? "Começa tua primeira transcrição pra ela aparecer aqui."
+                    : "Tenta outro termo de busca."}
                 </p>
                 {entries.length === 0 && (
                   <Button onClick={() => router.push("/")}>
                     <FileAudio className="mr-2 h-4 w-4" />
-                    Start Transcribing
+                    Começar a transcrever
                   </Button>
                 )}
               </CardContent>
@@ -156,8 +156,8 @@ export default function HistoryPage() {
           ) : (
             <div className="space-y-3">
               {filtered.map((entry) => {
-                const fallbackName = `Transcription ${entry.predictionId.slice(0, 8)}`
-                const ariaLabel = `Open transcription: ${entry.audioSource.name || fallbackName}`
+                const fallbackName = `Transcrição ${entry.predictionId.slice(0, 8)}`
+                const ariaLabel = `Abrir transcrição: ${entry.audioSource.name || fallbackName}`
                 return (
                   <Card
                     key={entry.predictionId}
@@ -181,7 +181,7 @@ export default function HistoryPage() {
                         <div className="min-w-0">
                           <p className="text-foreground truncate text-sm font-medium">
                             {entry.audioSource.name ||
-                              `Transcription ${entry.predictionId.slice(0, 8)}`}
+                              `Transcrição ${entry.predictionId.slice(0, 8)}`}
                           </p>
                           <div className="text-muted-foreground flex items-center gap-2 text-xs">
                             <span>{formatDate(entry.createdAt)}</span>

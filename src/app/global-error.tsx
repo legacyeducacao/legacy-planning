@@ -22,7 +22,7 @@ export default function GlobalError({
   }, [error])
 
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body style={{ minHeight: "100vh" }} className="bg-background font-sans">
         <main className="flex min-h-screen items-center px-4 py-10">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
@@ -31,43 +31,43 @@ export default function GlobalError({
                 href="/"
                 className="text-foreground text-lg font-semibold tracking-tight"
               >
-                Transcriptr
+                LegacyPlanning
               </Link>
             </div>
 
             <ErrorState
               code="500"
-              status="Global application error"
-              title="The app hit a critical failure"
-              description="A root-level error interrupted the application shell before the current view could recover normally."
+              status="Erro crítico global"
+              title="O app teve uma falha crítica"
+              description="Um erro de raiz interrompeu a aplicação antes da tela atual conseguir se recuperar."
               icon={TriangleAlert}
               tone="danger"
               note={
                 error.digest
-                  ? `Reference: ${error.digest}`
-                  : "Use the recovery actions below to reset the app shell or return to a stable route."
+                  ? `Referência: ${error.digest}`
+                  : "Usa as ações abaixo pra reiniciar o app ou voltar pra uma rota estável."
               }
               hints={[
-                "Use reset first to re-initialize the current app shell.",
-                "Return home if the active route is no longer recoverable.",
-                "Open the docs if you need a stable route while debugging.",
+                "Usa 'Reiniciar app' primeiro pra reinicializar o shell.",
+                "Volta pra home se a rota atual não recupera.",
+                "Abre os docs se precisar de uma rota estável enquanto investiga.",
               ]}
               actions={
                 <>
                   <Button onClick={reset}>
                     <RefreshCw className="h-4 w-4" />
-                    Reset app
+                    Reiniciar app
                   </Button>
                   <Button asChild variant="outline">
                     <Link href="/">
                       <Home className="h-4 w-4" />
-                      Go home
+                      Ir pro início
                     </Link>
                   </Button>
                   <Button asChild variant="outline">
                     <Link href="/documentation">
                       <BookOpen className="h-4 w-4" />
-                      Open docs
+                      Abrir docs
                     </Link>
                   </Button>
                 </>

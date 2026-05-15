@@ -1,13 +1,4 @@
-import { useRef, useState } from "react"
-import { Button } from "../ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog"
+import { useState } from "react"
 import { Label } from "../ui/label"
 import {
   Select,
@@ -19,30 +10,30 @@ import {
 import { Switch } from "../ui/switch"
 
 const LANGUAGES = [
-  { value: "auto", label: "Auto Detect" },
-  { value: "en", label: "English" },
-  { value: "es", label: "Spanish" },
-  { value: "fr", label: "French" },
-  { value: "de", label: "German" },
-  { value: "it", label: "Italian" },
-  { value: "pt", label: "Portuguese" },
-  { value: "nl", label: "Dutch" },
-  { value: "ja", label: "Japanese" },
-  { value: "zh", label: "Chinese" },
-  { value: "ar", label: "Arabic" },
+  { value: "auto", label: "Detectar automaticamente" },
+  { value: "pt", label: "Português" },
+  { value: "en", label: "Inglês" },
+  { value: "es", label: "Espanhol" },
+  { value: "fr", label: "Francês" },
+  { value: "de", label: "Alemão" },
+  { value: "it", label: "Italiano" },
+  { value: "nl", label: "Holandês" },
+  { value: "ja", label: "Japonês" },
+  { value: "zh", label: "Chinês" },
+  { value: "ar", label: "Árabe" },
   { value: "hi", label: "Hindi" },
-  { value: "ru", label: "Russian" },
-  { value: "ko", label: "Korean" },
-  { value: "tr", label: "Turkish" },
-  { value: "pl", label: "Polish" },
-  { value: "uk", label: "Ukrainian" },
-  { value: "vi", label: "Vietnamese" },
-  { value: "th", label: "Thai" },
-  { value: "id", label: "Indonesian" },
-  { value: "sv", label: "Swedish" },
-  { value: "da", label: "Danish" },
-  { value: "fi", label: "Finnish" },
-  { value: "no", label: "Norwegian" },
+  { value: "ru", label: "Russo" },
+  { value: "ko", label: "Coreano" },
+  { value: "tr", label: "Turco" },
+  { value: "pl", label: "Polonês" },
+  { value: "uk", label: "Ucraniano" },
+  { value: "vi", label: "Vietnamita" },
+  { value: "th", label: "Tailandês" },
+  { value: "id", label: "Indonésio" },
+  { value: "sv", label: "Sueco" },
+  { value: "da", label: "Dinamarquês" },
+  { value: "fi", label: "Finlandês" },
+  { value: "no", label: "Norueguês" },
 ] as const
 
 export interface AIFeatures {
@@ -72,40 +63,40 @@ const AI_FEATURE_LIST: {
 }[] = [
   {
     key: "autoChapters",
-    label: "Auto Chapters",
+    label: "Capítulos automáticos",
     description:
-      "Break transcript into time-stamped chapters with summaries (excludes Summarization)",
+      "Divide a transcrição em capítulos com timestamp e resumo (mutuamente exclusivo com Resumo)",
   },
   {
     key: "summarization",
-    label: "Summarization",
+    label: "Resumo",
     description:
-      "Generate a bullet-point summary of the audio (excludes Auto Chapters)",
+      "Gera um resumo do áudio em tópicos (mutuamente exclusivo com Capítulos)",
   },
   {
     key: "sentimentAnalysis",
-    label: "Sentiment Analysis",
-    description: "Detect positive/negative/neutral sentiment per sentence",
+    label: "Análise de sentimento",
+    description: "Detecta sentimento positivo/negativo/neutro por frase",
   },
   {
     key: "entityDetection",
-    label: "Entity Detection",
-    description: "Identify people, locations, organizations mentioned",
+    label: "Detecção de entidades",
+    description: "Identifica pessoas, locais e organizações mencionados",
   },
   {
     key: "keyPhrases",
-    label: "Key Phrases",
-    description: "Extract important phrases and keywords",
+    label: "Frases-chave",
+    description: "Extrai frases e palavras-chave importantes",
   },
   {
     key: "contentModeration",
-    label: "Content Moderation",
-    description: "Flag potentially unsafe content",
+    label: "Moderação de conteúdo",
+    description: "Sinaliza conteúdo potencialmente impróprio",
   },
   {
     key: "topicDetection",
-    label: "Topic Detection",
-    description: "Classify content by IAB taxonomy topics",
+    label: "Detecção de tópicos",
+    description: "Classifica o conteúdo por taxonomia IAB",
   },
 ]
 
@@ -121,21 +112,10 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
   const [language, setLanguage] = useState<string>("auto")
   const [diarize, setDiarize] = useState<boolean>(false)
   const [aiFeatures, setAiFeatures] = useState<AIFeatures>(DEFAULT_AI_FEATURES)
-  const [showDonateModal, setShowDonateModal] = useState(false)
-  const hasShownModal = useRef(false)
 
-  // summarization is excluded from "all" since it's mutually exclusive with autoChapters
   const allEnabled = AI_FEATURE_LIST.filter(
     (f) => f.key !== "summarization",
   ).every((f) => aiFeatures[f.key])
-  const anyEnabled = diarize || AI_FEATURE_LIST.some((f) => aiFeatures[f.key])
-
-  const maybeShowModal = () => {
-    if (!hasShownModal.current) {
-      hasShownModal.current = true
-      setShowDonateModal(true)
-    }
-  }
 
   const emitChange = (lang: string, dia: boolean, features: AIFeatures) => {
     onChange({ language: lang, diarize: dia, aiFeatures: features })
@@ -148,28 +128,24 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
 
   const handleDiarizeChange = (checked: boolean) => {
     setDiarize(checked)
-    if (checked) maybeShowModal()
     emitChange(language, checked, aiFeatures)
   }
 
   const handleFeatureToggle = (key: keyof AIFeatures) => {
     const updated = { ...aiFeatures, [key]: !aiFeatures[key] }
-    // autoChapters and summarization are mutually exclusive in AssemblyAI
     if (key === "autoChapters" && updated.autoChapters) {
       updated.summarization = false
     } else if (key === "summarization" && updated.summarization) {
       updated.autoChapters = false
     }
-    if (updated[key]) maybeShowModal()
     setAiFeatures(updated)
     emitChange(language, diarize, updated)
   }
 
   const handleToggleAll = (checked: boolean) => {
-    if (checked) maybeShowModal()
     const updated: AIFeatures = {
       autoChapters: checked,
-      summarization: false, // mutually exclusive with autoChapters
+      summarization: false,
       sentimentAnalysis: checked,
       entityDetection: checked,
       keyPhrases: checked,
@@ -198,15 +174,15 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
-        Transcription Options
+        Opções de transcrição
       </h3>
 
-      {/* Language */}
+      {/* Idioma */}
       <div className="space-y-2">
-        <Label htmlFor="language">Language</Label>
+        <Label htmlFor="language">Idioma</Label>
         <Select value={language} onValueChange={handleLanguageChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select language" />
+            <SelectValue placeholder="Selecione o idioma" />
           </SelectTrigger>
           <SelectContent>
             {LANGUAGES.map((lang) => (
@@ -217,16 +193,16 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
           </SelectContent>
         </Select>
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Select the language of the audio for better accuracy
+          Escolhe o idioma do áudio pra precisão maior
         </p>
       </div>
 
-      {/* Speaker Diarization */}
+      {/* Diarização */}
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-0.5">
-          <Label htmlFor="diarize">Speaker Diarization</Label>
+          <Label htmlFor="diarize">Identificação de falantes</Label>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Identify different speakers. Best for interviews and meetings.
+            Separa cada falante. Útil pra entrevistas e reuniões.
           </p>
         </div>
         <Switch
@@ -236,21 +212,21 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
         />
       </div>
 
-      {/* AI Analysis Features */}
+      {/* Recursos de análise por IA */}
       <div className="space-y-3 border-t border-gray-200 pt-4 dark:border-gray-700">
         <div>
           <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            AI Analysis Features
+            Recursos de análise por IA
           </h4>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            These features use additional processing resources
+            Esses recursos consomem processamento extra
           </p>
         </div>
 
-        {/* Enable All */}
+        {/* Ativar todos */}
         <div className="flex items-center justify-between rounded-md bg-gray-100 px-3 py-2.5 dark:bg-gray-700/50">
           <Label htmlFor="enable-all-ai" className="cursor-pointer">
-            Enable All
+            Ativar todos
           </Label>
           <Switch
             id="enable-all-ai"
@@ -259,7 +235,7 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
           />
         </div>
 
-        {/* Individual toggles */}
+        {/* Toggles individuais */}
         <div className="space-y-1">
           {AI_FEATURE_LIST.map((feature) => (
             <div
@@ -286,57 +262,6 @@ export function TranscriptionOptions({ onChange }: TranscriptionOptionsProps) {
           ))}
         </div>
       </div>
-
-      {/* Inline nudge */}
-      {anyEnabled && (
-        <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-800/50 dark:bg-amber-900/20">
-          <p className="text-xs text-amber-800 dark:text-amber-300">
-            These features cost us extra to run. If you find them useful, please
-            consider{" "}
-            <a
-              href="https://donate.stripe.com/3cIeVe2e5dHxeEh7BKfUQ0h"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium underline hover:no-underline"
-            >
-              supporting the project
-            </a>{" "}
-            so we can keep them free for everyone.
-          </p>
-        </div>
-      )}
-
-      {/* Donation modal — shown once per session on first premium toggle */}
-      <Dialog open={showDonateModal} onOpenChange={setShowDonateModal}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>These features cost us extra</DialogTitle>
-            <DialogDescription>
-              Speaker diarization and AI analysis features use additional
-              processing resources that we pay for on every transcription. They
-              are free for you to use, but if you find them helpful, a small
-              donation helps us keep them available for everyone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex-col gap-2 sm:flex-row">
-            <Button variant="outline" onClick={() => setShowDonateModal(false)}>
-              Got it
-            </Button>
-            <Button
-              asChild
-              className="bg-amber-500 text-white hover:bg-amber-600"
-            >
-              <a
-                href="https://donate.stripe.com/3cIeVe2e5dHxeEh7BKfUQ0h"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Support the project
-              </a>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

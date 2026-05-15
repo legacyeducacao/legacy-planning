@@ -100,3 +100,61 @@ export interface AudioSource {
   size?: number
   type: "file" | "url"
 }
+
+export type AtaStatus = "Não iniciado" | "Em andamento" | "Concluído"
+
+export interface AtaParticipante {
+  nome: string
+  cargo?: string
+}
+
+export interface AtaDiscussao {
+  topico: string
+  pontos: string[]
+}
+
+export interface AtaPlanoAcao {
+  descricao: string
+  responsavel?: string
+  prazo?: string
+  status?: AtaStatus
+}
+
+export interface AtaProximaReuniao {
+  data?: string
+  horario?: string
+  local?: string
+  objetivo?: string
+}
+
+export interface Ata {
+  // Cabeçalho
+  empresa?: string
+  projetoAssunto?: string
+  tipoReuniao?: string
+  data?: string
+  horarioInicio?: string
+  horarioTermino?: string
+  duracao?: string
+  localPlataforma?: string
+  responsavelAta?: string
+  liderReuniao?: string
+
+  // Conteúdo
+  titulo: string
+  objetivo?: string
+  participantes: AtaParticipante[]
+  ausentes: AtaParticipante[]
+  pauta: string[]
+  discussoes: AtaDiscussao[]
+  decisoes: string[]
+  pendencias: string[]
+  planoAcao: AtaPlanoAcao[]
+  riscosObservacoes: string[]
+  proximosPassos: string[]
+  proximaReuniao?: AtaProximaReuniao
+  horarioEncerramento?: string
+
+  // Meta
+  geradaEm: string
+}

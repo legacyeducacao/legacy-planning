@@ -14,28 +14,28 @@ export default function NotFound() {
         <div className="container mx-auto max-w-5xl">
           <ErrorState
             code="404"
-            status="Page not found"
-            title="This route doesn't exist"
-            description="The page may have moved, the URL may be wrong, or the resource may no longer be available."
+            status="Página não encontrada"
+            title="Essa rota não existe"
+            description="A página pode ter sido movida, a URL pode estar errada, ou o recurso não está mais disponível."
             icon={FileSearch}
             tone="info"
             hints={[
-              "Check the URL for a typo or missing path segment.",
-              "Return to the home page and restart the workflow from a stable route.",
-              "Use the docs or changelog if you were trying to reach product guidance.",
+              "Confere a URL em busca de erro de digitação ou parte faltando.",
+              "Volta pra home e recomeça o fluxo de uma rota estável.",
+              "Usa docs ou novidades se estava tentando achar info do produto.",
             ]}
             actions={
               <>
                 <Button asChild>
                   <Link href="/">
                     <Home className="h-4 w-4" />
-                    Back to home
+                    Voltar pro início
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link href="/documentation">
                     <BookOpen className="h-4 w-4" />
-                    Open docs
+                    Abrir docs
                   </Link>
                 </Button>
               </>

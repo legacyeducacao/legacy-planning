@@ -31,37 +31,37 @@ export default function RouteError({
         <div className="container mx-auto max-w-5xl">
           <ErrorState
             code="500"
-            status="Application error"
-            title="This view failed to load"
-            description="Something went wrong while rendering the page or loading the data behind it."
+            status="Erro da aplicação"
+            title="Esta tela falhou ao carregar"
+            description="Algo deu errado ao renderizar a página ou ao buscar os dados que ela precisa."
             icon={TriangleAlert}
             tone="danger"
             note={
               error.digest
-                ? `Reference: ${error.digest}`
-                : "Retry the request first. If it repeats, use feedback with the steps that caused it."
+                ? `Referência: ${error.digest}`
+                : "Tenta de novo primeiro. Se repetir, manda feedback descrevendo o que fez."
             }
             hints={[
-              "Try the action again in case the failure was temporary.",
-              "Go back to the previous stable page if you were mid-workflow.",
-              "Check the changelog if this started right after a recent release.",
+              "Repete a ação — pode ter sido falha temporária.",
+              "Volta pra página anterior estável se estava no meio de um fluxo.",
+              "Confere as novidades se isso começou depois de uma atualização recente.",
             ]}
             actions={
               <>
                 <Button onClick={() => reset()}>
                   <RefreshCw className="h-4 w-4" />
-                  Try again
+                  Tentar de novo
                 </Button>
                 <Button asChild variant="outline">
                   <Link href="/">
                     <Home className="h-4 w-4" />
-                    Go home
+                    Ir pro início
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link href="/documentation">
                     <BookOpen className="h-4 w-4" />
-                    Open docs
+                    Abrir docs
                   </Link>
                 </Button>
               </>

@@ -25,9 +25,9 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ summary }) => {
             return (
               <li
                 key={index}
-                className="flex items-start gap-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+                className="text-muted-foreground flex items-start gap-2 text-sm leading-relaxed"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+                <span className="bg-foreground mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full" />
                 {cleaned}
               </li>
             )

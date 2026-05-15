@@ -1,7 +1,7 @@
 "use client"
 
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx"
-import { Copy, Download } from "lucide-react"
+import { Copy, Download, FileText, Sparkles } from "lucide-react"
 import React, { useState } from "react"
 import { toast } from "sonner"
 import {
@@ -22,12 +22,14 @@ export interface ExportControlsProps {
   transcription: string
   segments?: TranscriptionSegment[]
   intelligence?: TranscriptionIntelligence
+  onShowAta?: () => void
 }
 
 export const ExportControls: React.FC<ExportControlsProps> = ({
   transcription,
   segments,
   intelligence,
+  onShowAta,
 }) => {
   const [selectedFormat, setSelectedFormat] = useState<
     "txt" | "docx" | "srt" | "vtt" | "json" | "csv" | "md"
@@ -220,6 +222,27 @@ export const ExportControls: React.FC<ExportControlsProps> = ({
 
   return (
     <>
+      {onShowAta && (
+        <Card className="mb-4">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <FileText className="text-foreground h-4 w-4" />
+              <h3 className="text-sm font-medium">Ata da Reunião</h3>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-muted-foreground text-xs">
+              Estruture a transcrição em uma ata profissional com pauta,
+              decisões e encaminhamentos.
+            </p>
+            <Button onClick={onShowAta} className="w-full gap-2" size="sm">
+              <Sparkles className="h-4 w-4" />
+              Abrir ata
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="mb-4">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">

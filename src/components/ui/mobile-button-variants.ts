@@ -17,9 +17,9 @@ export const mobileButtonVariants = cva(
           "hover:bg-accent hover:text-accent-foreground active:bg-accent/70",
         link: "text-primary underline-offset-4 hover:underline",
         mobile:
-          "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-lg touch:py-4 touch:px-6",
+          "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 shadow-elevated touch:py-4 touch:px-6",
         mobileCta:
-          "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 active:from-blue-800 active:to-purple-800 shadow-xl touch:py-4 touch:px-8 font-semibold",
+          "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 shadow-elevated touch:py-4 touch:px-8 font-semibold",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -25,9 +25,9 @@ export function FeedbackModals() {
 
   // For modal titles
   const modalTitles = {
-    general: "Provide Feedback",
-    issue: "Report an Issue",
-    feature: "Suggest a Feature",
+    general: "Mandar feedback",
+    issue: "Reportar problema",
+    feature: "Sugerir um recurso",
   }
 
   return (
@@ -56,7 +56,7 @@ export function FeedbackModals() {
                   type="button"
                   onClick={() => setActiveModal(null)}
                   className="text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  title="Close feedback form"
+                  title="Fechar formulário de feedback"
                 >
                   <X className="h-5 w-5" />
                 </button>

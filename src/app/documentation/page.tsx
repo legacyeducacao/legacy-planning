@@ -22,121 +22,106 @@ import { Footer } from "@/components/layout/Footer"
 import { Header } from "@/components/layout/Header"
 
 const guideSections = [
-  {
-    href: "#quick-start",
-    title: "Quick start",
-  },
-  {
-    href: "#features",
-    title: "Features",
-  },
-  {
-    href: "#formats",
-    title: "Supported formats",
-  },
-  {
-    href: "#troubleshooting",
-    title: "Troubleshooting",
-  },
-  {
-    href: "#faq",
-    title: "FAQ",
-  },
+  { href: "#quick-start", title: "Início rápido" },
+  { href: "#features", title: "Recursos" },
+  { href: "#formats", title: "Formatos suportados" },
+  { href: "#troubleshooting", title: "Solução de problemas" },
+  { href: "#faq", title: "FAQ" },
 ]
 
 const quickStartSteps = [
   {
     step: "01",
     icon: FileAudio,
-    title: "Upload audio",
+    title: "Enviar áudio",
     description:
-      "Drag in a file or paste a direct audio URL to start a new transcription.",
+      "Arrasta um arquivo ou cola uma URL direta de áudio pra começar uma nova transcrição.",
   },
   {
     step: "02",
     icon: Settings2,
-    title: "Choose options",
+    title: "Escolher opções",
     description:
-      "Set language, speaker labels, and optional AI analysis before submitting.",
+      "Define idioma, identificação de falantes e análise por IA opcional antes de enviar.",
   },
   {
     step: "03",
     icon: Clock3,
-    title: "Track progress",
+    title: "Acompanhar progresso",
     description:
-      "Monitor the job while it queues and processes, then reopen it from History if needed.",
+      "Monitora o job enquanto fica na fila e processa. Se sair, reabre pelo Histórico.",
   },
   {
     step: "04",
     icon: Download,
-    title: "Review and export",
+    title: "Revisar e exportar",
     description:
-      "Use the Studio to play back audio, scan the transcript, and export the result.",
+      "Usa o Studio pra dar play no áudio, ler a transcrição e exportar o resultado.",
   },
 ]
 
 const features = [
   {
     icon: Languages,
-    title: "Multi-language transcription",
+    title: "Transcrição multi-idioma",
     description:
-      "Work across a wide range of languages with either explicit selection or automatic detection.",
+      "Funciona em vários idiomas — escolhe explicitamente ou deixa detectar automaticamente.",
   },
   {
     icon: Brain,
-    title: "AI analysis",
+    title: "Análise por IA",
     description:
-      "Generate summaries, chapters, sentiment, entities, key phrases, and topic labels when enabled.",
+      "Gera resumos, capítulos, sentimento, entidades, frases-chave e tópicos quando habilitado.",
   },
   {
     icon: History,
-    title: "History and recovery",
+    title: "Histórico e recuperação",
     description:
-      "Completed and in-progress jobs can be reopened through the app without rebuilding your workflow from scratch.",
+      "Jobs concluídos e em progresso podem ser reabertos pelo app sem refazer o fluxo do zero.",
   },
   {
     icon: Download,
-    title: "Multiple export formats",
+    title: "Múltiplos formatos de exportação",
     description:
-      "Download transcripts in plain text and document-friendly formats after review.",
+      "Baixa transcrições em texto puro e formatos de documento depois de revisar.",
   },
   {
     icon: Globe2,
-    title: "Audio and video input",
+    title: "Entrada de áudio e vídeo",
     description:
-      "Use direct file uploads or supported media URLs depending on how your source material is hosted.",
+      "Usa upload direto ou URLs de mídia suportadas, dependendo de como teu material está hospedado.",
   },
   {
     icon: ShieldCheck,
-    title: "Temporary processing pipeline",
+    title: "Pipeline de processamento temporário",
     description:
-      "Uploaded media is handled for transcription and not intended to be kept as permanent storage.",
+      "Mídia enviada é tratada pra transcrição — não é armazenamento permanente.",
   },
 ]
 
 const formatGroups = [
   {
     icon: FileAudio,
-    title: "Audio formats",
+    title: "Formatos de áudio",
     description:
-      "Common voice notes, podcast masters, and archival audio formats work directly.",
+      "Voice notes comuns, masters de podcast e formatos de arquivamento funcionam direto.",
     items: [
-      "MP3, WAV, and FLAC",
-      "OGG, OPUS, and WebM audio",
-      "M4A, AAC, and AIFF",
-      "WMA, CAF, and other supported variants",
+      "MP3, WAV e FLAC",
+      "OGG, OPUS e WebM audio",
+      "M4A, AAC e AIFF",
+      "WMA, CAF e outras variantes suportadas",
     ],
   },
   {
     icon: FileVideo,
-    title: "Video formats",
+    title: "Formatos de vídeo",
     description:
-      "Transcriptr can extract audio from supported video containers before transcription.",
+      "O LegacyPlanning extrai o áudio de containers de vídeo suportados antes da transcrição.",
     items: [
-      "MP4 and MOV",
-      "AVI and MKV",
-      "WMV, FLV, and M4V",
-      "Other standard containers supported by the transcription backend",
+      "MP4 e MOV",
+      "AVI e MKV",
+      "WMV, FLV e M4V",
+      "Outros containers padrão suportados pelo backend de transcrição",
     ],
   },
 ]
@@ -144,71 +129,71 @@ const formatGroups = [
 const troubleshootingTopics = [
   {
     icon: FileAudio,
-    title: "Upload issues",
+    title: "Problemas de upload",
     tips: [
-      "Confirm the file or URL points to a supported audio or video format.",
-      "Try refreshing the page if an upload stalls before submission.",
-      "Check that your connection is stable for larger uploads.",
-      "If a source URL fails, verify it is directly reachable and not gated behind auth.",
+      "Confirma que o arquivo ou URL aponta pra um formato de áudio/vídeo suportado.",
+      "Recarrega a página se um upload travar antes de enviar.",
+      "Verifica se tua conexão está estável pra uploads grandes.",
+      "Se uma URL falhar, confirma que ela é acessível direto e não tá atrás de auth.",
     ],
   },
   {
     icon: Brain,
-    title: "Transcription failures",
+    title: "Falhas na transcrição",
     tips: [
-      "Clearer speech and cleaner source audio usually improve completion rates.",
-      "If advanced analysis is enabled, try a simpler run to isolate the failure.",
-      "Retry the job after a short pause if the provider reports a temporary issue.",
-      "Use the feedback form for persistent failures tied to one file or workflow.",
+      "Fala mais clara e áudio mais limpo geralmente melhoram a taxa de conclusão.",
+      "Se análise avançada estiver habilitada, testa uma rodada simples pra isolar o problema.",
+      "Tenta o job de novo depois de uma pausa se o provedor reportar problema temporário.",
+      "Usa o feedback pra falhas persistentes ligadas a um arquivo ou fluxo específico.",
     ],
   },
   {
     icon: Globe2,
-    title: "Browser compatibility",
+    title: "Compatibilidade de navegador",
     tips: [
-      "Use a current version of Chrome, Firefox, Safari, or Edge.",
-      "Keep JavaScript enabled for uploads, polling, and studio playback.",
-      "Clear cached site data if a stale UI state persists after a deployment.",
-      "Disable extensions that block uploads or media playback when debugging.",
+      "Usa uma versão atual de Chrome, Firefox, Safari ou Edge.",
+      "Mantém JavaScript habilitado pra uploads, polling e playback no studio.",
+      "Limpa cache do site se a UI ficar travada depois de um deploy.",
+      "Desativa extensões que bloqueiam upload ou playback ao depurar.",
     ],
   },
   {
     icon: Clock3,
-    title: "Performance tips",
+    title: "Dicas de performance",
     tips: [
-      "Shorter recordings typically finish faster and are easier to review.",
-      "Split very long recordings if you need quicker turnaround.",
-      "Close heavy browser tabs when working with larger transcripts.",
-      "Use History to reopen finished work instead of rerunning the same job.",
+      "Gravações mais curtas terminam mais rápido e são mais fáceis de revisar.",
+      "Divide gravações muito longas se quer turnaround mais rápido.",
+      "Fecha abas pesadas do navegador ao trabalhar com transcrições grandes.",
+      "Usa o histórico pra reabrir trabalhos finalizados em vez de rodar o mesmo job de novo.",
     ],
   },
 ]
 
 const faqItems = [
   {
-    question: "What audio formats can I upload?",
+    question: "Quais formatos de áudio eu posso enviar?",
     answer:
-      "Most common audio and video formats are supported directly, including MP3, WAV, FLAC, OGG, M4A, AAC, MP4, MOV, and more.",
+      "A maioria dos formatos comuns de áudio e vídeo é suportada direto, incluindo MP3, WAV, FLAC, OGG, M4A, AAC, MP4, MOV e mais.",
   },
   {
-    question: "Is my audio data secure?",
+    question: "Meus áudios estão seguros?",
     answer:
-      "Audio is processed for transcription and temporary storage, not treated as long-term media hosting.",
+      "O áudio é processado pra transcrição e armazenamento temporário — não é hospedagem de mídia de longo prazo.",
   },
   {
-    question: "What is the maximum file size?",
+    question: "Qual o tamanho máximo de arquivo?",
     answer:
-      "File size limits depend on the current product constraints and hosting setup. If a file fails, split it or reduce its size before retrying.",
+      "Os limites de tamanho dependem das restrições atuais do produto e da infra. Se um arquivo falhar, divide ou reduz antes de tentar de novo.",
   },
   {
-    question: "How accurate are the transcriptions?",
+    question: "Quão precisas são as transcrições?",
     answer:
-      "Accuracy depends heavily on audio quality, speaker overlap, language choice, and background noise. Clear recordings perform best.",
+      "A precisão depende muito da qualidade do áudio, sobreposição de falantes, escolha de idioma e ruído de fundo. Gravações limpas performam melhor.",
   },
   {
-    question: "Can I edit transcriptions after they are generated?",
+    question: "Posso editar as transcrições depois de geradas?",
     answer:
-      "You can review, copy, and export transcripts today. Built-in editing is still more limited than a dedicated document editor.",
+      "Você pode revisar, copiar e exportar transcrições. Edição embutida ainda é mais limitada que um editor de documento dedicado.",
   },
 ]
 
@@ -243,15 +228,15 @@ export default function DocumentationPage() {
             <header className="border-border mb-10 border-b pb-8">
               <p className="text-primary mb-3 flex items-center gap-2 text-sm font-medium">
                 <BookOpen className="h-4 w-4" />
-                Transcriptr documentation
+                Documentação do LegacyPlanning
               </p>
               <h1 className="text-foreground text-3xl font-bold tracking-normal sm:text-4xl">
-                Using Transcriptr
+                Usando o LegacyPlanning
               </h1>
               <p className="text-muted-foreground mt-4 max-w-2xl leading-7">
-                A practical reference for uploading media, choosing
-                transcription options, reviewing results in Studio, exporting
-                transcripts, and resolving common issues.
+                Referência prática pra enviar mídia, escolher opções de
+                transcrição, revisar resultados no Studio, exportar e resolver
+                problemas comuns.
               </p>
             </header>
 
@@ -259,7 +244,7 @@ export default function DocumentationPage() {
               <div className="mb-6 flex items-center gap-3">
                 <FileAudio className="text-primary h-5 w-5" />
                 <h2 className="text-foreground text-2xl font-semibold">
-                  Quick start
+                  Início rápido
                 </h2>
               </div>
               <ol className="space-y-5">
@@ -291,7 +276,7 @@ export default function DocumentationPage() {
               <div className="mb-6 flex items-center gap-3">
                 <Brain className="text-primary h-5 w-5" />
                 <h2 className="text-foreground text-2xl font-semibold">
-                  Features
+                  Recursos
                 </h2>
               </div>
               <div className="divide-border border-border divide-y rounded-md border">
@@ -318,12 +303,12 @@ export default function DocumentationPage() {
               <div className="mb-6 flex items-center gap-3">
                 <FileVideo className="text-primary h-5 w-5" />
                 <h2 className="text-foreground text-2xl font-semibold">
-                  Supported formats
+                  Formatos suportados
                 </h2>
               </div>
               <p className="text-muted-foreground mb-6 leading-7">
-                Most common media types work without an extra conversion step.
-                If a file fails, try exporting it as MP3, WAV, MP4, or MOV.
+                A maioria dos formatos de mídia funciona sem conversão extra. Se
+                algum arquivo falhar, tenta exportar como MP3, WAV, MP4 ou MOV.
               </p>
               <div className="grid gap-4 md:grid-cols-2">
                 {formatGroups.map((group) => (
@@ -363,7 +348,7 @@ export default function DocumentationPage() {
               <div className="mb-6 flex items-center gap-3">
                 <Wrench className="text-primary h-5 w-5" />
                 <h2 className="text-foreground text-2xl font-semibold">
-                  Troubleshooting
+                  Solução de problemas
                 </h2>
               </div>
               <div className="space-y-7">
@@ -411,16 +396,19 @@ export default function DocumentationPage() {
               </div>
 
               <div className="border-border bg-muted/50 mt-8 rounded-md border p-4">
-                <p className="text-foreground font-semibold">Need more help?</p>
+                <p className="text-foreground font-semibold">
+                  Precisa de mais ajuda?
+                </p>
                 <p className="text-muted-foreground mt-1 leading-7">
-                  Check the{" "}
+                  Confere as{" "}
                   <Link
                     href="/changelog"
                     className="text-primary hover:underline"
                   >
-                    changelog
+                    novidades
                   </Link>{" "}
-                  for recent behavior changes, or send feedback from the app.
+                  pra mudanças recentes de comportamento, ou manda feedback pelo
+                  app.
                 </p>
                 <button
                   type="button"
@@ -430,7 +418,7 @@ export default function DocumentationPage() {
                   className="border-border text-foreground hover:bg-background mt-4 inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium"
                 >
                   <MessageSquareMore className="h-4 w-4" />
-                  Send feedback
+                  Mandar feedback
                 </button>
               </div>
             </section>

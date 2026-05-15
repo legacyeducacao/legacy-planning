@@ -14,7 +14,7 @@ export default function PrivacyPage() {
         <div className="container mx-auto max-w-4xl">
           <div className="text-muted-foreground mb-6 flex flex-wrap items-center gap-3 text-sm">
             <Link href="/" className="hover:text-foreground hover:underline">
-              Back to Transcriptr
+              Back to LegacyPlanning
             </Link>
             <span>|</span>
             <Link
@@ -30,8 +30,9 @@ export default function PrivacyPage() {
             <p className="legal-updated">Last updated: {LAST_UPDATED}</p>
 
             <p>
-              This page explains what Transcriptr collects, how we use it, and
-              which third-party services are involved when you use the app.
+              This page explains what LegacyPlanning collects, how we use
+              it, and which third-party services are involved when you use the
+              app.
             </p>
 
             <h2>1. Information We Collect</h2>
@@ -76,10 +77,10 @@ export default function PrivacyPage() {
 
             <h2>3. Storage and Retention</h2>
             <p>
-              We do not intend Transcriptr to be long-term storage for your
-              uploaded media. When a workflow requires Firebase Storage, files
-              are stored temporarily to complete processing and are intended to
-              be deleted afterward.
+              We do not intend LegacyPlanning to be long-term storage for
+              your uploaded media. When a workflow requires Firebase Storage,
+              files are stored temporarily to complete processing and are
+              intended to be deleted afterward.
             </p>
             <p>
               Deletion is not guaranteed to be instantaneous. Operational
@@ -88,7 +89,10 @@ export default function PrivacyPage() {
             </p>
 
             <h2>4. Third-Party Services</h2>
-            <p>Transcriptr currently relies on these third-party services:</p>
+            <p>
+              LegacyPlanning currently relies on these third-party
+              services:
+            </p>
             <ul>
               <li>AssemblyAI for transcription processing</li>
               <li>Firebase Storage for temporary file handling when needed</li>

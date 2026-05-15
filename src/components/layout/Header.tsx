@@ -2,6 +2,7 @@
 
 import {
   BookOpen,
+  CalendarDays,
   Clock,
   ExternalLink,
   Heart,
@@ -23,23 +24,25 @@ import {
 import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
-  { href: "/history", label: "History" },
-  { href: "/about", label: "About" },
+  { href: "/planner", label: "Planner" },
+  { href: "/history", label: "Histórico" },
+  { href: "/about", label: "Sobre" },
   { href: "/documentation", label: "Docs" },
-  { href: "/changelog", label: "Changelog" },
+  { href: "/changelog", label: "Novidades" },
 ]
 
 const MOBILE_TABS = [
-  { href: "/", label: "Transcribe", icon: Home },
-  { href: "/history", label: "History", icon: Clock },
-  { href: "/documentation", label: "Docs", icon: BookOpen },
+  { href: "/", label: "Transcrever", icon: Home },
+  { href: "/history", label: "Histórico", icon: Clock },
+  { href: "/planner", label: "Planner", icon: CalendarDays },
 ]
 
 const MOBILE_MENU_ITEMS = [
-  { href: "/about", label: "About", icon: ScrollText },
-  { href: "/changelog", label: "Changelog", icon: ScrollText },
-  { href: "/terms", label: "Terms", icon: ScrollText },
-  { href: "/privacy", label: "Privacy", icon: ScrollText },
+  { href: "/documentation", label: "Docs", icon: BookOpen },
+  { href: "/about", label: "Sobre", icon: ScrollText },
+  { href: "/changelog", label: "Novidades", icon: ScrollText },
+  { href: "/terms", label: "Termos", icon: ScrollText },
+  { href: "/privacy", label: "Privacidade", icon: ScrollText },
 ]
 
 function isRouteActive(pathname: string, href: string) {
@@ -112,17 +115,19 @@ export function Header() {
           onClick={() => setMobileMenuOpen(false)}
         >
           <Heart className="h-4 w-4" />
-          Donate
+          Doar
         </a>
       </DropdownMenuItem>
     </DropdownMenuContent>
   )
 
   return (
-    <header className="border-border bg-card/80 sticky top-0 z-40 border-b backdrop-blur-sm">
+    <header className="border-border bg-card/80 sticky top-0 z-40 border-b backdrop-blur-sm md:hidden">
       <div className="container mx-auto flex h-12 items-center justify-between px-4 md:h-14">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-foreground text-lg font-bold">Transcriptr</span>
+          <span className="text-foreground text-lg font-bold">
+            LegacyPlanning
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -178,10 +183,10 @@ export function Header() {
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
               )}
-              aria-label="Open more navigation"
+              aria-label="Abrir mais opções"
             >
               <MoreHorizontal className="h-4 w-4" />
-              <span>More</span>
+              <span>Mais</span>
             </button>
           </DropdownMenuTrigger>
           {mobileMenuContent}

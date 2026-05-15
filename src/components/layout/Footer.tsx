@@ -29,11 +29,11 @@ export function Footer() {
           </a>
           <span className="hidden sm:inline">·</span>
           <Link href="/terms" className="hover:text-foreground">
-            Terms
+            Termos
           </Link>
           <span className="hidden sm:inline">·</span>
           <Link href="/privacy" className="hover:text-foreground">
-            Privacy
+            Privacidade
           </Link>
           <span className="hidden sm:inline">·</span>
           <a
@@ -42,11 +42,12 @@ export function Footer() {
             rel="noopener noreferrer"
             className="text-amber-600 hover:text-amber-500 dark:text-amber-400"
           >
-            Donate
+            Doar
           </a>
         </div>
         <p className="sm:mt-4">
-          © {new Date().getFullYear()} Transcriptr. All rights reserved.
+          © {new Date().getFullYear()} LegacyPlanning. Todos os direitos
+          reservados.
         </p>
       </div>
     </footer>

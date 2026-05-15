@@ -13,7 +13,7 @@ export default function TermsPage() {
         <div className="container mx-auto max-w-4xl">
           <div className="text-muted-foreground mb-6 flex flex-wrap items-center gap-3 text-sm">
             <Link href="/" className="hover:text-foreground hover:underline">
-              Back to Transcriptr
+              Back to LegacyPlanning
             </Link>
             <span>|</span>
             <Link
@@ -29,15 +29,16 @@ export default function TermsPage() {
             <p className="legal-updated">Last updated: {LAST_UPDATED}</p>
 
             <p>
-              By using Transcriptr, you agree to these terms. If you do not
-              agree, do not use the service.
+              By using LegacyPlanning, you agree to these terms. If you
+              do not agree, do not use the service.
             </p>
 
             <h2>1. What the Service Does</h2>
             <p>
-              Transcriptr is an audio transcription product that accepts file
-              uploads and supported media sources, then uses third-party
-              providers to produce transcript output and related workflow data.
+              LegacyPlanning is an audio transcription product that
+              accepts file uploads and supported media sources, then uses
+              third-party providers to produce transcript output and related
+              workflow data.
             </p>
 
             <h2>2. Your Responsibilities</h2>
@@ -56,17 +57,18 @@ export default function TermsPage() {
 
             <h2>3. Acceptable Use</h2>
             <p>
-              You may not use Transcriptr to interfere with the product, evade
-              limits, probe for vulnerabilities, or run abusive automated
-              traffic. We may block requests or restrict access if usage puts
-              the service or other users at risk.
+              You may not use LegacyPlanning to interfere with the
+              product, evade limits, probe for vulnerabilities, or run abusive
+              automated traffic. We may block requests or restrict access if
+              usage puts the service or other users at risk.
             </p>
 
             <h2>4. Third-Party Processing</h2>
             <p>
-              Transcriptr depends on third-party services including AssemblyAI,
-              Firebase Storage, Tally, and Vercel. Your use of Transcriptr also
-              involves those providers where relevant to the workflow.
+              LegacyPlanning depends on third-party services including
+              AssemblyAI, Firebase Storage, Tally, and Vercel. Your use of
+              LegacyPlanning also involves those providers where relevant
+              to the workflow.
             </p>
             <p>
               For details about data handling, please review our{" "}
