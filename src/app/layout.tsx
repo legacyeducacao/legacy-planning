@@ -1,9 +1,32 @@
 import type { Metadata, Viewport } from "next"
+import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google"
 import { VercelAnalytics } from "@/components/analytics/VercelAnalytics"
+import { AuthProvider } from "@/components/auth/AuthProvider"
 import { FeedbackModals } from "@/components/feedback/FeedbackModals"
+import { PWARegister } from "@/components/pwa/PWARegister"
 import "../index.css"
-import { Sidebar } from "@/components/layout/Sidebar"
-import { TopBar } from "@/components/layout/TopBar"
+import { AppShell } from "@/components/layout/AppShell"
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-body",
+  weight: ["400", "500", "600", "700"],
+})
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display",
+  weight: ["500", "600", "700"],
+})
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono",
+  weight: ["400", "500"],
+})
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const metadata: Metadata = {
@@ -14,6 +37,22 @@ export const metadata: Metadata = {
     "transcrição de áudio, transcrição com IA, áudio para texto, converter áudio em texto, assemblyai, whisper",
   authors: [{ name: "LegacyPlanning" }],
   robots: "index, follow",
+  manifest: "/manifest.json",
+  applicationName: "LegacyPlanning",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "LegacyPlanning",
+  },
+  icons: {
+    icon: [
+      { url: "/brand/pwa-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/brand/pwa-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/brand/pwa-192.png", sizes: "192x192", type: "image/png" }],
+    shortcut: ["/brand/legacy-mark.png"],
+  },
+  formatDetection: { telephone: false },
   openGraph: {
     type: "website",
     url: "https://transcriptr.aramb.dev/",
@@ -40,7 +79,10 @@ export const metadata: Metadata = {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f9f7f3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -54,17 +96,18 @@ export default function RootLayout({
   readonly children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      suppressHydrationWarning
+      className={`${inter.variable} ${bricolage.variable} ${jetbrains.variable}`}
+    >
       <body className="font-sans" suppressHydrationWarning>
-        <div className="flex h-screen overflow-hidden w-full">
-          <Sidebar />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <TopBar />
-            <div className="flex-1 overflow-y-auto">{children}</div>
-          </div>
-        </div>
-        <FeedbackModals />
-        <VercelAnalytics />
+        <AuthProvider>
+          <AppShell>{children}</AppShell>
+          <FeedbackModals />
+          <VercelAnalytics />
+          <PWARegister />
+        </AuthProvider>
       </body>
     </html>
   )

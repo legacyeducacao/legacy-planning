@@ -1,10 +1,14 @@
 "use client"
 
 import {
+  ArrowRight,
+  Check,
   Clock,
-  Command,
   Link as LinkIcon,
+  Loader2,
   Mic,
+  Sparkles,
+  Square,
   Upload,
   UploadCloud,
   Users,
@@ -19,9 +23,9 @@ import {
   useState,
 } from "react"
 import { Toaster, toast } from "sonner"
+import { useAuth } from "@/components/auth/AuthProvider"
 import { ReleaseModal } from "@/components/ui/ReleaseModal"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
-import { CURRENT_USER } from "@/lib/user"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
 import type { AIFeatures } from "@/types/transcription"
@@ -36,7 +40,7 @@ const DEFAULT_AI_FEATURES: AIFeatures = {
   topicDetection: false,
 }
 
-type UploadTab = "file" | "url" | "record"
+type UploadTab = "file" | "url"
 
 function greetingByHour(h: number): string {
   if (h >= 5 && h < 12) return "Bom dia"
@@ -55,6 +59,7 @@ function formatLongDate(d: Date): string {
 
 export default function HomePage() {
   const router = useRouter()
+  const { user } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const isSubmittingRef = useRef(false)
   const addToHistory = useHistoryStore((s) => s.add)
@@ -281,25 +286,29 @@ export default function HomePage() {
   return (
     <div className="min-h-full" style={{ background: "var(--r-canvas)" }}>
       {/* Hero band */}
-      <section className="relative mx-auto max-w-[1200px] px-8 pt-9 pb-14">
+      <section className="relative w-full px-8 pt-9 pb-14">
         {/* Greeting row */}
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
             <h2
               className="display-greeting"
-              style={{ fontSize: "32px", color: "var(--r-ink)" }}
+              style={{
+                fontSize: "clamp(30px, 5vw, 48px)",
+                fontWeight: 700,
+                color: "var(--r-ink)",
+              }}
             >
               <span suppressHydrationWarning>{greeting || "Olá"}</span>,{" "}
               <span style={{ color: "var(--r-primary)" }}>
-                {CURRENT_USER.nome.split(" ")[0]}
+                {user?.displayName.split(" ")[0] ?? "Visitante"}
               </span>
               .
             </h2>
             <p
-              className="mt-1"
+              className="mt-2"
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "20px",
+                fontSize: "clamp(18px, 2.5vw, 26px)",
                 fontWeight: 500,
                 letterSpacing: "-0.3px",
                 color: "var(--r-stone)",
@@ -326,18 +335,13 @@ export default function HomePage() {
         <h1
           className="display-hero"
           style={{
-            fontSize: "clamp(40px, 8vw, 88px)",
+            fontSize: "clamp(34px, 7vw, 88px)",
             color: "var(--r-ink)",
             marginBottom: "20px",
           }}
         >
-          <span className="block whitespace-nowrap">
-            Sua reunião começa aqui
-          </span>
-          <span
-            className="block whitespace-nowrap"
-            style={{ color: "var(--r-primary)" }}
-          >
+          <span className="block">Sua reunião começa aqui</span>
+          <span className="block" style={{ color: "var(--r-primary)" }}>
             E termina por nossa conta
           </span>
         </h1>
@@ -366,13 +370,24 @@ export default function HomePage() {
         />
       </section>
 
+      {/* Planner pitch + How it works — duas cartas dark */}
+      <section className="px-8 pb-12">
+        <div className="grid w-full grid-cols-1 items-stretch gap-5 lg:grid-cols-2">
+          <PlannerPitchCard onOpen={() => router.push("/planner")} />
+          <HowItWorksCard />
+        </div>
+      </section>
+
       {/* Upload section — bone background */}
       <section
         className="px-8 py-12"
         style={{ background: "var(--r-surface-bone)" }}
       >
-        <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-5 lg:grid-cols-[1.45fr_1fr]">
-          {/* Left: upload card */}
+        <div className="grid w-full grid-cols-1 items-stretch gap-5 lg:grid-cols-[1fr_1.45fr]">
+          {/* Left: record card (dark) — rendered AFTER upload in JSX so order on mobile is upload first */}
+          <RecordCard onRecorded={submitFile} />
+
+          {/* Right: upload card (white) */}
           <div
             className="rounded-2xl p-6"
             style={{
@@ -389,7 +404,6 @@ export default function HomePage() {
                 [
                   { value: "file", label: "Enviar arquivo", icon: Upload },
                   { value: "url", label: "Colar URL", icon: LinkIcon },
-                  { value: "record", label: "Gravar agora", icon: Mic },
                 ] as const
               ).map((t) => {
                 const active = activeTab === t.value
@@ -439,127 +453,13 @@ export default function HomePage() {
                 fileInputRef={fileInputRef}
                 onFileChange={handleFileChange}
               />
-            ) : activeTab === "url" ? (
+            ) : (
               <UrlTabContent
                 value={urlInput}
                 onChange={setUrlInput}
                 onSubmit={() => submitUrl(urlInput.trim())}
               />
-            ) : (
-              <RecordTabPlaceholder />
             )}
-          </div>
-
-          {/* Right: how-card */}
-          <div
-            className="rounded-2xl p-6"
-            style={{
-              background: "var(--r-surface-dark)",
-              color: "var(--r-on-dark)",
-            }}
-          >
-            <p
-              className="mono-eyebrow mb-2"
-              style={{
-                fontSize: "11px",
-                color: "var(--r-on-dark-mute)",
-              }}
-            >
-              # como funciona
-            </p>
-            <h3
-              className="mb-5"
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "24px",
-                fontWeight: 600,
-                lineHeight: 1.1,
-                letterSpacing: "-0.5px",
-              }}
-            >
-              Três passos. Sem prompts.
-            </h3>
-            <ol className="mb-6 space-y-3 text-[14px] leading-relaxed">
-              {[
-                {
-                  text: (
-                    <>
-                      Envie o áudio.{" "}
-                      <strong className="font-semibold">
-                        Reconhecemos português, inglês e espanhol
-                      </strong>{" "}
-                      automaticamente.
-                    </>
-                  ),
-                },
-                {
-                  text: (
-                    <>
-                      O modelo identifica falantes, separa em parágrafos e gera{" "}
-                      <strong className="font-semibold">
-                        timestamps por linha
-                      </strong>
-                      .
-                    </>
-                  ),
-                },
-                {
-                  text: (
-                    <>
-                      Receba a transcrição com{" "}
-                      <strong className="font-semibold">
-                        resumo, tópicos e ações
-                      </strong>{" "}
-                      extraídas.
-                    </>
-                  ),
-                },
-              ].map((step, i) => (
-                <li
-                  key={`step-${i}`}
-                  className="flex gap-3"
-                  style={{ color: "var(--r-on-dark)" }}
-                >
-                  <span
-                    className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full"
-                    style={{
-                      background: "rgba(252,252,252,0.10)",
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      color: "var(--r-on-dark-mute)",
-                    }}
-                  >
-                    {i + 1}
-                  </span>
-                  <span>{step.text}</span>
-                </li>
-              ))}
-            </ol>
-
-            <pre
-              className="overflow-x-auto rounded-lg p-3"
-              style={{
-                background: "var(--r-surface-deep)",
-                fontFamily: "var(--font-mono)",
-                fontSize: "12px",
-                lineHeight: 1.65,
-                color: "var(--r-on-dark)",
-              }}
-            >
-              <code>
-                <span style={{ color: "var(--r-on-dark-mute)" }}>
-                  # via API
-                </span>
-                {"\n"}
-                <span style={{ color: "#7dd3fc" }}>curl</span> -X POST{"\n"}
-                https://api.legacyplanning.app/v1 \{"\n"}
-                {"  "}-F file=
-                <span style={{ color: "#fde68a" }}>"@reuniao.mp3"</span> \{"\n"}
-                {"  "}-F summary=
-                <span style={{ color: "#fde68a" }}>"true"</span>
-              </code>
-            </pre>
           </div>
         </div>
       </section>
@@ -570,7 +470,7 @@ export default function HomePage() {
           className="px-8 py-12"
           style={{ background: "var(--r-surface-bone)" }}
         >
-          <div className="mx-auto max-w-[1200px]">
+          <div className="w-full">
             <div className="mb-6 flex items-end justify-between gap-4">
               <h2
                 className="display-section"
@@ -746,7 +646,7 @@ function FileTabContent({
 }) {
   return (
     <>
-      {/* Dark dropzone */}
+      {/* Dropzone */}
       <div
         onDragEnter={onDragEnter}
         onDragOver={onDragOver}
@@ -761,13 +661,12 @@ function FileTabContent({
         }}
         role="button"
         tabIndex={0}
-        className="relative flex cursor-pointer flex-col items-center justify-center rounded-xl px-12 py-12 text-center transition-colors"
+        className="relative flex cursor-pointer flex-col items-center justify-center rounded-xl px-8 py-10 text-center transition-colors"
         style={{
           background: "var(--r-surface-dark)",
           color: "var(--r-on-dark)",
         }}
       >
-        {/* Inner dashed border */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute rounded-lg"
@@ -780,9 +679,8 @@ function FileTabContent({
           }}
         />
 
-        {/* Blue circular icon with soft glow */}
         <div
-          className="mb-5 flex h-14 w-14 items-center justify-center rounded-full"
+          className="mb-4 flex h-14 w-14 items-center justify-center rounded-full"
           style={{
             background: "var(--r-primary)",
             boxShadow: "0 0 0 6px rgba(45,95,222,0.18)",
@@ -798,15 +696,13 @@ function FileTabContent({
           className="mb-3"
           style={{
             fontFamily: "var(--font-display)",
-            fontSize: "28px",
+            fontSize: "22px",
             fontWeight: 600,
-            letterSpacing: "-0.6px",
+            letterSpacing: "-0.5px",
             lineHeight: 1.1,
           }}
         >
-          {isDragging
-            ? "Solta o arquivo aqui"
-            : "Arraste o arquivo de áudio aqui"}
+          {isDragging ? "Solta o arquivo aqui" : "Arraste o arquivo aqui"}
         </h3>
 
         <span
@@ -830,11 +726,11 @@ function FileTabContent({
       </div>
 
       {/* Action row */}
-      <div className="mt-5 flex flex-wrap items-center gap-2.5">
+      <div className="mt-4 flex flex-wrap items-center gap-2.5">
         <button
           type="button"
           onClick={onPickFile}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-semibold transition-colors"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors"
           style={{
             background: "var(--r-primary)",
             color: "var(--r-on-dark)",
@@ -852,7 +748,7 @@ function FileTabContent({
 
         <a
           href="/documentation"
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-semibold transition-colors"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors"
           style={{
             background: "var(--r-surface-card)",
             border: "1px solid var(--r-hairline-strong)",
@@ -861,21 +757,262 @@ function FileTabContent({
         >
           Ver exemplos
         </a>
-
-        <div className="ml-auto flex items-center gap-1.5">
-          <Kbd>
-            <Command className="h-3 w-3" />
-          </Kbd>
-          <Kbd>U</Kbd>
-          <span
-            className="mono-eyebrow"
-            style={{ fontSize: "12px", color: "var(--r-mute)" }}
-          >
-            para abrir o seletor
-          </span>
-        </div>
       </div>
     </>
+  )
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   RecordCard — versão expandida (substitui o how-card no grid)
+   ────────────────────────────────────────────────────────────────── */
+
+function RecordCard({ onRecorded }: { onRecorded: (file: File) => void }) {
+  return (
+    <div
+      className="flex flex-col justify-between rounded-2xl p-7"
+      style={{
+        background: "var(--r-surface-dark)",
+        color: "var(--r-on-dark)",
+      }}
+    >
+      {/* Top: eyebrow + headline + subtitle */}
+      <div>
+        <p
+          className="mono-eyebrow mb-3 flex items-center gap-2"
+          style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+        >
+          <span
+            className="inline-block h-1.5 w-1.5 rounded-full"
+            style={{ background: "var(--r-primary)" }}
+          />
+          # gravar ao vivo
+        </p>
+        <h3
+          className="mb-3"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "30px",
+            fontWeight: 700,
+            lineHeight: 1.05,
+            letterSpacing: "-0.6px",
+            color: "var(--r-on-dark)",
+          }}
+        >
+          Comece uma
+          <br />
+          gravação agora
+        </h3>
+        <p
+          className="text-[14px]"
+          style={{ color: "var(--r-on-dark-mute)", lineHeight: 1.5 }}
+        >
+          Clique pra capturar áudio do microfone. Para automaticamente em
+          silêncios longos.
+        </p>
+      </div>
+
+      {/* Middle: record control */}
+      <div className="my-6 flex flex-col items-center">
+        <RecordTab onRecorded={onRecorded} />
+      </div>
+
+      {/* Bottom: decorative waveform */}
+      <Waveform />
+    </div>
+  )
+}
+
+function Waveform() {
+  // Padrão de barras estáticas, alturas variadas
+  const heights = [
+    8, 14, 22, 12, 28, 18, 32, 24, 16, 26, 10, 30, 20, 14, 28, 22, 12, 24, 18,
+    14, 26, 10, 22, 30, 16, 24, 20, 12, 18, 14, 22, 28, 12, 20, 10,
+  ]
+  return (
+    <div
+      aria-hidden="true"
+      className="flex items-center justify-center gap-0.5 pt-4"
+      style={{ height: "32px" }}
+    >
+      {heights.map((h, i) => (
+        <span
+          key={`bar-${i}`}
+          style={{
+            display: "block",
+            width: "2px",
+            height: `${h}px`,
+            background: "rgba(252,252,252,0.25)",
+            borderRadius: "1px",
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   PlannerPitchCard — pitch curto pro /planner
+   ────────────────────────────────────────────────────────────────── */
+
+function PlannerPitchCard({ onOpen }: { onOpen: () => void }) {
+  return (
+    <div
+      className="flex flex-col justify-between rounded-2xl p-8"
+      style={{
+        background: "var(--r-surface-dark)",
+        color: "var(--r-on-dark)",
+        minHeight: "320px",
+      }}
+    >
+      <div>
+        <p
+          className="mono-eyebrow mb-4 flex items-center gap-1.5"
+          style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+        >
+          <Sparkles className="h-3 w-3" style={{ color: "var(--r-primary)" }} />
+          # planner ai · ativo agora
+        </p>
+        <h3
+          className="mb-4"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "34px",
+            fontWeight: 700,
+            lineHeight: 1.05,
+            letterSpacing: "-0.7px",
+            color: "var(--r-on-dark)",
+          }}
+        >
+          A próxima semana,
+          <br />
+          <span style={{ color: "var(--r-primary)" }}>já planejada.</span>
+        </h3>
+        <p
+          className="max-w-md text-[14px]"
+          style={{ color: "var(--r-on-dark-mute)", lineHeight: 1.55 }}
+        >
+          Cada transcrição vira tarefas, decisões e follow-ups com responsável e
+          prazo. Nada se perde no áudio.
+        </p>
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-2.5">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors"
+          style={{
+            background: "var(--r-primary)",
+            color: "var(--r-on-dark)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "var(--r-primary-deep)"
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "var(--r-primary)"
+          }}
+        >
+          Abrir Planner AI
+          <ArrowRight className="h-3.5 w-3.5" />
+        </button>
+        <a
+          href="/tarefas"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors"
+          style={{
+            background: "transparent",
+            border: "1px solid rgba(252,252,252,0.20)",
+            color: "var(--r-on-dark)",
+          }}
+        >
+          Como funciona
+        </a>
+      </div>
+    </div>
+  )
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   HowItWorksCard — 5 passos + snippet curl
+   ────────────────────────────────────────────────────────────────── */
+
+function HowItWorksCard() {
+  const steps = [
+    <>
+      <strong className="font-semibold">Planeje os tópicos</strong> da sua
+      reunião.
+    </>,
+    <>
+      <strong className="font-semibold">Grave ou envie</strong> seu áudio.
+    </>,
+    <>
+      Transcrevemos seu áudio com{" "}
+      <strong className="font-semibold">
+        falantes, timestamps e parágrafos
+      </strong>
+      .
+    </>,
+    <>
+      Geramos uma{" "}
+      <strong className="font-semibold">ata completa e um resumo</strong> pra
+      você enviar pra quem quiser.
+    </>,
+    <>
+      Sai com um <strong className="font-semibold">plano de tarefas</strong>{" "}
+      pronto.
+    </>,
+  ]
+  return (
+    <div
+      className="flex flex-col rounded-2xl p-8"
+      style={{
+        background: "var(--r-surface-dark)",
+        color: "var(--r-on-dark)",
+      }}
+    >
+      <p
+        className="mono-eyebrow mb-3"
+        style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+      >
+        # como funciona
+      </p>
+      <h3
+        className="mb-5"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "26px",
+          fontWeight: 700,
+          lineHeight: 1.1,
+          letterSpacing: "-0.5px",
+          color: "var(--r-on-dark)",
+        }}
+      >
+        Cinco passos. Sem prompts.
+      </h3>
+      <ol className="space-y-3 text-[14px] leading-relaxed">
+        {steps.map((step, i) => (
+          <li
+            key={`step-${i}`}
+            className="flex items-start gap-3"
+            style={{ color: "var(--r-on-dark)" }}
+          >
+            <span
+              className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full"
+              style={{
+                background: "rgba(252,252,252,0.08)",
+                border: "1px solid rgba(252,252,252,0.10)",
+                fontFamily: "var(--font-mono)",
+                fontSize: "12px",
+                fontWeight: 500,
+                color: "var(--r-on-dark-mute)",
+              }}
+            >
+              {i + 1}
+            </span>
+            <span className="pt-0.5">{step}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
   )
 }
 
@@ -934,50 +1071,332 @@ function UrlTabContent({
   )
 }
 
-function RecordTabPlaceholder() {
-  return (
-    <div
-      className="flex flex-col items-center justify-center py-14 text-center"
-      style={{ color: "var(--r-charcoal)" }}
-    >
-      <div
-        className="mb-4 flex h-12 w-12 items-center justify-center rounded-full"
-        style={{
-          background: "var(--r-surface-bone)",
-          border: "1px solid var(--r-hairline)",
-        }}
-      >
-        <Mic className="h-5 w-5" />
-      </div>
-      <p
-        style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "18px",
-          fontWeight: 600,
-          color: "var(--r-ink)",
-        }}
-      >
-        Em breve
-      </p>
-      <p className="mt-1 text-[13px]" style={{ color: "var(--r-mute)" }}>
-        Gravação direto do navegador chega no próximo release.
-      </p>
-    </div>
-  )
-}
+function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
+  const [state, setState] = useState<
+    "idle" | "requesting" | "recording" | "stopped"
+  >("idle")
+  const [duration, setDuration] = useState(0)
+  const [error, setError] = useState<string | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const recorderRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const chunksRef = useRef<Blob[]>([])
+  const startTimeRef = useRef<number>(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const recordedFileRef = useRef<File | null>(null)
 
-function Kbd({ children }: { children: React.ReactNode }) {
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      streamRef.current?.getTracks().forEach((t) => t.stop())
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const pickMime = (): string => {
+    const candidates = [
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/mp4",
+      "audio/ogg",
+    ]
+    for (const m of candidates) {
+      if (
+        typeof MediaRecorder !== "undefined" &&
+        MediaRecorder.isTypeSupported?.(m)
+      ) {
+        return m
+      }
+    }
+    return "audio/webm"
+  }
+
+  const start = async () => {
+    setError(null)
+    setState("requesting")
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      streamRef.current = stream
+      const mime = pickMime()
+      const recorder = new MediaRecorder(stream, { mimeType: mime })
+      chunksRef.current = []
+      recordedFileRef.current = null
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+        setPreviewUrl(null)
+      }
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data)
+      }
+      recorder.onstop = () => {
+        streamRef.current?.getTracks().forEach((t) => t.stop())
+        streamRef.current = null
+        const blob = new Blob(chunksRef.current, { type: mime })
+        const ext = mime.includes("webm")
+          ? "webm"
+          : mime.includes("mp4")
+            ? "m4a"
+            : mime.includes("ogg")
+              ? "ogg"
+              : "webm"
+        const file = new File([blob], `gravacao-${Date.now()}.${ext}`, {
+          type: mime,
+        })
+        recordedFileRef.current = file
+        setPreviewUrl(URL.createObjectURL(blob))
+      }
+      recorder.start(1000) // chunks de 1s
+      recorderRef.current = recorder
+      startTimeRef.current = Date.now()
+      setDuration(0)
+      setState("recording")
+      intervalRef.current = setInterval(() => {
+        setDuration(Math.floor((Date.now() - startTimeRef.current) / 1000))
+      }, 250)
+    } catch (err) {
+      console.error(err)
+      const msg =
+        err instanceof Error && err.name === "NotAllowedError"
+          ? "Permissão de microfone negada. Libere nas configurações do navegador."
+          : err instanceof Error
+            ? err.message
+            : "Não consegui acessar o microfone."
+      setError(msg)
+      setState("idle")
+    }
+  }
+
+  const stop = () => {
+    recorderRef.current?.stop()
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+    setState("stopped")
+  }
+
+  const discardAndRestart = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl)
+      setPreviewUrl(null)
+    }
+    recordedFileRef.current = null
+    setDuration(0)
+    setState("idle")
+  }
+
+  // Atalho de teclado: Espaço alterna idle ↔ recording. Ignora se o foco
+  // estiver num input/textarea/contenteditable.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.code !== "Space") return
+      const t = e.target as HTMLElement | null
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      ) {
+        return
+      }
+      if (state === "idle") {
+        e.preventDefault()
+        start()
+      } else if (state === "recording") {
+        e.preventDefault()
+        stop()
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state])
+
+  const submit = () => {
+    if (!recordedFileRef.current) return
+    onRecorded(recordedFileRef.current)
+  }
+
+  const fmt = (s: number) =>
+    `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`
+
   return (
-    <span
-      className="inline-flex h-5 min-w-[20px] items-center justify-center rounded px-1.5 text-[11px] font-medium"
-      style={{
-        background: "var(--r-surface-bone)",
-        border: "1px solid var(--r-hairline)",
-        color: "var(--r-charcoal)",
-        fontFamily: "var(--font-mono)",
-      }}
-    >
-      {children}
-    </span>
+    <div className="flex flex-col items-center justify-center text-center">
+      {state === "idle" && (
+        <>
+          <button
+            type="button"
+            onClick={start}
+            aria-label="Começar gravação"
+            className="mb-4 flex h-[72px] w-[72px] items-center justify-center rounded-full transition-transform hover:scale-105"
+            style={{
+              background: "var(--r-primary)",
+              boxShadow: "0 0 0 8px rgba(45,95,222,0.18)",
+            }}
+          >
+            <Mic className="h-7 w-7" style={{ color: "var(--r-on-dark)" }} />
+          </button>
+          <p
+            className="mono-eyebrow"
+            style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+          >
+            aperte ou pressione{" "}
+            <span
+              className="rounded px-1.5 py-0.5"
+              style={{
+                background: "rgba(252,252,252,0.10)",
+                color: "var(--r-on-dark)",
+                fontWeight: 600,
+              }}
+            >
+              espaço
+            </span>
+          </p>
+          {error && (
+            <p className="mt-2 text-[12px]" style={{ color: "#f87171" }}>
+              {error}
+            </p>
+          )}
+        </>
+      )}
+
+      {state === "requesting" && (
+        <>
+          <div
+            className="mb-4 flex h-[72px] w-[72px] items-center justify-center rounded-full"
+            style={{
+              background: "var(--r-primary)",
+              boxShadow: "0 0 0 8px rgba(45,95,222,0.18)",
+            }}
+          >
+            <Loader2
+              className="h-7 w-7 animate-spin"
+              style={{ color: "var(--r-on-dark)" }}
+            />
+          </div>
+          <p
+            className="mono-eyebrow"
+            style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+          >
+            aguardando permissão do microfone...
+          </p>
+        </>
+      )}
+      {state === "recording" && (
+        <>
+          <div className="relative mb-5">
+            <button
+              type="button"
+              onClick={stop}
+              aria-label="Parar gravação"
+              className="flex h-20 w-20 items-center justify-center rounded-full transition-colors hover:opacity-90"
+              style={{ background: "#dc2626" }}
+            >
+              <Square
+                className="h-7 w-7"
+                style={{ color: "white", fill: "white" }}
+              />
+            </button>
+            <span
+              className="live-dot absolute -right-1 -top-1 h-4 w-4 rounded-full"
+              style={{
+                background: "#dc2626",
+                boxShadow: "0 0 0 4px var(--r-surface-card)",
+              }}
+            />
+          </div>
+          <p
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "24px",
+              fontWeight: 500,
+              color: "var(--r-on-dark)",
+              letterSpacing: "0.04em",
+            }}
+            suppressHydrationWarning
+          >
+            {fmt(duration)}
+          </p>
+          <p
+            className="mono-eyebrow mt-1"
+            style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+          >
+            gravando... pressione{" "}
+            <span
+              className="rounded px-1.5 py-0.5"
+              style={{
+                background: "rgba(252,252,252,0.10)",
+                color: "var(--r-on-dark)",
+                fontWeight: 600,
+              }}
+            >
+              espaço
+            </span>{" "}
+            pra parar
+          </p>
+        </>
+      )}
+
+      {state === "stopped" && (
+        <>
+          <div
+            className="mb-4 flex h-[72px] w-[72px] items-center justify-center rounded-full"
+            style={{
+              background: "rgba(43,154,102,0.18)",
+              border: "1px solid rgba(43,154,102,0.4)",
+            }}
+          >
+            <Check className="h-7 w-7" style={{ color: "var(--r-success)" }} />
+          </div>
+          <p
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "18px",
+              fontWeight: 600,
+              color: "var(--r-on-dark)",
+            }}
+          >
+            Gravação pronta
+          </p>
+          <p
+            className="mono-eyebrow mt-1"
+            style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+          >
+            {fmt(duration)} capturado
+          </p>
+          {previewUrl && (
+            // biome-ignore lint/a11y/useMediaCaption: gravação ao vivo
+            <audio src={previewUrl} controls className="mt-4 w-full max-w-xs" />
+          )}
+          <div className="mt-4 flex gap-2">
+            <button
+              type="button"
+              onClick={discardAndRestart}
+              className="rounded-full px-4 py-1.5 text-[13px] font-semibold transition-colors"
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(252,252,252,0.20)",
+                color: "var(--r-on-dark)",
+              }}
+            >
+              Regravar
+            </button>
+            <button
+              type="button"
+              onClick={submit}
+              className="rounded-full px-4 py-1.5 text-[13px] font-semibold transition-colors"
+              style={{
+                background: "var(--r-primary)",
+                color: "var(--r-on-dark)",
+              }}
+            >
+              Transcrever
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   )
 }

@@ -2,7 +2,10 @@
 
 import { Bell, ChevronDown, LogOut, Search, Settings, User } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { useCallback } from "react"
+import { toast } from "sonner"
+import { useAuth } from "@/components/auth/AuthProvider"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { CURRENT_USER } from "@/lib/user"
+import { signOut } from "@/lib/auth"
 
 function breadcrumbLabel(path: string): string {
   if (path === "/") return "Início"
@@ -35,7 +38,18 @@ function breadcrumbLabel(path: string): string {
 
 export function TopBar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user } = useAuth()
   const crumb = breadcrumbLabel(pathname)
+
+  const handleSignOut = useCallback(async () => {
+    try {
+      await signOut()
+      router.replace("/login")
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao sair")
+    }
+  }, [router])
 
   return (
     <header
@@ -85,13 +99,14 @@ export function TopBar() {
                   color: "var(--r-on-dark)",
                 }}
               >
-                {CURRENT_USER.iniciais}
+                {user?.initials ?? "?"}
               </span>
               <span
                 className="text-[13px] font-medium"
                 style={{ color: "var(--r-ink)" }}
               >
-                {CURRENT_USER.nomeCurto}
+                {user?.displayName.split(" ").slice(0, 2).join(" ") ??
+                  "Visitante"}
               </span>
               <ChevronDown
                 className="h-3.5 w-3.5"
@@ -113,7 +128,7 @@ export function TopBar() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOut className="h-4 w-4" />
               Sair
             </DropdownMenuItem>

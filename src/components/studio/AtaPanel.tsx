@@ -22,9 +22,11 @@ import {
   useState,
 } from "react"
 import { toast } from "sonner"
+import { useAuth } from "@/components/auth/AuthProvider"
 import { buildAtaDocx } from "@/lib/ata-docx"
 import { ataToMarkdown, normalizeAta } from "@/lib/ata-format"
 import { generateAta as generateAtaService } from "@/lib/ata-service"
+import { canDelete, canEdit } from "@/lib/permissions"
 import type {
   Ata,
   AtaParticipante,
@@ -234,12 +236,16 @@ export function AtaPanel({
   segments,
   intelligence,
 }: AtaPanelProps) {
+  const { user } = useAuth()
   const [ata, setAta] = useState<Ata | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [lastSource, setLastSource] = useState<"llm" | "local" | null>(null)
   const [lastReason, setLastReason] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [emailOpen, setEmailOpen] = useState(false)
+
+  const editable = ata ? canEdit(ata, user) : true
+  const deletable = ata ? canDelete(ata, user) : false
 
   useEffect(() => {
     const cached = loadCachedAta(transcriptionId)
@@ -259,6 +265,9 @@ export function AtaPanel({
           transcription,
           segments,
           intelligence,
+          currentUser: user
+            ? { uid: user.uid, displayName: user.displayName }
+            : undefined,
         })
         setAta(result.ata)
         setLastSource(result.source)
@@ -463,22 +472,29 @@ export function AtaPanel({
           <Mail className="h-4 w-4" />
           <span className="hidden sm:inline">Enviar email</span>
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleRegenerate}
-          disabled={isGenerating}
-          className="gap-2"
-        >
-          {isGenerating ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <RefreshCw className="h-4 w-4" />
-          )}
-          <span className="hidden sm:inline">
-            {isGenerating ? "Gerando..." : "Regenerar"}
-          </span>
-        </Button>
+        {editable && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleRegenerate}
+            disabled={isGenerating}
+            className="gap-2"
+            title={
+              deletable
+                ? undefined
+                : "Você não criou esta ata, mas pode regerar."
+            }
+          >
+            {isGenerating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            <span className="hidden sm:inline">
+              {isGenerating ? "Gerando..." : "Regenerar"}
+            </span>
+          </Button>
+        )}
       </div>
 
       <EmailComposeModal

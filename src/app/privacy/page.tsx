@@ -30,9 +30,8 @@ export default function PrivacyPage() {
             <p className="legal-updated">Last updated: {LAST_UPDATED}</p>
 
             <p>
-              This page explains what LegacyPlanning collects, how we use
-              it, and which third-party services are involved when you use the
-              app.
+              This page explains what LegacyPlanning collects, how we use it,
+              and which third-party services are involved when you use the app.
             </p>
 
             <h2>1. Information We Collect</h2>
@@ -77,10 +76,10 @@ export default function PrivacyPage() {
 
             <h2>3. Storage and Retention</h2>
             <p>
-              We do not intend LegacyPlanning to be long-term storage for
-              your uploaded media. When a workflow requires Firebase Storage,
-              files are stored temporarily to complete processing and are
-              intended to be deleted afterward.
+              We do not intend LegacyPlanning to be long-term storage for your
+              uploaded media. When a workflow requires Firebase Storage, files
+              are stored temporarily to complete processing and are intended to
+              be deleted afterward.
             </p>
             <p>
               Deletion is not guaranteed to be instantaneous. Operational
@@ -90,8 +89,7 @@ export default function PrivacyPage() {
 
             <h2>4. Third-Party Services</h2>
             <p>
-              LegacyPlanning currently relies on these third-party
-              services:
+              LegacyPlanning currently relies on these third-party services:
             </p>
             <ul>
               <li>AssemblyAI for transcription processing</li>

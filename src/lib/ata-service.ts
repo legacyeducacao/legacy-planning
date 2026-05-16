@@ -10,25 +10,48 @@ export interface AtaGenerationInput {
   transcription: string
   segments?: TranscriptionSegment[]
   intelligence?: TranscriptionIntelligence
+  /** Usuário autenticado — vira o responsavelAta e ownerUid. */
+  currentUser?: { uid: string; displayName: string }
 }
 
 export interface AtaGenerationResult {
   ata: Ata
   source: "llm" | "local"
-  reason?: string // ex: "Sem OPENAI_API_KEY", "Falha na chamada da API"
+  reason?: string
+}
+
+function applyOwnership(
+  ata: Ata,
+  user?: { uid: string; displayName: string },
+): Ata {
+  if (!user) return ata
+  // ownerUid é um campo de runtime; o tipo Ata não conhece, mas a normalização
+  // preserva campos desconhecidos no JSON serializado em localStorage.
+  return {
+    ...ata,
+    responsavelAta: ata.responsavelAta || user.displayName,
+    // @ts-expect-error — ownerUid é um campo de extensão, não está no type Ata
+    ownerUid: user.uid,
+  }
 }
 
 /**
- * Tenta gerar uma ata real via /api/ata (LLM). Cai pra geração heurística
- * local se a key estiver ausente, a chamada falhar ou retornar dados ruins.
+ * Tenta gerar uma ata via /api/ata (Gemini). Cai pra heurística local se
+ * a key estiver ausente, a chamada falhar ou retornar dados inválidos.
  */
 export async function generateAta(
   input: AtaGenerationInput,
 ): Promise<AtaGenerationResult> {
-  const local = () => {
-    const ata = generateAtaLocal(input)
-    return ata
-  }
+  const local = () =>
+    applyOwnership(
+      generateAtaLocal({
+        transcription: input.transcription,
+        segments: input.segments,
+        intelligence: input.intelligence,
+        currentUserName: input.currentUser?.displayName,
+      }),
+      input.currentUser,
+    )
 
   try {
     const response = await fetch("/api/ata", {
@@ -37,6 +60,7 @@ export async function generateAta(
       body: JSON.stringify({
         transcription: input.transcription,
         segments: input.segments,
+        currentUserName: input.currentUser?.displayName,
       }),
     })
 
@@ -54,7 +78,7 @@ export async function generateAta(
     }
 
     const data = (await response.json()) as { ata: unknown }
-    const ata = normalizeAta(data.ata)
+    const ata = applyOwnership(normalizeAta(data.ata), input.currentUser)
     return { ata, source: "llm" }
   } catch (err) {
     return {

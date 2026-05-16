@@ -1,4 +1,3 @@
-import { CURRENT_USER } from "@/lib/user"
 import type {
   Ata,
   AtaDiscussao,
@@ -195,8 +194,10 @@ export function generateAtaLocal(input: {
   transcription: string
   segments?: TranscriptionSegment[]
   intelligence?: TranscriptionIntelligence
+  /** Nome do usuário autenticado, usado como default em responsavelAta. */
+  currentUserName?: string
 }): Ata {
-  const { transcription, segments, intelligence } = input
+  const { transcription, segments, intelligence, currentUserName } = input
 
   const participantes = extractParticipants(segments)
   const pauta = buildPauta(intelligence)
@@ -231,7 +232,7 @@ export function generateAtaLocal(input: {
     horarioTermino,
     duracao,
     localPlataforma: undefined,
-    responsavelAta: CURRENT_USER.nome,
+    responsavelAta: currentUserName,
     liderReuniao: undefined,
 
     // Conteúdo

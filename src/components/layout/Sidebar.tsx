@@ -14,7 +14,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
-import { CURRENT_USER } from "@/lib/user"
+import { useAuth } from "@/components/auth/AuthProvider"
 import { useTodosStore } from "@/stores/todos-store"
 
 type NavItem = {
@@ -26,6 +26,7 @@ type NavItem = {
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { user } = useAuth()
   const todos = useTodosStore((s) => s.todos)
   const loadTodos = useTodosStore((s) => s.load)
 
@@ -37,6 +38,7 @@ export function Sidebar() {
 
   const generalNav: NavItem[] = [
     { name: "Início", href: "/", icon: Home },
+    { name: "Planner AI", href: "/planner", icon: CalendarDays },
     { name: "Atas", href: "/atas", icon: FileText },
     {
       name: "Tarefas",
@@ -45,7 +47,6 @@ export function Sidebar() {
       badge: openTodosCount > 0 ? openTodosCount : undefined,
     },
     { name: "Histórico", href: "/history", icon: Clock },
-    { name: "Planner AI", href: "/planner", icon: CalendarDays },
   ]
 
   const bottomNav: NavItem[] = [
@@ -214,31 +215,33 @@ export function Sidebar() {
           </ul>
 
           {/* User card */}
-          <div className="flex items-center gap-2.5 rounded-full px-3 py-2">
-            <span
-              className="flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
-              style={{
-                background: "var(--r-surface-dark)",
-                color: "var(--r-on-dark)",
-              }}
-            >
-              {CURRENT_USER.iniciais.slice(0, 1)}
-            </span>
-            <div className="flex min-w-0 flex-col leading-tight">
+          {user && (
+            <div className="flex items-center gap-2.5 rounded-full px-3 py-2">
               <span
-                className="truncate text-[13px] font-semibold"
-                style={{ color: "var(--r-ink)" }}
+                className="flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
+                style={{
+                  background: "var(--r-surface-dark)",
+                  color: "var(--r-on-dark)",
+                }}
               >
-                {CURRENT_USER.nome.split(" ")[0]}
+                {user.initials.slice(0, 1)}
               </span>
-              <span
-                className="truncate text-[11px]"
-                style={{ color: "var(--r-mute)" }}
-              >
-                Plano gratuito
-              </span>
+              <div className="flex min-w-0 flex-col leading-tight">
+                <span
+                  className="truncate text-[13px] font-semibold"
+                  style={{ color: "var(--r-ink)" }}
+                >
+                  {user.displayName.split(" ")[0]}
+                </span>
+                <span
+                  className="truncate text-[11px]"
+                  style={{ color: "var(--r-mute)" }}
+                >
+                  {user.role === "master" ? "Master" : "Plano gratuito"}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </aside>

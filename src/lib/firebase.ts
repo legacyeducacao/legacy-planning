@@ -1,4 +1,6 @@
 import { type FirebaseApp, getApps, initializeApp } from "firebase/app"
+import { type Auth, getAuth } from "firebase/auth"
+import { type Firestore, getFirestore } from "firebase/firestore"
 import { type FirebaseStorage, getStorage } from "firebase/storage"
 
 const firebaseConfig = {
@@ -12,6 +14,8 @@ const firebaseConfig = {
 
 let app: FirebaseApp
 let storage: FirebaseStorage
+let auth: Auth
+let firestore: Firestore
 
 const getApp = (): FirebaseApp => {
   if (!app) {
@@ -28,5 +32,24 @@ const getFirebaseStorage = (): FirebaseStorage => {
   return storage
 }
 
-export { getApp, getFirebaseStorage as getStorage }
+const getFirebaseAuth = (): Auth => {
+  if (!auth) {
+    auth = getAuth(getApp())
+  }
+  return auth
+}
+
+const getFirebaseFirestore = (): Firestore => {
+  if (!firestore) {
+    firestore = getFirestore(getApp())
+  }
+  return firestore
+}
+
+export {
+  getApp,
+  getFirebaseAuth as getAuth,
+  getFirebaseFirestore as getFirestore,
+  getFirebaseStorage as getStorage,
+}
 export const getFirebaseConfig = () => firebaseConfig

@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
+import { useAuth } from "@/components/auth/AuthProvider"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -70,6 +71,7 @@ export function EmailComposeModal({
   open,
   onOpenChange,
 }: EmailComposeModalProps) {
+  const { user } = useAuth()
   const [to, setTo] = useState("")
   const [cc, setCc] = useState("")
   const [subject, setSubject] = useState("")
@@ -104,7 +106,10 @@ export function EmailComposeModal({
       const response = await fetch("/api/ata/email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ata }),
+        body: JSON.stringify({
+          ata,
+          signature: user?.displayName,
+        }),
       })
       if (!response.ok) {
         const err = await response.json().catch(() => ({}))
@@ -129,7 +134,7 @@ export function EmailComposeModal({
     } finally {
       setIsGenerating(false)
     }
-  }, [ata, mode, composeBody])
+  }, [ata, mode, composeBody, user])
 
   // Auto-gera o rascunho ao abrir pela primeira vez
   useEffect(() => {

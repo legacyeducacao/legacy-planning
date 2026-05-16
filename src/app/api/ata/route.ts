@@ -2,7 +2,6 @@ import { google } from "@ai-sdk/google"
 import { generateText } from "ai"
 import { type NextRequest, NextResponse } from "next/server"
 import { normalizeAta } from "@/lib/ata-format"
-import { CURRENT_USER } from "@/lib/user"
 import type { TranscriptionSegment } from "@/types/transcription"
 
 const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-2.5-flash"
@@ -65,6 +64,7 @@ interface AtaRequestBody {
   duracao?: string
   horarioInicio?: string
   horarioTermino?: string
+  currentUserName?: string
 }
 
 function buildUserPrompt(body: AtaRequestBody): string {
@@ -188,7 +188,9 @@ export async function POST(req: NextRequest) {
     const ata = normalizeAta(ataInput)
 
     // Defaults pós-LLM: campos que o usuário não precisa preencher
-    if (!ata.responsavelAta) ata.responsavelAta = CURRENT_USER.nome
+    if (!ata.responsavelAta && body.currentUserName) {
+      ata.responsavelAta = body.currentUserName
+    }
     if (!ata.horarioEncerramento) ata.horarioEncerramento = formatTime(now)
 
     return NextResponse.json({ ata })

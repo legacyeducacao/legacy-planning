@@ -3,8 +3,12 @@
 import { FileText, Sparkles, Users } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useAuth } from "@/components/auth/AuthProvider"
 import { Button } from "@/components/ui/button"
 import { normalizeAta } from "@/lib/ata-format"
+import { canView } from "@/lib/permissions"
+import type { AuthUser } from "@/types/auth"
+import type { Ata } from "@/types/transcription"
 
 interface AtaSummary {
   id: string
@@ -16,7 +20,7 @@ interface AtaSummary {
   decisoes: number
 }
 
-function readAtas(): AtaSummary[] {
+function readAtas(user: AuthUser | null): AtaSummary[] {
   if (typeof localStorage === "undefined") return []
   const out: AtaSummary[] = []
   for (let i = 0; i < localStorage.length; i++) {
@@ -25,7 +29,19 @@ function readAtas(): AtaSummary[] {
     try {
       const raw = localStorage.getItem(key)
       if (!raw) continue
-      const ata = normalizeAta(JSON.parse(raw))
+      const parsed = JSON.parse(raw) as Ata & {
+        ownerUid?: string
+        aprovada?: boolean
+      }
+      const ata = {
+        ...normalizeAta(parsed),
+        ownerUid: parsed.ownerUid,
+        aprovada: parsed.aprovada,
+      }
+
+      // Aplica permissão: padrão só vê aprovadas + próprias; master vê tudo
+      if (!canView(ata, user)) continue
+
       out.push({
         id: key.slice("ata_".length),
         titulo: ata.titulo ?? "Ata de Reunião",
@@ -46,13 +62,14 @@ function readAtas(): AtaSummary[] {
 }
 
 export default function AtasPage() {
+  const { user } = useAuth()
   const [atas, setAtas] = useState<AtaSummary[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    setAtas(readAtas())
+    setAtas(readAtas(user))
     setIsLoaded(true)
-  }, [])
+  }, [user])
 
   return (
     <div className="bg-background min-h-screen">
@@ -109,8 +126,7 @@ export default function AtasPage() {
                         {ata.decisoes}
                       </span>
                       <span>
-                        <span className="font-medium">Ações:</span>{" "}
-                        {ata.acoes}
+                        <span className="font-medium">Ações:</span> {ata.acoes}
                       </span>
                     </div>
                   </div>

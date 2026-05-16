@@ -73,9 +73,9 @@ export default function AboutPage() {
               Áudio para texto, <span className="text-primary">com IA</span>
             </h1>
             <p className="mb-8 text-lg text-muted-foreground">
-              O LegacyPlanning converte teus arquivos de áudio em texto
-              preciso e pesquisável, com transcrição por IA, identificação de
-              falantes e análise inteligente.
+              O LegacyPlanning converte teus arquivos de áudio em texto preciso
+              e pesquisável, com transcrição por IA, identificação de falantes e
+              análise inteligente.
             </p>
             <Link
               href="/"

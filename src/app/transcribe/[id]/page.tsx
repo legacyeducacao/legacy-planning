@@ -16,6 +16,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { use, useCallback, useEffect, useRef, useState } from "react"
 import { Toaster, toast } from "sonner"
+import { useAuth } from "@/components/auth/AuthProvider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { generateAta } from "@/lib/ata-service"
@@ -87,6 +88,7 @@ export default function TranscribePage({
 }>) {
   const { id } = use(params)
   const router = useRouter()
+  const { user } = useAuth()
   const [status, setStatus] = useState<TranscribeStatus>("processing")
   const [progress, setProgress] = useState(30)
   const [result, setResult] = useState<TranscribeResult | null>(null)
@@ -216,6 +218,9 @@ export default function TranscribePage({
         transcription: result.transcription,
         segments: result.segments,
         intelligence: result.intelligence,
+        currentUser: user
+          ? { uid: user.uid, displayName: user.displayName }
+          : undefined,
       })
       try {
         localStorage.setItem(`ata_${id}`, JSON.stringify(gen.ata))

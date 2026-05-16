@@ -32,9 +32,9 @@ export function Feedback() {
             Feedback
           </h1>
           <p className="text-muted-foreground mb-8">
-            We appreciate your feedback to improve LegacyPlanning. Please
-            fill out the form below to let us know your thoughts, report issues,
-            or suggest new features.
+            We appreciate your feedback to improve LegacyPlanning. Please fill
+            out the form below to let us know your thoughts, report issues, or
+            suggest new features.
           </p>
 
           <div className="mb-4">
@@ -44,8 +44,7 @@ export function Feedback() {
 
         <footer className="text-muted-foreground py-4 text-center text-sm">
           <p>
-            © {new Date().getFullYear()} LegacyPlanning. All rights
-            reserved.
+            © {new Date().getFullYear()} LegacyPlanning. All rights reserved.
           </p>
         </footer>
       </div>

@@ -1,7 +1,6 @@
 import { google } from "@ai-sdk/google"
 import { generateText } from "ai"
 import { type NextRequest, NextResponse } from "next/server"
-import { CURRENT_USER } from "@/lib/user"
 import type { Ata } from "@/types/transcription"
 
 export const maxDuration = 30
@@ -32,6 +31,8 @@ SAÍDA: apenas JSON puro com o schema:
 
 interface EmailRequestBody {
   ata: Ata
+  /** Nome do autor (usado na assinatura "Abraço,\nNome"). */
+  signature?: string
 }
 
 function buildUserPrompt(ata: Ata, signature: string): string {
@@ -102,7 +103,10 @@ export async function POST(req: NextRequest) {
     const { text } = await generateText({
       model: google(MODEL_ID),
       system: SYSTEM_PROMPT,
-      prompt: buildUserPrompt(body.ata, CURRENT_USER.nome),
+      prompt: buildUserPrompt(
+        body.ata,
+        body.signature ?? body.ata.responsavelAta ?? "—",
+      ),
       providerOptions: {
         google: { responseMimeType: "application/json" },
       },
