@@ -149,7 +149,7 @@ function buildPauta(intelligence?: TranscriptionIntelligence): string[] {
 }
 
 function buildDiscussoes(
-  transcription: string,
+  _transcription: string,
   intelligence?: TranscriptionIntelligence,
 ): AtaDiscussao[] {
   // Prefer AssemblyAI chapters — clean, summarized content.
