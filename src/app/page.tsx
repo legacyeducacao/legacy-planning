@@ -7,7 +7,6 @@ import {
   Link as LinkIcon,
   Loader2,
   Mic,
-  Sparkles,
   Square,
   Upload,
   UploadCloud,
@@ -777,16 +776,6 @@ function RecordCard({ onRecorded }: { onRecorded: (file: File) => void }) {
     >
       {/* Top: eyebrow + headline + subtitle */}
       <div>
-        <p
-          className="mono-eyebrow mb-3 flex items-center gap-2"
-          style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
-        >
-          <span
-            className="inline-block h-1.5 w-1.5 rounded-full"
-            style={{ background: "var(--r-primary)" }}
-          />
-          # gravar ao vivo
-        </p>
         <h3
           className="mb-3"
           style={{
@@ -865,13 +854,6 @@ function PlannerPitchCard({ onOpen }: { onOpen: () => void }) {
       }}
     >
       <div>
-        <p
-          className="mono-eyebrow mb-4 flex items-center gap-1.5"
-          style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
-        >
-          <Sparkles className="h-3 w-3" style={{ color: "var(--r-primary)" }} />
-          # planner ai · ativo agora
-        </p>
         <h3
           className="mb-4"
           style={{
@@ -883,9 +865,9 @@ function PlannerPitchCard({ onOpen }: { onOpen: () => void }) {
             color: "var(--r-on-dark)",
           }}
         >
-          A próxima semana,
+          A sua próxima reunião
           <br />
-          <span style={{ color: "var(--r-primary)" }}>já planejada.</span>
+          <span style={{ color: "var(--r-primary)" }}>já sai planejada</span>
         </h3>
         <p
           className="max-w-md text-[14px]"
@@ -915,17 +897,6 @@ function PlannerPitchCard({ onOpen }: { onOpen: () => void }) {
           Abrir Planner AI
           <ArrowRight className="h-3.5 w-3.5" />
         </button>
-        <a
-          href="/tarefas"
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors"
-          style={{
-            background: "transparent",
-            border: "1px solid rgba(252,252,252,0.20)",
-            color: "var(--r-on-dark)",
-          }}
-        >
-          Como funciona
-        </a>
       </div>
     </div>
   )
@@ -969,12 +940,6 @@ function HowItWorksCard() {
         color: "var(--r-on-dark)",
       }}
     >
-      <p
-        className="mono-eyebrow mb-3"
-        style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
-      >
-        # como funciona
-      </p>
       <h3
         className="mb-5"
         style={{

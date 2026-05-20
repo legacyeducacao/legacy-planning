@@ -221,7 +221,7 @@
     letter-spacing: -0.022em;
   }
   .mono-eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-weight: 400;
     text-transform: lowercase;
     letter-spacing: 0;
