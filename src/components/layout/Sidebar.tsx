@@ -14,7 +14,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 import { useAuth } from "@/components/auth/AuthProvider"
-import { LogoConvene } from "@/components/brand/LogoConvene"
+import { LogoApex } from "@/components/brand/LogoApex"
 import { useTodosStore } from "@/stores/todos-store"
 
 type NavItem = {
@@ -75,7 +75,7 @@ export function Sidebar() {
             className="flex min-w-0 flex-1 items-center gap-2.5 group"
           >
             <span className="flex h-[30px] w-[30px] flex-shrink-0 items-center justify-center">
-              <LogoConvene
+              <LogoApex
                 size={22}
                 color="var(--r-ink)"
                 accent="var(--r-primary, #4a78ff)"

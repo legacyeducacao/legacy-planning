@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { type FormEvent, useEffect, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
-import { LogoConvene } from "@/components/brand/LogoConvene"
+import { LogoApex } from "@/components/brand/LogoApex"
 import { signInWithEmail, signInWithGoogle, signUpWithEmail } from "@/lib/auth"
 import "./login.css"
 
@@ -243,7 +243,7 @@ export default function LoginPage() {
       <header className="lp-d-top">
         {/* Wordmark: logo Convene + "LEGACY PLANNING" */}
         <a href="/" className="flex items-center gap-3.5 no-underline">
-          <LogoConvene size={28} color="#0e1118" accent="#3654ff" />
+          <LogoApex size={28} color="#0e1118" accent="#3654ff" />
           <span
             style={{
               fontFamily: "var(--font-body), sans-serif",

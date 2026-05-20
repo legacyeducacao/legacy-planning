@@ -1,6 +1,6 @@
 import { WifiOff } from "lucide-react"
 import Link from "next/link"
-import { LogoConvene } from "@/components/brand/LogoConvene"
+import { LogoApex } from "@/components/brand/LogoApex"
 
 export const metadata = {
   title: "Offline — LegacyPlanning",
@@ -13,7 +13,7 @@ export default function OfflinePage() {
       style={{ background: "var(--r-canvas)" }}
     >
       <div className="mb-6 opacity-80">
-        <LogoConvene
+        <LogoApex
           size={36}
           color="var(--r-ink)"
           accent="var(--r-primary, #4a78ff)"

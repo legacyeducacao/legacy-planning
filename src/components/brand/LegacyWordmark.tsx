@@ -1,4 +1,4 @@
-import { LogoConvene } from "./LogoConvene"
+import { LogoApex } from "./LogoApex"
 
 interface LegacyWordmarkProps {
   color?: string
@@ -24,7 +24,7 @@ export function LegacyWordmark({
         color,
       }}
     >
-      <LogoConvene size={logoSize} color={color} accent={accent || color} />
+      <LogoApex size={logoSize} color={color} accent={accent || color} />
       {stacked ? (
         <div
           className="font-sans font-bold uppercase"
