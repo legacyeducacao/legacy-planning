@@ -24,7 +24,7 @@ import {
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
-import { uploadFileToFirebase } from "@/lib/firebase-utils"
+import { uploadAudio } from "@/lib/upload-audio"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
 import type { AIFeatures } from "@/types/transcription"
@@ -131,9 +131,9 @@ export default function HomePage() {
           audioSourceSize = file.size
           audioSourceType = "file"
           toast.info("Enviando arquivo...")
-          // Upload direto pro Firebase Storage — evita o limite de ~6MB
-          // das Netlify Functions que rebatia 413 antes do server rodar.
-          const uploaded = await uploadFileToFirebase(file)
+          // Upload direto pro Supabase Storage — evita o limite de 4.5MB
+          // das Vercel Functions que rebatia 413 antes do server rodar.
+          const uploaded = await uploadAudio(file)
           audioUrl = uploaded.url
         } else {
           audioUrl = data.audioUrl
