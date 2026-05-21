@@ -36,3 +36,6 @@ dist
 
 # macOS resource forks
 ._*
+
+# Working scratch (extrações de DOCX, fixtures intermediárias)
+tmp/
