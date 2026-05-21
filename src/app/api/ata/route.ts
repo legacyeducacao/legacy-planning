@@ -2,6 +2,7 @@ import { google } from "@ai-sdk/google"
 import { generateText } from "ai"
 import { type NextRequest, NextResponse } from "next/server"
 import { normalizeAta } from "@/lib/ata-format"
+import { formatContextoForPrompt, loadContexto } from "@/lib/contexto-loader"
 import type { TranscriptionSegment } from "@/types/transcription"
 
 const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-2.5-flash"
@@ -12,18 +13,35 @@ function formatTime(d: Date): string {
 
 export const maxDuration = 60
 
-const SYSTEM_PROMPT = `Você é um especialista em redação de atas de reunião corporativas em português brasileiro. A partir de uma transcrição (com falantes quando disponível), você produz uma ata completa seguindo o modelo brasileiro de 11 seções.
+const SYSTEM_PROMPT = `Você é um analista de produto da Legacy Educação responsável por gerar atas de reuniões internas em português brasileiro. Vai receber: (1) o CONTEXTO da empresa (organograma, catálogo de produtos, glossário) e (2) uma TRANSCRIÇÃO automática que pode conter erros de reconhecimento de fala.
 
-REGRAS DURAS:
-1. Não invente nomes próprios, datas, prazos, cargos ou métricas. Se a evidência não estiver na transcrição, use null ou string vazia.
-2. Para os campos institucionais (empresa, projetoAssunto, tipoReuniao, objetivo), inferir do conteúdo é OK — mas seja conservador. Se incerto, deixe null.
-3. Identifique participantes pelos rótulos de falante (Participante 1, 2, 3) ou por nomes/menções diretas na fala. Não rotule um falante anônimo com um nome real.
-4. Decisões: frases declaratórias que selaram algo. Olhe por verbos como "vamos fazer", "fica decidido", "aprovado", "decidimos", "está combinado".
-5. Plano de ação: frases imperativas / com responsável / com prazo. "Ele vai preparar X até quinta".
-6. Pauta: 3 a 6 tópicos macro, em ordem de aparição. Cada item da pauta deve ter um bloco correspondente em discussoes.
-7. Discussões: para cada item da pauta, 2 a 5 pontos-chave em frases curtas, REESCRITAS na voz do redator (não cole o transcript bruto).
-8. Riscos/observações: ameaças, gaps, dependências, pontos de atenção mencionados.
-9. Tom: formal, claro, objetivo. Sem floreios. Sem repetir.
+PRINCÍPIO #1 — USE O CONTEXTO:
+A transcrição é de uma reunião INTERNA da Legacy Educação. Sempre que possível, preencha os campos institucionais com base no contexto fornecido, não null:
+- empresa: "Legacy Educação"
+- participantes: use os nomes e CARGOS oficiais do organograma (seção EQUIPE do contexto), na primeira menção
+- tipoReuniao, projetoAssunto, objetivo: infira do conteúdo e do escopo dos produtos/áreas mencionados
+
+PRINCÍPIO #2 — CORRIJA ERROS DE TRANSCRIÇÃO:
+A transcrição automática frequentemente erra nomes. Use a seção "Variações comuns de transcrição" do contexto EQUIPE como mapa automático de correções. Exemplos:
+- "Clayton" → "Clailton"
+- "Sempre Israel" / "Inteligência Israel" → "Impulsão Empresarial" / "Inteligência Empresarial"
+- "Lightning" / "Light" → "Legacy"
+- "Lego Explorer" / "Leg Splend" / "Alex Klan" / "Alex Plan" → "Legacy Plan"
+Aplique sem perguntar. Cite produtos sempre pelo nome oficial do catálogo (seção PRODUTOS).
+
+PRINCÍPIO #3 — NÃO INVENTE:
+- Nomes de PESSOAS que não estejam no organograma: mantenha como aparecem, ou "Não identificado".
+- PRODUTOS que não estejam no catálogo: registre como dito, ou marque na seção riscosObservacoes pra revisão humana.
+- NÚMEROS, PREÇOS e PRAZOS: preserve exatamente como ditos na transcrição. Não normalize.
+
+REGRAS DE ESTRUTURA:
+1. Identifique participantes pelos rótulos de falante (Participante 1, 2, 3) ou por nomes/menções diretas. Cruze com o organograma pra atribuir cargo.
+2. Decisões: frases declaratórias que selaram algo ("vamos fazer", "fica decidido", "aprovado", "decidimos", "está combinado"). DISTINGA decisão tomada vs proposta em discussão.
+3. Plano de ação: frases imperativas com responsável + prazo ("Ele vai preparar X até quinta"). Use o primeiro nome do responsável conforme organograma.
+4. Pauta: 3 a 6 tópicos macro, em ordem de aparição. Cada item deve ter um bloco correspondente em discussoes.
+5. Discussões: para cada item da pauta, 2 a 5 pontos-chave em frases curtas, REESCRITAS na voz do redator (não cole o transcript bruto).
+6. Riscos/observações: ameaças, gaps, dependências, pontos de atenção mencionados — incluindo termos suspeitos ("aparece 'X' na transcrição mas não bate com nenhum produto do catálogo").
+7. Tom: formal, claro, objetivo. Sem floreios. Sem repetir.
 
 SAÍDA: apenas JSON puro, sem markdown, sem texto fora, sem comentários, seguindo este schema exato:
 
@@ -67,7 +85,7 @@ interface AtaRequestBody {
   currentUserName?: string
 }
 
-function buildUserPrompt(body: AtaRequestBody): string {
+function buildUserPrompt(body: AtaRequestBody, contexto: string): string {
   const { transcription, segments } = body
 
   let content: string
@@ -102,7 +120,14 @@ function buildUserPrompt(body: AtaRequestBody): string {
     content = `${content.slice(0, MAX_CHARS)}\n\n[... transcrição truncada — ${content.length - MAX_CHARS} caracteres adicionais não incluídos ...]`
   }
 
-  return `TRANSCRIÇÃO:
+  return `## CONTEXTO DA EMPRESA (Legacy Educação)
+
+${contexto}
+
+---
+
+## TRANSCRIÇÃO DA REUNIÃO
+
 ${content}`
 }
 
@@ -146,10 +171,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const ctx = await loadContexto()
+    const contextoFormatado = formatContextoForPrompt(ctx, "ata")
+
     const { text } = await generateText({
       model: google(MODEL_ID),
       system: SYSTEM_PROMPT,
-      prompt: buildUserPrompt(body),
+      prompt: buildUserPrompt(body, contextoFormatado),
       providerOptions: {
         google: { responseMimeType: "application/json" },
       },
