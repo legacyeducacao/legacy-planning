@@ -23,8 +23,8 @@ import {
 } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
-import { ReleaseModal } from "@/components/ui/ReleaseModal"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
+import { uploadFileToFirebase } from "@/lib/firebase-utils"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
 import type { AIFeatures } from "@/types/transcription"
@@ -109,7 +109,7 @@ export default function HomePage() {
 
   const handleUpload = useCallback(
     async (
-      data: FormData | { audioUrl: string },
+      data: { file: File } | { audioUrl: string },
       options: { language: string; diarize: boolean; aiFeatures: AIFeatures },
     ) => {
       if (isSubmittingRef.current) return
@@ -119,39 +119,36 @@ export default function HomePage() {
         let audioSourceName: string
         let audioSourceSize: number | undefined
         let audioSourceType: "file" | "url"
-        let audioUrl: string | undefined
-        let response: Response
+        let audioUrl: string
         const optionsPayload = {
           language: options.language,
           diarize: options.diarize || false,
           aiFeatures: options.aiFeatures,
         }
-        if (data instanceof FormData) {
-          const file = data.get("file") as File
-          if (!file) throw new Error("Nenhum arquivo encontrado")
+        if ("file" in data) {
+          const { file } = data
           audioSourceName = file.name
           audioSourceSize = file.size
           audioSourceType = "file"
           toast.info("Enviando arquivo...")
-          data.append("options", JSON.stringify(optionsPayload))
-          response = await fetch(getApiUrl("transcribe"), {
-            method: "POST",
-            body: data,
-          })
+          // Upload direto pro Firebase Storage — evita o limite de ~6MB
+          // das Netlify Functions que rebatia 413 antes do server rodar.
+          const uploaded = await uploadFileToFirebase(file)
+          audioUrl = uploaded.url
         } else {
           audioUrl = data.audioUrl
           audioSourceName = data.audioUrl
           audioSourceType = "url"
           toast.info("Iniciando transcrição...")
-          response = await fetch(getApiUrl("transcribe"), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              audioUrl: data.audioUrl,
-              options: optionsPayload,
-            }),
-          })
         }
+        const response = await fetch(getApiUrl("transcribe"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            audioUrl,
+            options: optionsPayload,
+          }),
+        })
         if (!response.ok) {
           let errorBody = "Erro desconhecido do servidor"
           try {
@@ -171,13 +168,13 @@ export default function HomePage() {
             "Alguns recursos de IA não rodam nessa língua e foram desativados. A ata será gerada localmente.",
           )
         }
-        if (resultData.audioUrl) audioUrl = resultData.audioUrl
-        if (audioUrl) {
-          try {
-            localStorage.setItem(`audioUrl_${resultData.id}`, audioUrl)
-          } catch {
-            // ignore
-          }
+        // Server pode devolver uma URL canônica (mesma URL pra upload de
+        // arquivo, ou re-publicação pra upload via URL externa).
+        const finalAudioUrl = resultData.audioUrl ?? audioUrl
+        try {
+          localStorage.setItem(`audioUrl_${resultData.id}`, finalAudioUrl)
+        } catch {
+          // ignore
         }
         addToHistory({
           predictionId: resultData.id,
@@ -185,7 +182,7 @@ export default function HomePage() {
             name: audioSourceName,
             size: audioSourceSize,
             type: audioSourceType,
-            url: audioUrl,
+            url: finalAudioUrl,
           },
           options,
           status: "processing",
@@ -206,13 +203,14 @@ export default function HomePage() {
   // Submit helpers ─────────────────────────────────────────
   const submitFile = useCallback(
     (file: File) => {
-      const fd = new FormData()
-      fd.append("file", file)
-      handleUpload(fd, {
-        language: "auto",
-        diarize: true,
-        aiFeatures: DEFAULT_AI_FEATURES,
-      })
+      handleUpload(
+        { file },
+        {
+          language: "auto",
+          diarize: true,
+          aiFeatures: DEFAULT_AI_FEATURES,
+        },
+      )
     },
     [handleUpload],
   )
@@ -582,7 +580,6 @@ export default function HomePage() {
       )}
 
       <Toaster />
-      <ReleaseModal />
     </div>
   )
 }

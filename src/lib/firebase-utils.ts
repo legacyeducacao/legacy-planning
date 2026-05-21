@@ -13,6 +13,39 @@ const generateUniqueFilename = (originalName: string): string => {
 }
 
 /**
+ * Uploads a File diretamente pro Firebase Storage.
+ * Evita o gargalo da Netlify Function (~6MB body limit) — o cliente fala
+ * direto com o Storage, depois manda a URL pro /api/transcribe.
+ *
+ * @param file - File do input/dropzone
+ * @param onProgress - opcional, chamado com 0..1 enquanto sobe
+ */
+export async function uploadFileToFirebase(
+  file: File,
+  onProgress?: (fraction: number) => void,
+): Promise<{ url: string; path: string }> {
+  const storageInstance = getStorage()
+  const filename = generateUniqueFilename(file.name)
+  const filePath = `temp_audio/${filename}`
+  const fileRef = ref(storageInstance, filePath)
+
+  console.log(
+    `Uploading file "${file.name}" (${(file.size / 1024 / 1024).toFixed(2)} MB) → Firebase ${filePath}`,
+  )
+
+  // uploadBytes não emite progress; chamamos 0 e 1 manualmente. Pra progress
+  // real, migrar pra uploadBytesResumable (state_changed).
+  onProgress?.(0)
+  const snapshot = await uploadBytes(fileRef, file, {
+    contentType: file.type || "application/octet-stream",
+  })
+  onProgress?.(1)
+
+  const downloadURL = await getDownloadURL(snapshot.ref)
+  return { url: downloadURL, path: filePath }
+}
+
+/**
  * Uploads base64 encoded data to Firebase Storage.
  * @param {string} base64Data - The base64 encoded data string (with or without prefix).
  * @param {string} [mimeType='audio/mpeg'] - The MIME type of the data.
