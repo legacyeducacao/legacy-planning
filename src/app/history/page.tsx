@@ -97,7 +97,7 @@ export default function HistoryPage() {
         <div className="container mx-auto max-w-4xl">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-foreground text-2xl font-bold">Histórico</h1>
+              <h1 className="text-foreground text-2xl font-bold">Transcrições</h1>
               <p className="text-muted-foreground text-sm">
                 Tuas transcrições anteriores
               </p>

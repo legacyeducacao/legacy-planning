@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
   { href: "/planner", label: "Planner" },
-  { href: "/history", label: "Histórico" },
+  { href: "/history", label: "Transcrições" },
   { href: "/about", label: "Sobre" },
   { href: "/documentation", label: "Docs" },
   { href: "/changelog", label: "Novidades" },
@@ -33,7 +33,7 @@ const NAV_ITEMS = [
 
 const MOBILE_TABS = [
   { href: "/", label: "Transcrever", icon: Home },
-  { href: "/history", label: "Histórico", icon: Clock },
+  { href: "/history", label: "Transcrições", icon: Clock },
   { href: "/planner", label: "Planner", icon: CalendarDays },
 ]
 

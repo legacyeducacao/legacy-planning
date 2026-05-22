@@ -21,7 +21,7 @@ function breadcrumbLabel(path: string): string {
   const map: Record<string, string> = {
     atas: "Atas",
     tarefas: "Tarefas",
-    history: "Histórico",
+    history: "Transcrições",
     planner: "Planner AI",
     studio: "Studio",
     transcribe: "Transcrição",
