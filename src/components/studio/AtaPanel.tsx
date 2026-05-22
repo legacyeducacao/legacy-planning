@@ -512,25 +512,33 @@ export function AtaPanel({
                 Ata gerada localmente (sem IA)
               </p>
               <p className="text-muted-foreground mt-1 leading-relaxed">
-                {lastReason ?? "A chamada de IA falhou."} Pegue uma chave grátis
-                em{" "}
-                <a
-                  href="https://aistudio.google.com/apikey"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-foreground underline underline-offset-4 hover:decoration-2"
-                >
-                  aistudio.google.com/apikey
-                </a>{" "}
-                e adicione{" "}
-                <code className="bg-muted rounded px-1 py-0.5 text-xs">
-                  GOOGLE_GENERATIVE_AI_API_KEY
-                </code>{" "}
-                no{" "}
-                <code className="bg-muted rounded px-1 py-0.5 text-xs">
-                  .env.local
-                </code>{" "}
-                (depois reinicie o servidor). Os campos abaixo são editáveis.
+                {lastReason ?? "A chamada de IA falhou."}
+                {lastReason?.includes("GOOGLE_GENERATIVE_AI_API_KEY") ? (
+                  <>
+                    {" "}
+                    Pegue uma chave grátis em{" "}
+                    <a
+                      href="https://aistudio.google.com/apikey"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-foreground underline underline-offset-4 hover:decoration-2"
+                    >
+                      aistudio.google.com/apikey
+                    </a>{" "}
+                    e adicione{" "}
+                    <code className="bg-muted rounded px-1 py-0.5 text-xs">
+                      GOOGLE_GENERATIVE_AI_API_KEY
+                    </code>{" "}
+                    no{" "}
+                    <code className="bg-muted rounded px-1 py-0.5 text-xs">
+                      .env.local
+                    </code>{" "}
+                    (depois reinicie o servidor).
+                  </>
+                ) : (
+                  " Tenta clicar em Regenerar daqui a alguns minutos."
+                )}{" "}
+                Os campos abaixo são editáveis.
               </p>
             </div>
           </div>
