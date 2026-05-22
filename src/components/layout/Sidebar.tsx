@@ -8,7 +8,6 @@ import {
   FileText,
   Home,
   ListTodo,
-  Settings,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -51,7 +50,8 @@ export function Sidebar() {
 
   const bottomNav: NavItem[] = [
     { name: "Documentação", href: "/documentation", icon: BookOpen },
-    { name: "Configurações", href: "/settings", icon: Settings },
+    // Configurações removido — rota /settings ainda não existe, gerava 404
+    // nos prefetches de RSC do Sidebar. Reintroduzir quando a página for criada.
   ]
 
   function isActive(href: string) {
