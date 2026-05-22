@@ -12,10 +12,31 @@ const FALLBACK_CLAUDE = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-6"
 interface ModelAttempt {
   provider: "gemini" | "anthropic"
   id: string
+  /** Atraso em ms antes de tentar este modelo. Pra dar respiro a 429/overload. */
+  delayMs?: number
 }
 
+/**
+ * Chain de fallback:
+ * 1. Flash (primário)
+ * 2. Flash de novo após 3s — overload de Flash geralmente passa em segundos
+ * 3. Gemini 2.0 Flash — modelo alternativo free-tier, fila separada
+ * 4. Gemini 2.5 Flash Lite — último Gemini free-tier
+ * 5. Gemini 2.5 Pro — só funciona em paid tier (free tier tem limit 0); na
+ *    chain pra paid users, ignorado rápido em free tier (429 imediato)
+ * 6. Claude Sonnet — só se ANTHROPIC_API_KEY estiver configurada (paid)
+ */
 function buildFallbackChain(): ModelAttempt[] {
-  const chain: ModelAttempt[] = [{ provider: "gemini", id: PRIMARY_GEMINI }]
+  const chain: ModelAttempt[] = [
+    { provider: "gemini", id: PRIMARY_GEMINI },
+    { provider: "gemini", id: PRIMARY_GEMINI, delayMs: 3000 },
+  ]
+  if (PRIMARY_GEMINI !== "gemini-2.0-flash") {
+    chain.push({ provider: "gemini", id: "gemini-2.0-flash" })
+  }
+  if (PRIMARY_GEMINI !== "gemini-2.5-flash-lite") {
+    chain.push({ provider: "gemini", id: "gemini-2.5-flash-lite" })
+  }
   if (PRIMARY_GEMINI !== "gemini-2.5-pro") {
     chain.push({ provider: "gemini", id: "gemini-2.5-pro" })
   }
@@ -26,7 +47,7 @@ function buildFallbackChain(): ModelAttempt[] {
 }
 
 const RETRYABLE_RE =
-  /high demand|overload|rate.?limit|429|503|504|timeout|temporar|unavailable/i
+  /high demand|overload|rate.?limit|429|503|504|timeout|temporar|unavailable|quota/i
 
 async function generateAtaWithFallback(args: {
   system: string
@@ -35,6 +56,9 @@ async function generateAtaWithFallback(args: {
   const chain = buildFallbackChain()
   let lastErr: unknown
   for (const attempt of chain) {
+    if (attempt.delayMs) {
+      await new Promise((r) => setTimeout(r, attempt.delayMs))
+    }
     try {
       const model =
         attempt.provider === "anthropic"
