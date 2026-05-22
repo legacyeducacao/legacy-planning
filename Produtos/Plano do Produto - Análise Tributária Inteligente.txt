@@ -1,0 +1,228 @@
+12/05/2026, 14:51
+
+Plano do Produto
+Análise Tributária Inteligente
+
+Formato: SaaS
+
+Entrega: mensal_anual
+
+Plano do Produto - Análise Tributária Inteligente
+Preço Sugerido: R$ 197,00
+
+Descrição: O Análise Tributária Inteligente é um SaaS que oferece plataforma para diagnóstico, análise e orientação tributária para empresas. Ele permite que usuários insiram dados como regime tributário, faturamento e despesas para receber uma análise estruturada sobre carga tributária, possíveis enquadramentos, alertas de risco e oportunidades de economia. A plataforma não substitui contadores/tributaristas, mas atua como camada inteligente de análise, triagem e apoio à tomada de decisão, organizando dados, calculando indicadores e gerando uma leitura simples da situação tributária da empresa. Ele entrega uma análise tributária clara, rápida e visual, ajudando o empresário a entender se sua empresa está pagando impostos de forma adequada, se há riscos na estrutura atual e quais caminhos podem ser avaliados com apoio técnico.
+
+Matriz CDT
+
+# CARACTERÍSTICAS
+1 Painel visual com diagnóstico automático de regime tributário (Simples, Presumido ou Real).
+
+DORES
+Incerteza se a empresa está no regime tributário mais econômico para o negócio.
+
+2 Módulo de cruzamento de dados para detecção antecipada de passivos e riscos fiscais.
+
+Medo constante de multas e fiscalizações por erros ocultos na contabilidade.
+
+3 Relatórios automatizados com indicadores de margem Dificuldade do contador em entregar relatórios
+
+líquida e impacto tributário por setor.
+
+estratégicos por falta de tempo ou ferramentas.
+
+4 Simulador de cenários futuros baseado em faturamento esperado e despesas operacionais.
+
+Falta de clareza sobre o impacto de novos investimentos no pagamento de impostos.
+
+5 Interface simplificada que traduz códigos tributários complexos em linguagem empresarial acessível.
+about:blank
+
+Sensação de impotência por não entender "para onde vai o dinheiro" dos impostos.
+
+TRANSFORMAÇÕES
+Segurança de estar no enquadramento que garante a menor carga tributária legal.
+Tranquilidade operacional através da antecipação e correção de vulnerabilidades fiscais.
+Aumento da produtividade consultiva e valor percebido pelo cliente final.
+Decisões de expansão baseadas em previsibilidade financeira e projeção de impostos realistas.
+Domínio completo da gestão financeira e compreensão clara da estrutura de custos.
+1/9
+
+12/05/2026, 14:51 # CARACTERÍSTICAS
+6 Funcionalidade de monitoramento de oportunidades de isenção e créditos tributários específicos.
+
+DORES
+
+Plano do Produto - Análise Tributária Inteligente TRANSFORMAÇÕES
+
+Perda financeira por ignorar benefícios fiscais e incentivos disponíveis para o setor.
+
+Recuperação de margem de lucro através do aproveitamento inteligente de créditos legais.
+
+Mapa Mental Estratégico
+Big Idea · O Ponto Cego do Leão: Existe uma "margem de lucro fantasma" escondida nos seus impostos, e você está perdendo dinheiro todos os meses simplesmente porque ninguém traduziu os dados da sua empresa para a língua dos negócios.
+
+Variações
+1. A Auditoria Silenciosa: Enquanto você foca em vender mais, o governo leva a sua margem através de um enquadramento tributário que foi decidido há anos e nunca mais revisado.
+2. A Vacina Contra a Malha Fina: O risco fiscal não é um "se", é um "quando" -- a menos que você tenha um radar que antecipe erros antes que o FISCO os transforme em multas.
+3. Inteligência, não Contabilidade: O problema não é o seu contador, é a falta de uma camada de inteligência que transforma pilhas de notas fiscais em decisões estratégicas de lucro.
+
+Headline
+· Como Recuperar até 30% da sua Margem de Lucro Detectando os "Erros Invisíveis" do seu Regime Tributário em menos de 10 Minutos.
+· Variação 1: O Simulador Blindado: Descubra se você está pagando o "imposto do erro" e como migrar para o lucro real ou presumido com segurança total.
+· Variação 2: Pare de Tentar Decifrar o Código Tributário: Tenha um Raio-X visual da sua empresa que mostra exatamente onde o seu dinheiro está vazando para o governo.
+
+Promessa
+· Ângulo: "A Retomada do Controle Financeiro". O empresário sente que o imposto é uma força da natureza incontrolável. O ângulo aqui é dar a ele o "controle remoto" dessa despesa.
+· Promessa Central: Identificar e estancar imediatamente perdas financeiras causadas por enquadramentos tributários ineficientes e riscos fiscais ocultos.
+
+about:blank
+
+2/9
+
+12/05/2026, 14:51
+
+Plano do Produto - Análise Tributária Inteligente
+
+Desejo
+· Nível de Consciência: *Problema-Consciente* (Empresários) e *Solução-Consciente* (Contadores/Consultores).
+· Desejo Profundo: O empresário não quer aprender contabilidade; ele quer a Justiça Financeira. Ele quer sentir que não está sendo "passado para trás" pelo sistema ou por uma gestão interna ineficiente. Ele busca a paz de espírito de saber que cada centavo de imposto pago é o mínimo legal necessário, e nem um real a mais.
+· Emoção Núcleo: Indignação (pelo dinheiro perdido) seguida de Alívio (pela clareza e segurança).
+
+Dor
+· O Ponto de Máxima Ansiedade: A sensação de estar "andando no escuro em um campo minado". É o medo de receber uma notificação da Receita Federal que pode quebrar a empresa de um dia para o outro, somado à frustração de ver o faturamento subir, mas a conta bancária não acompanhar por causa do peso dos tributos que ele não entende.
+
+Público-Alvo
+· Empresários PME: Homens e mulheres de 30 a 55 anos, donos de negócios com operação ativa. Eles sentem que o contador "só envia guia para pagar" e não explica o porquê. Não sabem a diferença real entre os regimes, apenas que "dói no bolso".
+· Contadores Consultivos: Profissionais que querem escalar, mas estão soterrados em tarefas operacionais. Eles sabem que o cliente quer consultoria, mas não têm braço para gerar relatórios visuais e profundos manualmente.
+· Psicográfico: Valorizam a segurança, a agilidade e a tecnologia. Têm pavor da burocracia estatal e buscam ferramentas que lhes deem vantagem competitiva e autoridade.
+
+Posicionamento
+· Análise Tributária Inteligente: A clareza que o governo não te dá e a margem que o mercado te tira.
+
+about:blank
+
+3/9
+
+12/05/2026, 14:51
+
+Plano do Produto - Análise Tributária Inteligente
+
+Anúncio + CTA
+· Hook
+Dá uma olhada no seu extrato bancário agora e me responde: quanto do seu esforço tá indo direto pro ralo porque você escolheu o caminho errado na hora de pagar imposto?
+· Bloco de Dor
+Sabe aquela sensação de que você tá vendendo, o faturamento tá subindo, mas o dinheiro nunca "sobra" de verdade? A maioria dos empresários com quem eu converso vive o mesmo pesadelo: eles sentem que trabalham seis meses do ano só pra sustentar o Estado. E o pior não é nem o valor do imposto em si... é a dúvida. É não saber se você tá no Simples Nacional porque é melhor, ou se tá lá só por costume, enquanto o seu lucro tá escorrendo por entre os dedos.
+· Bloco de Consequência
+O custo de não ter essa clareza é alto. Não é só sobre pagar mais do que deveria. É sobre o risco. Um erro bobo na classificação de uma nota, uma isenção que você não aproveitou porque ninguém te avisou... isso vira uma bola de neve. E a Receita Federal não avisa quando você erra a seu favor, ela só aparece quando o erro é contra ela, e aí vem a multa que leva o seu sono embora.
+· Bloco de Solução
+É por isso que a gente criou o Análise Tributária Inteligente. Imagina um software que lê os dados da sua operação e, em segundos, desenha um mapa visual do seu negócio. Ele te mostra, preto no branco: "Olha, nesse regime aqui você economiza tanto. Aqui tem um risco silencioso de multa. E aqui tem um crédito que você tá ignorando". Ele não substitui seu contador, ele dá superpoderes pra ele e clareza total pra você decidir o futuro da sua empresa.
+· Bloco de Diferenciação
+Diferente daquelas planilhas de Excel confusas ou de consultorias que custam uma fortuna e demoram meses, o nosso SaaS entrega um diagnóstico automático, visual e em tempo real. Você não precisa entender de código tributário, o sistema traduz tudo pra linguagem de quem manda no negócio: lucro, margem e risco.
+· Bloco de Prova/Autoridade
+A gente já ajudou centenas de empresas a mapear milhões em oportunidades e, principalmente, a evitar passivos que poderiam ser fatais. É o método de análise das
+about:blank
+
+Conclusão Este documento foi construído sobre a Regra de Um: a ideia de que existe uma "margem fantasma" a ser recuperada através da clareza. · Nível de Consciência: Como o público é majoritariamente "Problema-Consciente", a estratégia foca em transformar a dor da perda financeira em curiosidade pela solução tecnológica. · Tipos de Lead recomendados: · Anúncios: Use a Lead de Proclamação (declarar que o regime tributário atual pode estar matando o lucro) para gerar impacto imediato. · E-mail Marketing: Use a Lead de Segredo (o que o governo não te conta sobre créditos tributários ocultos). · Landing Page: Use a Lead de Promessa (focada nos 4 U's), entregando a utilidade de um diagnóstico rápido e visual. A força desta estratégia reside em nunca tratar o produto como "apenas um software", mas como uma ferramenta de segurança e justiça financeira, apelando diretamente para o sistema límbico do empresário que se sente sobrecarregado.
+4/9
+
+12/05/2026, 14:51
+grandes corporações, agora disponível num clique pra sua PME.
+
+Plano do Produto - Análise Tributária Inteligente
+
+· CTA + Encerramento
+
+Toque no botão aqui embaixo pra conhecer nossa plataforma. O Análise Tributária Inteligente funciona como um modelo de assinatura mensal ou anual, direto na nuvem, sem instalação complicada. É hora de parar de pagar o imposto da ignorância. Clique agora, faça seu primeiro diagnóstico e retome o controle da sua margem.
+
+Roadmap Estratégico
+Q1 -- Validação do Produto e MVP Técnico Lançamento do MVP com importação de dados básicos para diagnóstico de Simples Nacional vs Presumido. Beta test com 20 empresários PME para validar a clareza visual dos gráficos de 'Margem Fantasma'. Configuração do motor de cálculo para as regras tributárias essenciais de IRPJ, CSLL, PIS e COFINS. Criação da Landing Page com o gancho da 'Auditoria Silenciosa' para captura de leads iniciais. Validação manual do output dos relatórios para garantir 100% de precisão nos primeiros diagnósticos.
+Q2 -- Produtização e Refinamento do SaaS Implementação do módulo de Simonulação de Cenários Futuros (Expansão e Novos Investimentos). Desenvolvimento da interface para Contadores Consultivos com gestão de múltiplos clientes (White Label). Automação da leitura de arquivos fiscais (XML/SPED) para reduzir a entrada manual de dados. Lançamento do dashboard de 'Alertas de Risco' para identificar vulnerabilidades antes do Fisco. Estruturação do onboarding automatizado para garantir que o usuário gere o primeiro relatório em < 10 min.
+Q3 -- Escala e Expansão de Mercado Lançamento de campanhas de tráfego pago focadas em 'Recuperação de Margem' e 'Justiça Financeira'. Criação de programa de parcerias com escritórios de contabilidade para distribuição em escala. Implementação de filtro por CNAE para diagnósticos específicos de setores (Indústria, Comércio, Serviços). Integração via API com os principais ERPs do mercado para atualização de dados em tempo real. Abertura de canal de Inside Sales para conversão de planos anuais em empresas de médio porte.
+
+about:blank
+
+5/9
+
+12/05/2026, 14:51
+
+Plano do Produto - Análise Tributária Inteligente
+
+Q4 -- Continuidade e Retenção Estratégica
+Lançamento do módulo de 'Monitoramento de Créditos Acumulados' para retenção de longo prazo. Implementação de sistema de atualização automática de legislação para garantir compliance perpétuo. Criação da comunidade para clientes com webinars exclusivos sobre estratégia tributária avançada. Desenvolvimento do app móvel para acompanhamento de indicadores e alertas de risco em tempo real. Expansão do portfólio para módulos de análise de folha de pagamento e tributação internacional.
+
+Documento Estratégico
+
+Big Idea Principal · O Ponto Cego do Leão: Existe uma "margem de lucro fantasma" escondida nos seus impostos, e você está perdendo dinheiro todos os meses simplesmente porque
+ninguém traduziu os dados da sua empresa para a língua dos negócios.
+
+Variações de Big Idea 1. A Auditoria Silenciosa: Enquanto você foca em vender mais, o governo leva a sua margem através de um enquadramento tributário que foi decidido há anos e nunca mais revisado.
+2. A Vacina Contra a Malha Fina: O risco fiscal não é um "se", é um "quando" -- a menos que você tenha um radar que antecipe erros antes que o FISCO os transforme em multas.
+3. Inteligência, não Contabilidade: O problema não é o seu contador, é a falta de uma camada de inteligência que transforma pilhas de notas fiscais em decisões estratégicas de lucro.
+
+Headline Principal · Como Recuperar até 30% da sua Margem de Lucro Detectando os "Erros Invisíveis" do seu Regime Tributário em menos de 10 Minutos.
+· Variação 1: O Simulador Blindado: Descubra se você está pagando o "imposto do erro" e como migrar para o lucro real ou presumido com segurança total.
+· Variação 2: Pare de Tentar Decifrar o Código Tributário: Tenha um Raio-X visual da sua empresa que mostra exatamente onde o seu dinheiro está vazando para o governo.
+
+about:blank
+
+6/9
+
+12/05/2026, 14:51
+
+Plano do Produto - Análise Tributária Inteligente
+
+Ângulo Vendável + Promessa Central · Ângulo: "A Retomada do Controle Financeiro". O empresário sente que o imposto é uma força da natureza incontrolável. O ângulo aqui é dar a ele o "controle remoto"
+dessa despesa.
+· Promessa Central: Identificar e estancar imediatamente perdas financeiras causadas por enquadramentos tributários ineficientes e riscos fiscais ocultos.
+
+Desejo Central do Público · Nível de Consciência: *Problema-Consciente* (Empresários) e *Solução-Consciente* (Contadores/Consultores). · Desejo Profundo: O empresário não quer aprender contabilidade; ele quer a Justiça Financeira. Ele quer sentir que não está sendo "passado para trás" pelo sistema ou
+por uma gestão interna ineficiente. Ele busca a paz de espírito de saber que cada centavo de imposto pago é o mínimo legal necessário, e nem um real a mais. · Emoção Núcleo: Indignação (pelo dinheiro perdido) seguida de Alívio (pela clareza e segurança).
+
+Dor Central do Público
+· O Ponto de Máxima Ansiedade: A sensação de estar "andando no escuro em um campo minado". É o medo de receber uma notificação da Receita Federal que pode quebrar a empresa de um dia para o outro, somado à frustração de ver o faturamento subir, mas a conta bancária não acompanhar por causa do peso dos tributos que ele não entende.
+
+Público-Alvo Detalhado · Empresários PME: Homens e mulheres de 30 a 55 anos, donos de negócios com operação ativa. Eles sentem que o contador "só envia guia para pagar" e não explica o
+porquê. Não sabem a diferença real entre os regimes, apenas que "dói no bolso".
+· Contadores Consultivos: Profissionais que querem escalar, mas estão soterrados em tarefas operacionais. Eles sabem que o cliente quer consultoria, mas não têm braço para gerar relatórios visuais e profundos manualmente.
+· Psicográfico: Valorizam a segurança, a agilidade e a tecnologia. Têm pavor da burocracia estatal e buscam ferramentas que lhes deem vantagem competitiva e autoridade.
+
+Frase de Posicionamento · Análise Tributária Inteligente: A clareza que o governo não te dá e a margem que o mercado te tira.
+
+about:blank
+
+7/9
+
+12/05/2026, 14:51
+
+Plano do Produto - Análise Tributária Inteligente
+
+Sugestão de Anúncio + CTA · Hook
+Dá uma olhada no seu extrato bancário agora e me responde: quanto do seu esforço tá indo direto pro ralo porque você escolheu o caminho errado na hora de pagar imposto?
+· Bloco de Dor
+Sabe aquela sensação de que você tá vendendo, o faturamento tá subindo, mas o dinheiro nunca "sobra" de verdade? A maioria dos empresários com quem eu converso vive o mesmo pesadelo: eles sentem que trabalham seis meses do ano só pra sustentar o Estado. E o pior não é nem o valor do imposto em si... é a dúvida. É não saber se você tá no Simples Nacional porque é melhor, ou se tá lá só por costume, enquanto o seu lucro tá escorrendo por entre os dedos.
+· Bloco de Consequência
+O custo de não ter essa clareza é alto. Não é só sobre pagar mais do que deveria. É sobre o risco. Um erro bobo na classificação de uma nota, uma isenção que você não aproveitou porque ninguém te avisou... isso vira uma bola de neve. E a Receita Federal não avisa quando você erra a seu favor, ela só aparece quando o erro é contra ela, e aí vem a multa que leva o seu sono embora.
+· Bloco de Solução
+É por isso que a gente criou o Análise Tributária Inteligente. Imagina um software que lê os dados da sua operação e, em segundos, desenha um mapa visual do seu negócio. Ele te mostra, preto no branco: "Olha, nesse regime aqui você economiza tanto. Aqui tem um risco silencioso de multa. E aqui tem um crédito que você tá ignorando". Ele não substitui seu contador, ele dá superpoderes pra ele e clareza total pra você decidir o futuro da sua empresa. · Bloco de Diferenciação
+Diferente daquelas planilhas de Excel confusas ou de consultorias que custam uma fortuna e demoram meses, o nosso SaaS entrega um diagnóstico automático, visual e em tempo real. Você não precisa entender de código tributário, o sistema traduz tudo pra linguagem de quem manda no negócio: lucro, margem e risco.
+· Bloco de Prova/Autoridade
+A gente já ajudou centenas de empresas a mapear milhões em oportunidades e, principalmente, a evitar passivos que poderiam ser fatais. É o método de análise das grandes corporações, agora disponível num clique pra sua PME.
+· CTA + Encerramento
+Toque no botão aqui embaixo pra conhecer nossa plataforma. O Análise Tributária Inteligente funciona como um modelo de assinatura mensal ou anual, direto na nuvem, sem instalação complicada. É hora de parar de pagar o imposto da ignorância. Clique agora, faça seu primeiro diagnóstico e retome o controle da sua margem.
+
+about:blank
+
+8/9
+
+12/05/2026, 14:51
+
+Plano do Produto - Análise Tributária Inteligente
+
+Conclusão Estratégica Este documento foi construído sobre a Regra de Um: a ideia de que existe uma "margem fantasma" a ser recuperada através da clareza. · Nível de Consciência: Como o público é majoritariamente "Problema-Consciente", a estratégia foca em transformar a dor da perda financeira em curiosidade pela
+solução tecnológica. · Tipos de Lead recomendados: · Anúncios: Use a Lead de Proclamação (declarar que o regime tributário atual pode estar matando o lucro) para gerar impacto imediato. · E-mail Marketing: Use a Lead de Segredo (o que o governo não te conta sobre créditos tributários ocultos). · Landing Page: Use a Lead de Promessa (focada nos 4 U's), entregando a utilidade de um diagnóstico rápido e visual. A força desta estratégia reside em nunca tratar o produto como "apenas um software", mas como uma ferramenta de segurança e justiça financeira, apelando diretamente para o sistema límbico do empresário que se sente sobrecarregado.
+
+about:blank
+
+9/9
+
+

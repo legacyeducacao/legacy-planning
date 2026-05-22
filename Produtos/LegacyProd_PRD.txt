@@ -1,0 +1,266 @@
+LEGACYPROD
+
+PRD · Product Requirements Document
+
+PRD
+LegacyProd
+Sistema de estruturação de produtos educacionais com IA -- do briefing inicial ao plano executivo.
+
+Versão Data Autor Stack Status
+
+1.0 Maio de 2026 Equipe LegacyProd React + Vite + TypeScript · Lovable Cloud (Supabase) · Lovable AI Gateway Em produção · Iteração ativa
+
+LegacyProd · Sistema de Estruturação de Produtos Educacionais
+
+Página 1
+
+LEGACYPROD
+
+PRD · Product Requirements Document
+
+CAPÍTULO 1
+
+1. Visão do Produto
+
+LegacyProd é um sistema interno usado pela Legacy Educação Corp para transformar ideias e materiais brutos (briefings, áudios, documentos) em produtos educacionais completos, estruturados pedagogicamente e prontos para venda. A plataforma combina um fluxo de criação guiado, frameworks de marketing/pedagogia e assistência de IA para reduzir o ciclo de concepção de semanas para horas, mantendo qualidade executiva.
+Problema
+Equipes de produto educacional perdem dias colando informação entre planilhas, Notion, slides e roteiros. Cada novo produto recomeça do zero, sem padrão de estruturação, sem preço baseado em valor e sem sincronia entre o time comercial, pedagógico e operacional.
+Solução
+Um único hub onde cada produto nasce com um esqueleto pré-definido (Sobre · Matriz CDT · Big Idea · Mapa Mental · Conteúdo Programático · Entregáveis · Roadmap · Plano · Tarefas) e evolui com auxílio de IA contextual. Tudo persistido em Lovable Cloud, com RBAC e fluxo de aprovação Master.
+Princípios de copy de IA · Emotion first, logic later -- toda saída textual gerada pela IA prioriza dor e desejo antes de
+lógica.
+· Combate à Curse of Knowledge -- linguagem acessível, sem jargão pedagógico/marketing.
+· Marketing Copy nunca é gerada automaticamente dentro do Plano do Produto -- exige curadoria humana.
+CAPÍTULO 2
+
+2. Personas e Papéis
+
+O sistema opera com RBAC (Role-Based Access Control) gerenciado por uma Edge Function manage-users que usa service_role para contornar RLS na atribuição de papéis. Os papéis disponíveis são:
+
+Papel
+
+Permissões
+
+Cenário típico
+
+Master
+
+Acesso total · aprova produtos · gerencia usuários e papéis · Liderança / sócios
+
+vê tudo
+
+da Legacy
+
+Colaborador
+
+Cria e edita produtos próprios · vê produtos aprovados · gerencia tarefas
+
+Time de produto / pedagógico
+
+LegacyProd · Sistema de Estruturação de Produtos Educacionais
+
+Página 2
+
+LEGACYPROD
+
+PRD · Product Requirements Document
+
+Visitante
+
+Apenas visualiza produtos aprovados
+
+CAPÍTULO 3
+3. Arquitetura e Stack
+
+Convidados, parceiros, freelas em onboarding
+
+Frontend Roteamento Backend IA Auth Storage Tipografia Estética
+
+React 18 · Vite 5 · TypeScript 5 · Tailwind v3 · shadcn/ui · framer-motion React Router · sidebar hierárquica (Gestão / Produtos) Lovable Cloud (Postgres + Auth + Storage + Edge Functions) Lovable AI Gateway · Google Gemini 2.5 (Flash/Pro) e OpenAI GPT-5 (mini/nano) Email + senha · OAuth Google · sessão JWT Bucket público activity-slides para uploads de aulas Urbanist (display + body) Premium executiva -- dark tones com acentos dourados
+
+Modelo de dados (visão geral) · products -- entidade central. Inclui formato de evento, modelo de entrega, preço, audiência,
+status de aprovação e flag programmatic_content_disabled. · matrix_cdt -- Característica · Dor · Transformação por produto. · marketing_briefing -- pitch de vendas e copy gerada (Big Idea). · programmatic_content_modules / _deliverables -- módulos e aulas com posição
+(drag-and-drop). · product_roadmap -- fases Q1­Q4 em JSON. · product_sprints -- sprints com checklist e resultado. · action_items -- tarefas operacionais (Kanban). · profiles + user_roles -- separação obrigatória de identidade e permissão.
+Segurança · RLS habilitado em todas as tabelas de domínio. · Funções SECURITY DEFINER (is_master, has_role, can_view_product, can_edit_product) evitam
+recursão em policies. · Atribuição de papéis exclusivamente via Edge Function com service_role -- clientes não
+escrevem em user_roles diretamente.
+
+LegacyProd · Sistema de Estruturação de Produtos Educacionais
+
+Página 3
+
+LEGACYPROD
+
+PRD · Product Requirements Document
+
+· Master sempre vê tudo; demais usuários veem apenas produtos aprovados, próprios ou onde são responsáveis.
+CAPÍTULO 4
+
+4. Fluxo de Criação de Produto
+
+A criação acontece em 6 etapas sequenciais, com persistência incremental no Supabase a cada passo (o usuário pode sair e voltar sem perder o que já foi preenchido).
+
+# Etapa
+
+O que acontece
+
+1 Smart Import
+
+Wizard Template-First. Upload de DOCX ou áudio  IA parseia e pré-preenche os campos do produto.
+
+2 Sobre o Produto
+
+Nome, descrição, público-alvo, preço, formato, modelo de entrega, datas, notas livres.
+
+3 Matriz CDT
+
+Tríades pedagógicas Característica  Dor  Transformação. Auto-save e edição inline.
+
+4 Big Idea
+
+Documento de marketing por frameworks específicos, parseado em cards individuais com markdown.
+
+5 Conteúdo Programático
+
+Módulos/aulas com drag-and-drop. Toggle para produtos sem conteúdo programático (SaaS, mentoria).
+
+6 Roadmap & Plano CAPÍTULO 5
+
+IA gera 4 fases (Q1­Q4). Plano consolida preço, horas e cronograma com auto-sync.
+
+5. Funcionalidades
+
+Módulo Listagem de Produtos
+Sobre
+Matriz CDT Big Idea
+
+Descrição
+Cards agrupados por formato (Online, Presencial, Híbrido, SaaS). Badge de aprovação (Pendente · Em Revisão · Aprovado · Arquivado) com dropdown exclusivo do Master.
+Dados gerais + lógica condicional por modelo de entrega (frequência, dias de imersão, URL do SaaS) + campo livre 'Mais Sobre o Produto'.
+Tríades pedagógicas com auto-save por campo. Preview formatado da audiência.
+Geração via IA com frameworks definidos. Cada bloco vira um card com react-markdown.
+
+Status Pronto
+Pronto
+Pronto Pronto
+
+LegacyProd · Sistema de Estruturação de Produtos Educacionais
+
+Página 4
+
+LEGACYPROD
+
+PRD · Product Requirements Document
+
+Conteúdo Programático
+Toggle 'Sem Conteúdo Programático' Mapa Mental
+Roadmap Estratégico Plano do Produto
+Tarefas (Kanban + Sprints) Pricing inteligente
+Smart Import
+Gestão de Usuários
+Aprovação de Produtos CAPÍTULO 6
+
+Modos: Curso Online (módulos), Recorrente (aulas), Imersão (cronograma por dia). Drag-and-drop de módulos/aulas. Upload de slides + sugestão de conteúdo via IA.
+
+Pronto
+
+Marca produtos como SaaS/mentoria que não exigem módulos. Esconde a UI e mostra estado vazio.
+
+Pronto
+
+Visualização hierárquica do produto (JSON em products.mind_map).
+
+Pronto
+
+Fases Q1­Q4 geradas por IA específicas para cada produto. Pronto
+
+Consolida pricing, horas e roadmap. Sincroniza ao reganhar foco da janela.
+
+Pronto
+
+Duas visões: operacionais (action_items) e estratégicas (sprints com checklist).
+
+Pronto
+
+Input manual + sugestão de preço Value-Based Pricing via IA.
+
+Pronto
+
+Step 1 do wizard: parse de DOCX e áudio para pré-estruturar produtos.
+
+Pronto
+
+Edge Function manage-users · convite, atribuição de papel, remoção. Apenas Master.
+
+Pronto
+
+Master altera status (Pendente  Em Revisão  Aprovado  Arquivado) via dropdown no card.
+
+Pronto
+
+6. Navegação
+
+A sidebar é hierárquica e separa preocupações administrativas de produto: · Gestão -- Dashboard, Tarefas (Kanban e Sprints), Usuários (Master). · Produtos -- lista expansível. Cada produto abre um sub-menu com todas as etapas (Sobre,
+Matriz CDT, Big Idea, Mapa Mental, Conteúdo Programático, Entregáveis, Roadmap, Plano).
+CAPÍTULO 7
+
+7. Camada de IA
+
+Toda chamada de IA passa pelo Lovable AI Gateway -- não há API keys de cliente. Modelos selecionados por caso de uso: · Geração de Big Idea / Roadmap -- Gemini 2.5 Pro (raciocínio + contexto longo). · Sugestão de Pricing / Matriz CDT -- Gemini 2.5 Flash (custo/latência).
+
+LegacyProd · Sistema de Estruturação de Produtos Educacionais
+
+Página 5
+
+LEGACYPROD
+
+PRD · Product Requirements Document
+
+· Smart Import (parse de DOCX e áudio) -- Gemini 2.5 Pro multimodal. · Sugestão de conteúdo por aula -- Gemini 2.5 Flash sob demanda.
+CAPÍTULO 8
+8. Roadmap do Produto
+Próximas iterações priorizadas: · Q3/2026 -- Templates de produto (clonar estrutura aprovada). · Q3/2026 -- Comentários por seção (revisão colaborativa Master  Colaborador). · Q4/2026 -- Exportação executiva: PRD do produto em PDF + apresentação comercial. · Q4/2026 -- Integração com calendário e CRM para acompanhar lançamento. · 2027 -- Métricas pós-lançamento (NPS, recompra, conclusão) realimentando a Matriz CDT.
+CAPÍTULO 9
+9. Métricas de Sucesso
+· Tempo médio do briefing ao produto aprovado < 48h. ·  80% dos novos produtos usando Smart Import na etapa 1. ·  90% dos produtos aprovados com Matriz CDT preenchida. · Zero produtos publicados sem revisão Master (gate de aprovação). · Adoção:  100% do time de produto da Legacy ativo semanalmente.
+CAPÍTULO 10
+10. Riscos e Mitigações
+
+Risco
+
+Mitigação
+
+Dependência de Lovable Cloud / AI Gateway
+
+Modelos abstraídos em camada de serviço -- troca de provedor sem refator de UI.
+
+Conteúdo gerado por IA contradizendo princípio 'Emotion first'
+
+Prompts versionados com guardrails explícitos + revisão humana obrigatória antes de publicar.
+
+Escalonamento de privilégio via user_roles
+
+RLS bloqueia escrita; apenas Edge Function com service_role atribui papéis.
+
+Perda de dados em wizards longos CAPÍTULO 11
+
+Persistência incremental por etapa + auto-save em campos críticos.
+
+LegacyProd · Sistema de Estruturação de Produtos Educacionais
+
+Página 6
+
+LEGACYPROD
+
+PRD · Product Requirements Document
+
+11. Fora de Escopo (por enquanto)
+· Hospedagem de aulas em vídeo (delegado a plataforma LMS externa). · Pagamento e checkout do aluno final. · App mobile nativo -- apenas web responsivo. · Multi-tenant para outras empresas além da Legacy Educação Corp.
+
+-- Fim do documento --
+
+LegacyProd · Sistema de Estruturação de Produtos Educacionais
+
+Página 7
+
+

@@ -4,7 +4,7 @@ import {
   BookOpen,
   CalendarDays,
   ChevronLeft,
-  Clock,
+  FileAudio,
   FileText,
   Home,
   ListTodo,
@@ -45,7 +45,7 @@ export function Sidebar() {
       icon: ListTodo,
       badge: openTodosCount > 0 ? openTodosCount : undefined,
     },
-    { name: "Histórico", href: "/history", icon: Clock },
+    { name: "Transcrições", href: "/history", icon: FileAudio },
   ]
 
   const bottomNav: NavItem[] = [

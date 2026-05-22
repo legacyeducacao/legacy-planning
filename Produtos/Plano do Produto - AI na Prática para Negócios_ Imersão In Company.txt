@@ -1,0 +1,299 @@
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Plano do Produto
+AI na Prática para Negócios: Imersão In Company
+
+Formato: Presencial
+
+Entrega: Imersão
+
+Horas/sessão: 10h
+
+Dias de imersão: 3
+
+Preço Sugerido: R$ 45.000,00
+
+Descrição: Imersão presencial de 3 dias, exclusiva para empresas, com o objetivo de identificar gargalos operacionais e construir soluções práticas de Inteligência Artificial para otimização de processos. O produto foca em diagnóstico real, priorização com a liderança e prototipagem ágil, combinando teoria e aplicação prática no contexto do negócio do cliente. A metodologia Vibe Coding é central para a cocriação de soluções.
+
+Matriz CDT
+
+# CARACTERÍSTICAS
+1 Imersão presencial de 3 dias com diagnóstico real dos problemas operacionais da empresa.
+
+DORES
+Gargalos invisíveis que travam a operação e impedem o crescimento escalável.
+
+TRANSFORMAÇÕES
+Visibilidade total dos processos ineficientes e clareza absoluta sobre onde atuar primeiro.
+
+2 Aplicação da metodologia Vibe Coding para cocriação acelerada de soluções de IA.
+
+Dificuldade técnica em tirar ideias de IA do papel e implementar no dia a dia.
+
+Capacidade de desenvolver soluções tecnológicas rapidamente sem depender de infraestruturas complexas.
+
+3 Fase dedicada à priorização estratégica de implementação junto à alta liderança.
+
+Investimento de tempo e dinheiro em inovações que não geram retorno real.
+
+Segurança na tomada de decisão e alocação de recursos em projetos de alto impacto.
+
+4 Construção de protótipos ágeis aplicados diretamente aos processos internos do cliente.
+
+Ciclos de desenvolvimento de software lentos que demoram meses para entregar valor.
+
+Redução drástica do time-to-market com ferramentas funcionais entregues ao final do terceiro dia.
+
+5 Treinamento focado em identificar e automatizar tarefas manuais e repetitivas existentes.
+
+Equipes sobrecarregadas com processos manuais obsoletos e baixa produtividade.
+
+Liberação da equipe para funções estratégicas através da automação inteligente de rotinas.
+
+6 Foco exclusivo no contexto do negócio, abandonando exemplos genéricos de mercado.
+about:blank
+
+Dificuldade em visualizar como a IA se aplica especificamente ao seu nicho de atuação.
+
+Personalização total da tecnologia, transformando a IA em uma vantagem competitiva exclusiva do negócio.
+1/11
+
+12/05/2026, 14:50
+Cronograma (3 dias)
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Dia 01
+09:00 - 11:00 Diagnóstico de Gargalos: Mapeamento de Processos e Ineficiências Reais (Especialista em Processos) 11:00 - 11:15 Coffee Break & Networking Estratégico (Equipe de Apoio) 11:15 - 13:00 Matriz de Priorização: Impacto vs. Esforço para Decisores (Seleção do Problema) (Facilitador Principal) 13:00 - 14:30 Almoço Executivo (Debate: IA e Gestão de Headcount) (Liderança e Mentores) 14:30 - 16:30 Introdução ao Vibe Coding: Como Criar Soluções sem Linhas Complexas de Código (Tech Lead IA) 16:30 - 16:45 Pausa para Café e Alinhamento de Metas (Equipe de Apoio) 16:45 - 18:00 Design Sprint IA: Definindo o Escopo do Protótipo de Negócio (Facilitador Principal) 08:00 - 09:00 Abertura: O ROI da IA e o Fim do Hype ­ Por que estamos aqui? (Facilitador Principal)
+
+about:blank
+
+2/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Dia 02
+10:00 - 11:00 Workbench: Estruturando os Dados Internos para o Protótipo (Tech Lead AI+Vibe Coding)
+
+11:15 - 13:00 Mão na Massa I: Construção da Lógica e Fluxo de Automação IA (Mentoes de IA)
+
+13:00 - 14:30 Almoço de Trabalho: Insights de Implementação Ágil (Liderança e Mentores)
+
+14:30 - 16:30 Mão na Massa II: Vibe Coding na Prática - Transformando Ideias em Ferramenta Functional (Tech Lead AI+Vibe Coding)
+
+16:30 - 16:45 Pausa para Café (Equipe de Apoio)
+
+16:45 - 18:00 Sessão de Refinamento: Ajuste Fino dos Outputs da IA com os Stakeholders (Facilitador Principal)
+
+08:00 - 10:00 Governança e Segurança: Protegendo os Dados do seu Negócio na IA (Consultor de Segurança/Compliance)
+
+11:00 - 11:15 Coffee Break (Equipe de Apoio)
+
+about:blank
+
+3/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Dia 03
+17:30 - 18:00 Encerramento e Certificação de Líderes de Inovação em IA (Liderança da Empresa)
+
+08:00 - 10:00 Integração: Conectando a Solução de IA ao seu ERP/CRM atual (Especialista em Integrações e Tech Lead)
+
+10:00 - 11:00 Cálculo de Eficiência: Quanto Tempo e Dinheiro a Nova Solução vai Economizar? (Facilitador Principal)
+
+11:00 - 11:15 Coffee Break Final de Ajustes (Equipe de Apoio)
+
+11:15 - 13:00 Finalização dos Protótipos: Testes Operacionais Reais (Stress Test) (Equipes de Trabalho)
+
+13:00 - 14:30 Almoço Festivo: Celebração da Transformação Digital In Company (Liderança e Mentores)
+
+14:30 - 16:30 Demo Day Interno: Apresentação das Soluções Criadas e Validação de ROI (CEOs e Sócios-Diretores)
+
+16:30 - 17:30 Roadmap de Segunda-Feira: Implementação, Escala e Próximos Passos (Facilitador Principal)
+
+Mapa Mental Estratégico
+
+about:blank
+
+4/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Big Idea
+· O Fim do "Software Fantasma": Enquanto o mercado discute teorias de IA que levam meses para sair do papel, sua empresa constrói e opera soluções proprietárias e funcionais em apenas 72 horas através do Vibe Coding.
+
+Variações
+· O Algoritmo de Prateleira morreu: Pare de tentar adaptar seu negócio a ferramentas prontas; crie uma IA que "fala a língua" dos seus processos internos em três dias de imersão.
+· A "Fábrica de Atalhos" Inteligente: Identifique os gargalos invisíveis que drenam seu lucro e instale automações sob medida que devolvem o tempo de estratégia para sua liderança.
+· Soberania Tecnológica Ágil: Não espere pelo cronograma do TI; lidere a cocriação de ferramentas que eliminam o trabalho manual repetitivo antes do pôr do sol do terceiro dia.
+
+Headline
+· "72 Horas para Erradicar Processos Manuais: A Imersão In Company que Projeta e Entrega IAs Funcionais nos Seus Gargalos de Operação."
+· Variação 1 (Foco em Curiosidade/Mecânico): "O Método Vibe Coding: Como empresas estão pulando a fila do desenvolvimento de software e instalando IAs proprietárias em um único fim de semana."
+· Variação 2 (Foco em Dor/Concreto): "Pare de pagar caro por equipes sobrecarregadas com tarefas de copiar e colar. Transforme sua operação manual em uma máquina automatizada com 3 dias de diagnóstico e prototipagem real."
+
+Promessa
+· O Mecanismo da Velocidade Pragmática.
+A promessa central não é "aprender IA", mas sim "eliminar o atraso operacional através da entrega de software funcional em 3 dias". O benefício único é a tangibilidade imediata: o cliente termina a imersão com ferramentas reais rodando, não com um PDF de recomendações.
+
+Desejo
+· Nível de Consciência: Solução-Consciente (Sabe que IA é o caminho, mas está paralisado pela complexidade ou frustrado com a lentidão do TI/consultorias). · Desejo Profundo: Controle e Velocidade. Eles querem parar de sentir que a empresa é um "balde furado" onde o lucro escorre por processos manuais e querem retomar a dianteira competitiva sem depender de ciclos de desenvolvimento de 6 meses. · Emoção Núcleo: Alívio da carga operacional e a Euforia da criação imediata.
+
+Dor
+· A "Inércia Tecnológica": É a raiva silenciosa de ver a equipe presa em planilhas e tarefas burocráticas enquanto os concorrentes parecem estar acelerando. É o medo de investir 100 mil reais em um projeto de tecnologia que vai ser entregue obsoleto ou que ninguém vai usar.
+
+about:blank
+
+5/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Público-Alvo
+· Perfil: CEOs e Sócios-Diretores de empresas de médio/grande porte (serviços, indústria ou varejo estruturado) com mais de 50 colaboradores.
+· Comportamento: Decisores práticos, impacientes com jargões técnicos, focados em ROI e eficiência de headcount.
+· Psicográfico: Valorizam a exclusividade (In Company) e a segurança de que a estratégia não será vazada. Estão cansados de cursos teóricos e querem algo que "resolva o problema na segunda-feira".
+· Consciência: Já tentaram usar ChatGPT ou ferramentas básicas, mas não viram mudança no ponteiro do faturamento ou custo fixo.
+
+Posicionamento · "IA na Prática: Onde o diagnóstico vira código e o gargalo vira lucro em 3 dias."
+
+about:blank
+
+6/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Anúncio + CTA
+· Hook: "Sua empresa está perdendo dinheiro agora porque você está tentando resolver problemas de 2024 com processos manuais de 2010. E o pior: você sabe disso."
+· Bloco de Dor: "Dá uma olhada pro lado aí na sua operação. Quantas pessoas talentosas você tem hoje presas em planilhas intermináveis, conferindo dados manualmente ou fazendo tarefas que um robô faria em segundos? Esse é o 'lucro invisível' que está escorrendo pelos dedos porque sua estrutura está pesada, lenta e dependente de braço humano pra tudo."
+· Bloco de Consequência: "Se você continuar tentando 'estudar' IA antes de aplicar, ou pior, esperar o seu TI ter tempo pra desenvolver algo, o mercado vai te atropelar. O custo de não ter uma IA sob medida hoje não é só a ineficiência... é a perda da sua margem de lucro para quem decidiu automatizar primeiro. E contratar uma consultoria que só te entrega um relatório de 200 páginas não vai resolver nada."
+· Bloco de Solução: "É por isso que a gente criou a Imersão AI na Prática. A gente entra na sua empresa por 3 dias. No primeiro dia, a gente faz um raio-x e acha exatamente onde o processo está travado. No segundo, a gente senta com a sua liderança e prioriza o que traz dinheiro rápido. No terceiro, a gente aplica o 'Vibe Coding'. A gente não sai daí com uma ideia... a gente sai com protótipos funcionais, ferramentas de IA proprietárias prontas para rodar nos seus processos."
+· Bloco de Diferenciação: "Esquece curso teórico ou exemplo de empresa americana que não tem nada a ver com você. A gente vai usar os seus dados, os seus problemas e o seu contexto. É cocriação real. Você não vai assistir a uma palestra, você vai comandar a construção da tecnologia que vai escalar o seu negócio."
+· Bloco de Prova/Autoridade: "Nós já destravamos operações que economizaram centenas de horas de trabalho manual logo na primeira semana pós-imersão. Aplicamos uma metodologia ágil que transforma meses de desenvolvimento de software em horas de construção focada. É autoridade técnica somada à visão de negócio."
+· CTA + Encerramento: "Clica no botão aqui embaixo pra gente agendar um diagnóstico prévio. A Imersão AI na Prática é presencial, dura 3 dias inteiros e é feita exclusivamente para a sua equipe, dentro da sua empresa. Como o nosso time de implementação é reduzido pra garantir a entrega de código, as datas para este semestre estão quase esgotadas. Toca no botão, preencha o formulário e vamos
+
+Conclusão
+A Big Idea do Fim do Software Fantasma ataca a maior objeção do público: a demora e a frustração com tecnologia. Usaremos o Lead de Solução do Problema para anúncios (focando no gargalo operacional) e o Lead de Proclamação para a Landing Page (declarando que o modelo tradicional de desenvolvimento morreu). A emoção núcleo de controle e velocidade deve permear todos os textos, garantindo que o CEO sinta que ele finalmente encontrou um caminho que não exige que ele vire um programador, mas que entrega o resultado de um.
+
+about:blank
+
+7/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+transformar sua operação em uma máquina de escala. É hora de parar de falar de IA e começar a lucrar com ela."
+
+Roadmap Estratégico
+
+Q1 -- Validação do Produto e MVP In Company
+Realização de 3 imersões piloto com clientes beta para ajuste da metodologia Vibe Coding Mapeamento dos 10 gargalos operacionais mais comuns em empresas de médio porte para checklist padrão Criação do kit de ferramentas 'Dia 01' para diagnóstico rápido de processos e headcount Estruturação do roteiro de priorização estratégica para alinhamento imediato com CEOs/Sócios Validação do ticket de R$ 45k e coleta de depoimentos focados em ROI operacional imediato
+
+Q2 -- Produtização e Metodologia Escalável
+Padronização do framework Vibe Coding para entrega de protótipos funcionais em 72h Criação de manuais de implementação pós-imersão para garantir a perenidade das soluções Desenvolvimento de um dashboard de acompanhamento de KPIs de eficiência para os clientes Treinamento e certificação da primeira dupla de facilitadores para replicar a entrega presencial Lançamento de Landing Page de alta conversão focada no conceito de 'Fim do Software Fantasma'
+
+Q3 -- Escala e Expansão de Mercado
+Implementação de estratégia de Account-Based Marketing (ABM) para prospecção de empresas 50+ funcionários Criação de um programa de indicação exclusivo para CEOs que já passaram pela imersão Expansão das imersões para capitais estratégicas com clusters industriais e de serviços Desenvolvimento de verticais específicas (IA para Varejo, IA para Indústria) baseadas nos cases acumulados Estruturação de um time comercial focado em venda consultiva de alto ticket e ciclo curto
+
+Q4 -- Continuidade e Ecossistema de IA
+Lançamento da 'Comunidade de Soberania Tecnológica' para suporte contínuo e networking entre clientes Criação do módulo 'Upgrade Operacional' para retorno às empresas 6 meses após a primeira imersão Desenvolvimento de uma biblioteca de componentes de código proprietários para acelerar o Vibe Coding
+
+about:blank
+
+8/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+Parcerias estratégicas com fornecedores de infraestrutura de nuvem para oferta de pacotes integrados
+
+Análise de dados de uso das soluções criadas para lançar um produto de recorrência em consultoria de IA
+
+Documento Estratégico
+
+Big Idea Principal
+· O Fim do "Software Fantasma": Enquanto o mercado discute teorias de IA que levam meses para sair do papel, sua empresa constrói e opera soluções proprietárias e funcionais em apenas 72 horas através do Vibe Coding.
+
+Variações de Big Idea · O Algoritmo de Prateleira morreu: Pare de tentar adaptar seu negócio a ferramentas prontas; crie uma IA que "fala a língua" dos seus processos internos em três dias de
+imersão.
+· A "Fábrica de Atalhos" Inteligente: Identifique os gargalos invisíveis que drenam seu lucro e instale automações sob medida que devolvem o tempo de estratégia para sua liderança.
+· Soberania Tecnológica Ágil: Não espere pelo cronograma do TI; lidere a cocriação de ferramentas que eliminam o trabalho manual repetitivo antes do pôr do sol do terceiro dia.
+
+Headline Principal · "72 Horas para Erradicar Processos Manuais: A Imersão In Company que Projeta e Entrega IAs Funcionais nos Seus Gargalos de Operação."
+· Variação 1 (Foco em Curiosidade/Mecânico): "O Método Vibe Coding: Como empresas estão pulando a fila do desenvolvimento de software e instalando IAs proprietárias em um único fim de semana."
+· Variação 2 (Foco em Dor/Concreto): "Pare de pagar caro por equipes sobrecarregadas com tarefas de copiar e colar. Transforme sua operação manual em uma máquina automatizada com 3 dias de diagnóstico e prototipagem real."
+
+Ângulo Vendável + Promessa Central · O Mecanismo da Velocidade Pragmática.
+
+about:blank
+
+9/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+A promessa central não é "aprender IA", mas sim "eliminar o atraso operacional através da entrega de software funcional em 3 dias". O benefício único é a tangibilidade
+
+imediata: o cliente termina a imersão com ferramentas reais rodando, não com um PDF de recomendações.
+
+Desejo Central do Público · Nível de Consciência: Solução-Consciente (Sabe que IA é o caminho, mas está paralisado pela complexidade ou frustrado com a lentidão do TI/consultorias).
+· Desejo Profundo: Controle e Velocidade. Eles querem parar de sentir que a empresa é um "balde furado" onde o lucro escorre por processos manuais e querem retomar a dianteira competitiva sem depender de ciclos de desenvolvimento de 6 meses.
+· Emoção Núcleo: Alívio da carga operacional e a Euforia da criação imediata.
+
+Dor Central do Público
+· A "Inércia Tecnológica": É a raiva silenciosa de ver a equipe presa em planilhas e tarefas burocráticas enquanto os concorrentes parecem estar acelerando. É o medo de investir 100 mil reais em um projeto de tecnologia que vai ser entregue obsoleto ou que ninguém vai usar.
+
+Público-Alvo Detalhado · Perfil: CEOs e Sócios-Diretores de empresas de médio/grande porte (serviços, indústria ou varejo estruturado) com mais de 50 colaboradores. · Comportamento: Decisores práticos, impacientes com jargões técnicos, focados em ROI e eficiência de headcount. · Psicográfico: Valorizam a exclusividade (In Company) e a segurança de que a estratégia não será vazada. Estão cansados de cursos teóricos e querem algo que "resolva
+o problema na segunda-feira". · Consciência: Já tentaram usar ChatGPT ou ferramentas básicas, mas não viram mudança no ponteiro do faturamento ou custo fixo.
+
+Frase de Posicionamento · "IA na Prática: Onde o diagnóstico vira código e o gargalo vira lucro em 3 dias."
+
+Sugestão de Anúncio + CTA · Hook: "Sua empresa está perdendo dinheiro agora porque você está tentando resolver problemas de 2024 com processos manuais de 2010. E o pior: você sabe disso."
+
+about:blank
+
+10/11
+
+12/05/2026, 14:50
+
+Plano do Produto - AI na Prática para Negócios: Imersão In Company
+
+· Bloco de Dor: "Dá uma olhada pro lado aí na sua operação. Quantas pessoas talentosas você tem hoje presas em planilhas intermináveis, conferindo dados
+
+manualmente ou fazendo tarefas que um robô faria em segundos? Esse é o 'lucro invisível' que está escorrendo pelos dedos porque sua estrutura está pesada, lenta e
+
+dependente de braço humano pra tudo."
+
+· Bloco de Consequência: "Se você continuar tentando 'estudar' IA antes de aplicar, ou pior, esperar o seu TI ter tempo pra desenvolver algo, o mercado vai te atropelar. O custo de não ter uma IA sob medida hoje não é só a ineficiência... é a perda da sua margem de lucro para quem decidiu automatizar primeiro. E contratar uma consultoria que só te entrega um relatório de 200 páginas não vai resolver nada."
+
+· Bloco de Solução: "É por isso que a gente criou a Imersão AI na Prática. A gente entra na sua empresa por 3 dias. No primeiro dia, a gente faz um raio-x e acha exatamente onde o processo está travado. No segundo, a gente senta com a sua liderança e prioriza o que traz dinheiro rápido. No terceiro, a gente aplica o 'Vibe Coding'. A gente não sai daí com uma ideia... a gente sai com protótipos funcionais, ferramentas de IA proprietárias prontas para rodar nos seus processos."
+
+· Bloco de Diferenciação: "Esquece curso teórico ou exemplo de empresa americana que não tem nada a ver com você. A gente vai usar os seus dados, os seus problemas e o seu contexto. É cocriação real. Você não vai assistir a uma palestra, você vai comandar a construção da tecnologia que vai escalar o seu negócio."
+
+· Bloco de Prova/Autoridade: "Nós já destravamos operações que economizaram centenas de horas de trabalho manual logo na primeira semana pós-imersão. Aplicamos uma metodologia ágil que transforma meses de desenvolvimento de software em horas de construção focada. É autoridade técnica somada à visão de negócio."
+
+· CTA + Encerramento: "Clica no botão aqui embaixo pra gente agendar um diagnóstico prévio. A Imersão AI na Prática é presencial, dura 3 dias inteiros e é feita exclusivamente para a sua equipe, dentro da sua empresa. Como o nosso time de implementação é reduzido pra garantir a entrega de código, as datas para este semestre estão quase esgotadas. Toca no botão, preencha o formulário e vamos transformar sua operação em uma máquina de escala. É hora de parar de falar de IA e começar a lucrar com ela."
+
+Conclusão Estratégica
+A Big Idea do Fim do Software Fantasma ataca a maior objeção do público: a demora e a frustração com tecnologia. Usaremos o Lead de Solução do Problema para anúncios (focando no gargalo operacional) e o Lead de Proclamação para a Landing Page (declarando que o modelo tradicional de desenvolvimento morreu). A emoção núcleo de controle e velocidade deve permear todos os textos, garantindo que o CEO sinta que ele finalmente encontrou um caminho que não exige que ele vire um programador, mas que entrega o resultado de um.
+
+about:blank
+
+11/11
+
+
