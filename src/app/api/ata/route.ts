@@ -9,8 +9,24 @@ import type { TranscriptionSegment } from "@/types/transcription"
 
 const PRIMARY_GEMINI = process.env.GEMINI_MODEL ?? "gemini-2.5-flash"
 const FALLBACK_CLAUDE = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-6"
-const FALLBACK_OPENROUTER =
-  process.env.OPENROUTER_MODEL ?? "poolside/laguna-m.1:free"
+
+// Lista de modelos OpenRouter pra tentar em sequência. Cada um é uma tentativa
+// independente — fila separada por modelo. Pode ser configurado via env
+// (comma-separated). Modelos free escolhidos por compatibilidade com pt-BR.
+const FALLBACK_OPENROUTER_MODELS = (
+  process.env.OPENROUTER_MODELS ??
+  process.env.OPENROUTER_MODEL ??
+  [
+    "deepseek/deepseek-v4-flash:free",
+    "z-ai/glm-4.5-air:free",
+    "minimax/minimax-m2.5:free",
+    "openai/gpt-oss-120b:free",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+  ].join(",")
+)
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean)
 
 // OpenRouter é OpenAI-compatible; criamos um client com baseURL custom só
 // se a env var estiver configurada.
@@ -34,8 +50,10 @@ interface ModelAttempt {
  * 2. Flash de novo após 3s — overload de Flash geralmente passa em segundos
  * 3. Gemini 2.0 Flash — modelo alternativo free-tier, fila separada
  * 4. Gemini 2.5 Flash Lite — último Gemini free-tier
- * 5. OpenRouter (se OPENROUTER_API_KEY) — provider independente, fila
- *    totalmente separada do Google. Free model padrão: poolside/laguna-m.1:free
+ * 5. OpenRouter (se OPENROUTER_API_KEY) — cada modelo da lista vira uma
+ *    tentativa independente. Default: 5 modelos free (DeepSeek V4 Flash,
+ *    GLM 4.5 Air, MiniMax M2.5, GPT-OSS 120B, Nemotron 3 Super 120B), cada
+ *    um com fila própria. Override via OPENROUTER_MODELS (comma-separated).
  * 6. Gemini 2.5 Pro — só funciona em paid tier (free tier tem limit 0); na
  *    chain pra paid users, ignorado rápido em free tier (429 imediato)
  * 7. Claude Sonnet — só se ANTHROPIC_API_KEY estiver configurada (paid)
@@ -52,7 +70,9 @@ function buildFallbackChain(): ModelAttempt[] {
     chain.push({ provider: "gemini", id: "gemini-2.5-flash-lite" })
   }
   if (openrouter) {
-    chain.push({ provider: "openrouter", id: FALLBACK_OPENROUTER })
+    for (const id of FALLBACK_OPENROUTER_MODELS) {
+      chain.push({ provider: "openrouter", id })
+    }
   }
   if (PRIMARY_GEMINI !== "gemini-2.5-pro") {
     chain.push({ provider: "gemini", id: "gemini-2.5-pro" })
