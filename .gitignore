@@ -39,3 +39,10 @@ dist
 
 # Working scratch (extrações de DOCX, fixtures intermediárias)
 tmp/
+
+# TypeScript incremental build cache — gerado em todo `next build`
+*.tsbuildinfo
+
+# Backups e arquivos compactados — não versionamos zip no repo
+# (podem conter dumps com credenciais; melhor manter fora do git)
+*.zip
