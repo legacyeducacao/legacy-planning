@@ -24,7 +24,11 @@ interface OwnedAta extends Ata {
 }
 
 function isOwner(ata: OwnedAta, user: AuthUser): boolean {
-  return !!ata.ownerUid && ata.ownerUid === user.uid
+  // Atas legadas sem ownerUid (incluindo ciclos pelo cache do AtaPanel que
+  // perdem o campo via normalizeAta) são tratadas como "do usuário atual" —
+  // honrando o contrato documentado em OwnedAta.
+  if (!ata.ownerUid) return true
+  return ata.ownerUid === user.uid
 }
 
 function isResponsible(ata: OwnedAta, user: AuthUser): boolean {
