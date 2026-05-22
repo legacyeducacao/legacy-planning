@@ -1,4 +1,4 @@
-??import type { TranscriptParams } from "assemblyai"
+import type { TranscriptParams } from "assemblyai"
 import { NextResponse } from "next/server"
 import { assemblyai } from "@/lib/assemblyai-client"
 
