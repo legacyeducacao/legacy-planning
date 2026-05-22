@@ -1,6 +1,7 @@
 "use client"
 
-import { FileAudio, Keyboard } from "lucide-react"
+import { FileAudio, Keyboard, Sparkles } from "lucide-react"
+import { useRouter } from "next/navigation"
 import React, { useCallback, useRef, useState } from "react"
 import { useAudioPlayer } from "@/hooks/useAudioPlayer"
 import type {
@@ -8,7 +9,6 @@ import type {
   TranscriptionIntelligence,
   TranscriptionSegment,
 } from "@/types/transcription"
-import { AtaPanel } from "../studio/AtaPanel"
 import { AudioPlayer } from "../studio/AudioPlayer"
 import { ChaptersPanel } from "../studio/ChaptersPanel"
 import { EnhancedTranscript } from "../studio/EnhancedTranscript"
@@ -41,11 +41,16 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
   intelligence,
   onNewTranscription,
 }) => {
+  const router = useRouter()
   const [currentTime, setCurrentTime] = useState(0)
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [activeTab, setActiveTab] = useState<string>("transcript")
   const audioRef = useRef<HTMLVideoElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
+
+  const goToAta = useCallback(() => {
+    if (transcriptionId) router.push(`/atas/${transcriptionId}`)
+  }, [router, transcriptionId])
 
   const audioUrl = audioSource?.url
 
@@ -119,6 +124,17 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
               >
                 <Keyboard className="h-4 w-4" />
               </Button>
+              {transcriptionId && (
+                <Button
+                  onClick={goToAta}
+                  className="flex items-center gap-2"
+                  size="sm"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  <span className="hidden sm:inline">Gerar ata</span>
+                  <span className="sm:hidden">Ata</span>
+                </Button>
+              )}
               <Button
                 variant="outline"
                 onClick={onNewTranscription}
@@ -157,7 +173,7 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                   transcription={transcription}
                   segments={segments}
                   intelligence={intelligence}
-                  onShowAta={() => setActiveTab("ata")}
+                  onShowAta={goToAta}
                 />
               </div>
             </div>
@@ -173,7 +189,6 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                   >
                     <TabsList className="mb-4 flex-shrink-0 flex-wrap">
                       <TabsTrigger value="transcript">Transcrição</TabsTrigger>
-                      <TabsTrigger value="ata">Ata</TabsTrigger>
                       {intelligenceTabs.map((tab) => (
                         <TabsTrigger key={tab.value} value={tab.value}>
                           {tab.label}
@@ -191,15 +206,6 @@ export const TranscriptionStudio: React.FC<TranscriptionStudioProps> = ({
                         onSegmentClick={handleSeek}
                         currentTime={currentTime}
                         searchInputRef={searchInputRef}
-                      />
-                    </TabsContent>
-
-                    <TabsContent value="ata" className="flex-1 overflow-auto">
-                      <AtaPanel
-                        transcriptionId={transcriptionId}
-                        transcription={transcription}
-                        segments={segments}
-                        intelligence={intelligence}
                       />
                     </TabsContent>
 

@@ -107,7 +107,7 @@ export default function AtasPage() {
           {atas.map((ata) => (
             <li key={ata.id}>
               <Link
-                href={`/studio/${ata.id}`}
+                href={`/atas/${ata.id}`}
                 className="border-border bg-card hover:border-foreground/30 block rounded-2xl border p-5 transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
