@@ -1,6 +1,6 @@
 import { WifiOff } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
-import { LogoApex } from "@/components/brand/LogoApex"
 
 export const metadata = {
   title: "Offline — LegacyPlanning",
@@ -12,13 +12,14 @@ export default function OfflinePage() {
       className="flex min-h-screen flex-col items-center justify-center px-6 text-center"
       style={{ background: "var(--r-canvas)" }}
     >
-      <div className="mb-6 opacity-80">
-        <LogoApex
-          size={36}
-          color="var(--r-ink)"
-          accent="var(--r-primary, #4a78ff)"
-        />
-      </div>
+      <Image
+        src="/brand/legacy-mark.png"
+        alt="LegacyPlanning"
+        width={40}
+        height={40}
+        className="mb-6 opacity-80"
+        priority
+      />
       <div
         className="mb-4 flex h-12 w-12 items-center justify-center rounded-full"
         style={{

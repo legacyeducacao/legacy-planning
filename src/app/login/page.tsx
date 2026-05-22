@@ -1,11 +1,11 @@
 "use client"
 
 import { ArrowRight, Check, Lock, Mail, Shield, User } from "lucide-react"
+import Image from "next/image"
 import { useRouter, useSearchParams } from "next/navigation"
 import { type FormEvent, useEffect, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
-import { LogoApex } from "@/components/brand/LogoApex"
 import { signInWithEmail, signInWithGoogle, signUpWithEmail } from "@/lib/auth"
 import "./login.css"
 
@@ -243,7 +243,13 @@ export default function LoginPage() {
       <header className="lp-d-top">
         {/* Wordmark: logo Convene + "LEGACY PLANNING" */}
         <a href="/" className="flex items-center gap-3.5 no-underline">
-          <LogoApex size={28} color="#0e1118" accent="#3654ff" />
+          <Image
+            src="/brand/legacy-mark.png"
+            alt="LegacyPlanning"
+            width={28}
+            height={28}
+            priority
+          />
           <span
             style={{
               fontFamily: "var(--font-body), sans-serif",
@@ -299,7 +305,9 @@ export default function LoginPage() {
             </div>
             <div>
               <span className="lp-d-stat-val">ata estruturada</span>
-              <span className="lp-d-stat-lbl">decisões, plano e responsáveis no lugar certo</span>
+              <span className="lp-d-stat-lbl">
+                decisões, plano e responsáveis no lugar certo
+              </span>
             </div>
           </div>
         </section>

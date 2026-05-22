@@ -10,11 +10,11 @@ import {
   ListTodo,
   Settings,
 } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 import { useAuth } from "@/components/auth/AuthProvider"
-import { LogoApex } from "@/components/brand/LogoApex"
 import { useTodosStore } from "@/stores/todos-store"
 
 type NavItem = {
@@ -75,10 +75,13 @@ export function Sidebar() {
             className="flex min-w-0 flex-1 items-center gap-2.5 group"
           >
             <span className="flex h-[30px] w-[30px] flex-shrink-0 items-center justify-center">
-              <LogoApex
-                size={22}
-                color="var(--r-ink)"
-                accent="var(--r-primary, #4a78ff)"
+              <Image
+                src="/brand/legacy-mark.png"
+                alt="LegacyPlanning"
+                width={30}
+                height={30}
+                className="object-contain"
+                priority
               />
             </span>
             <span
