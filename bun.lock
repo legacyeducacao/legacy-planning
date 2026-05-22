@@ -5,6 +5,7 @@
     "": {
       "name": "transcriptr",
       "dependencies": {
+        "@ai-sdk/anthropic": "^3.0.78",
         "@ai-sdk/google": "^3.0.73",
         "@ai-sdk/openai": "^3.0.63",
         "@ai-sdk/react": "^3.0.182",
@@ -94,6 +95,8 @@
     "tar": ">=7.5.7",
   },
   "packages": {
+    "@ai-sdk/anthropic": ["@ai-sdk/anthropic@3.0.78", "", { "dependencies": { "@ai-sdk/provider": "3.0.10", "@ai-sdk/provider-utils": "4.0.27" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-0OY12G20cUt6iU6htpEA1491Oz++NVxZxlmWGX4B7rSbeZ5pnDmOu6YtW9BKzdZlNx5Gn23i6WMxyZFoMKNcgA=="],
+
     "@ai-sdk/gateway": ["@ai-sdk/gateway@3.0.118", "", { "dependencies": { "@ai-sdk/provider": "3.0.10", "@ai-sdk/provider-utils": "4.0.27", "@vercel/oidc": "3.2.0" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-XYPbVoDo1TDMVLe5Eg42gIjdOyxaizh9H0kiSSnTXr+AdrqZvutk/ypLOiqBXPV3D1K3+BSm/sbFeomZJlM64A=="],
 
     "@ai-sdk/google": ["@ai-sdk/google@3.0.77", "", { "dependencies": { "@ai-sdk/provider": "3.0.10", "@ai-sdk/provider-utils": "4.0.27" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-t6BdlhF5TBC8fRtGAwugS0UwAwWlUyUriYGYjYzFhap6iB7dY+tnPPL/AVn1k5BeGdIYAkLjRKeQdjUhHaB7rQ=="],

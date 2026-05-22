@@ -1,3 +1,4 @@
+import { anthropic } from "@ai-sdk/anthropic"
 import { google } from "@ai-sdk/google"
 import { generateText } from "ai"
 import { type NextRequest, NextResponse } from "next/server"
@@ -5,7 +6,65 @@ import { normalizeAta } from "@/lib/ata-format"
 import { formatContextoForPrompt, loadContexto } from "@/lib/contexto-loader"
 import type { TranscriptionSegment } from "@/types/transcription"
 
-const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-2.5-flash"
+const PRIMARY_GEMINI = process.env.GEMINI_MODEL ?? "gemini-2.5-flash"
+const FALLBACK_CLAUDE = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-6"
+
+interface ModelAttempt {
+  provider: "gemini" | "anthropic"
+  id: string
+}
+
+function buildFallbackChain(): ModelAttempt[] {
+  const chain: ModelAttempt[] = [{ provider: "gemini", id: PRIMARY_GEMINI }]
+  if (PRIMARY_GEMINI !== "gemini-2.5-pro") {
+    chain.push({ provider: "gemini", id: "gemini-2.5-pro" })
+  }
+  if (process.env.ANTHROPIC_API_KEY) {
+    chain.push({ provider: "anthropic", id: FALLBACK_CLAUDE })
+  }
+  return chain
+}
+
+const RETRYABLE_RE =
+  /high demand|overload|rate.?limit|429|503|504|timeout|temporar|unavailable/i
+
+async function generateAtaWithFallback(args: {
+  system: string
+  prompt: string
+}): Promise<{ text: string; modelUsed: string }> {
+  const chain = buildFallbackChain()
+  let lastErr: unknown
+  for (const attempt of chain) {
+    try {
+      const model =
+        attempt.provider === "anthropic"
+          ? anthropic(attempt.id)
+          : google(attempt.id)
+      const { text } = await generateText({
+        model,
+        system: args.system,
+        prompt: args.prompt,
+        // responseMimeType só funciona pro Gemini; Anthropic ignora e devolve text/markdown que stripFences resolve
+        providerOptions:
+          attempt.provider === "gemini"
+            ? { google: { responseMimeType: "application/json" } }
+            : undefined,
+        temperature: 0.2,
+      })
+      return { text, modelUsed: `${attempt.provider}:${attempt.id}` }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.warn(
+        `[ata] modelo ${attempt.provider}:${attempt.id} falhou: ${msg}`,
+      )
+      lastErr = err
+      if (!RETRYABLE_RE.test(msg)) break // erro não-transient (config, prompt inválido) — não vale tentar outro
+    }
+  }
+  throw lastErr instanceof Error
+    ? lastErr
+    : new Error("Todos os modelos falharam")
+}
 
 function formatTime(d: Date): string {
   return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
@@ -174,15 +233,11 @@ export async function POST(req: NextRequest) {
     const ctx = await loadContexto()
     const contextoFormatado = formatContextoForPrompt(ctx, "ata")
 
-    const { text } = await generateText({
-      model: google(MODEL_ID),
+    const { text, modelUsed } = await generateAtaWithFallback({
       system: SYSTEM_PROMPT,
       prompt: buildUserPrompt(body, contextoFormatado),
-      providerOptions: {
-        google: { responseMimeType: "application/json" },
-      },
-      temperature: 0.2,
     })
+    console.log(`[ata] gerada via ${modelUsed}`)
 
     const cleaned = stripFences(text)
     let parsed: unknown
