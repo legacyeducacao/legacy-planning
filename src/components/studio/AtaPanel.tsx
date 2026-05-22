@@ -27,6 +27,7 @@ import { buildAtaDocx } from "@/lib/ata-docx"
 import { ataToMarkdown, normalizeAta } from "@/lib/ata-format"
 import { generateAta as generateAtaService } from "@/lib/ata-service"
 import { canDelete, canEdit } from "@/lib/permissions"
+import { useHistoryStore } from "@/stores/history-store"
 import type {
   Ata,
   AtaParticipante,
@@ -237,6 +238,7 @@ export function AtaPanel({
   intelligence,
 }: AtaPanelProps) {
   const { user } = useAuth()
+  const historyEntries = useHistoryStore((s) => s.entries)
   const [ata, setAta] = useState<Ata | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [lastSource, setLastSource] = useState<"llm" | "local" | null>(null)
@@ -261,6 +263,15 @@ export function AtaPanel({
     async (force = false) => {
       setIsGenerating(true)
       try {
+        // Pesca data da reunião do histórico (lastModified do arquivo de áudio)
+        const entry = historyEntries.find(
+          (e) => e.predictionId === transcriptionId,
+        )
+        const recordedAt = entry?.audioSource.recordedAt
+        const meetingDate = recordedAt
+          ? new Date(recordedAt).toLocaleDateString("pt-BR")
+          : undefined
+
         const result = await generateAtaService({
           transcription,
           segments,
@@ -268,6 +279,7 @@ export function AtaPanel({
           currentUser: user
             ? { uid: user.uid, displayName: user.displayName }
             : undefined,
+          meetingDate,
         })
         setAta(result.ata)
         setLastSource(result.source)

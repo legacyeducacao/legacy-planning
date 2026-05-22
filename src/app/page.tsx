@@ -119,6 +119,7 @@ export default function HomePage() {
         let audioSourceName: string
         let audioSourceSize: number | undefined
         let audioSourceType: "file" | "url"
+        let audioSourceRecordedAt: number | undefined
         let audioUrl: string
         const optionsPayload = {
           language: options.language,
@@ -130,6 +131,9 @@ export default function HomePage() {
           audioSourceName = file.name
           audioSourceSize = file.size
           audioSourceType = "file"
+          // lastModified do arquivo de áudio = aproximação razoável da data
+          // da reunião. Vira o campo "data" da ata depois.
+          audioSourceRecordedAt = file.lastModified || undefined
           toast.info("Enviando arquivo...")
           // Upload direto pro Supabase Storage — evita o limite de 4.5MB
           // das Vercel Functions que rebatia 413 antes do server rodar.
@@ -183,6 +187,7 @@ export default function HomePage() {
             size: audioSourceSize,
             type: audioSourceType,
             url: finalAudioUrl,
+            recordedAt: audioSourceRecordedAt,
           },
           options,
           status: "processing",

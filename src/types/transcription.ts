@@ -99,6 +99,10 @@ export interface AudioSource {
   duration?: number
   size?: number
   type: "file" | "url"
+  /** Timestamp Unix em ms do `File.lastModified` no upload — usado como data
+   *  da reunião na ata (a data de criação do arquivo de áudio costuma ser
+   *  o dia da gravação). */
+  recordedAt?: number
 }
 
 export type AtaStatus = "Não iniciado" | "Em andamento" | "Concluído"

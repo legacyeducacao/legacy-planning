@@ -98,6 +98,7 @@ export default function TranscribePage({
   const pollRef = useRef<NodeJS.Timeout | null>(null)
   const attemptsRef = useRef(0)
   const patchHistory = useHistoryStore((s) => s.patch)
+  const historyEntries = useHistoryStore((s) => s.entries)
 
   const stopPolling = useCallback(() => {
     if (pollRef.current) {
@@ -214,6 +215,13 @@ export default function TranscribePage({
     if (!result?.transcription) return
     setIsGeneratingAta(true)
     try {
+      // Tenta usar lastModified do arquivo de áudio como data da reunião
+      const entry = historyEntries.find((e) => e.predictionId === id)
+      const recordedAt = entry?.audioSource.recordedAt
+      const meetingDate = recordedAt
+        ? new Date(recordedAt).toLocaleDateString("pt-BR")
+        : undefined
+
       const gen = await generateAta({
         transcription: result.transcription,
         segments: result.segments,
@@ -221,6 +229,7 @@ export default function TranscribePage({
         currentUser: user
           ? { uid: user.uid, displayName: user.displayName }
           : undefined,
+        meetingDate,
       })
       try {
         localStorage.setItem(`ata_${id}`, JSON.stringify(gen.ata))

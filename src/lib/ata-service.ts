@@ -12,6 +12,10 @@ export interface AtaGenerationInput {
   intelligence?: TranscriptionIntelligence
   /** Usuário autenticado — vira o responsavelAta e ownerUid. */
   currentUser?: { uid: string; displayName: string }
+  /** Data da reunião no formato DD/MM/YYYY (pt-BR). Se omitida, o servidor
+   *  usa a data de hoje como fallback. Normalmente derivada do
+   *  `audioSource.recordedAt` (file.lastModified). */
+  meetingDate?: string
 }
 
 export interface AtaGenerationResult {
@@ -61,6 +65,7 @@ export async function generateAta(
         transcription: input.transcription,
         segments: input.segments,
         currentUserName: input.currentUser?.displayName,
+        data: input.meetingDate,
       }),
     })
 
