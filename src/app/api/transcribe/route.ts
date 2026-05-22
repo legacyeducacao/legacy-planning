@@ -102,11 +102,40 @@ export async function POST(request: Request) {
     // Monta params do AssemblyAI usando os tipos do SDK
     const params: TranscriptParams = {
       audio_url: input.audioFileUrl,
-      speech_models: ["universal-3-pro", "universal-2"],
-    }
-
-    if (options.diarize) {
-      params.speaker_labels = true
+      speech_model: "best",
+      speaker_labels: true,
+      word_boost: [
+        // Produtos Legacy
+        "Inteligência Empresarial",
+        "Impulsão Empresarial",
+        "Legado Empresarial",
+        "Legacy Plan",
+        "Legacy Academy",
+        "LegacyProd",
+        "Luma Agent",
+        "iPreço",
+        "Nina",
+        // Pessoas
+        "Allan",
+        "Clailton",
+        "Adriano",
+        "Santini",
+        "Igor",
+        "Lair",
+        "Lucas",
+        "Marcelo",
+        "Petherson",
+        "Jocinei",
+        "Matheus",
+        "Paim",
+        // Termos internos
+        "executoria",
+        "Turma",
+        "Incompany",
+        "MQL",
+        "BSC",
+      ],
+      boost_param: "high",
     }
 
     // Recursos de IA da AssemblyAI hoje só rodam em inglês. Se a língua
