@@ -102,7 +102,10 @@ export async function POST(request: Request) {
     // Monta params do AssemblyAI usando os tipos do SDK
     const params: TranscriptParams = {
       audio_url: input.audioFileUrl,
-      speech_model: "best",
+      // speech_models é required pela AssemblyAI (speech_model singular foi
+      // deprecado). Array em ordem de prioridade — Universal-3 Pro pra PT/EN/ES
+      // (alta acurácia), Universal-2 como fallback pra idiomas raros.
+      speech_models: ["universal-3-pro", "universal-2"],
       speaker_labels: true,
       word_boost: [
         // Produtos Legacy
