@@ -74,6 +74,9 @@ export function canView(ata: OwnedAta, user: AuthUser | null): boolean {
   if (!user) return false
   if (user.role === "master") return true
   if (isOwner(ata, user)) return true
+  // Quem é responsavelAta também pode ver (caso de ownerUid setado a um uid
+  // antigo após troca de conta com mesmo nome/email).
+  if (isResponsible(ata, user)) return true
   if (ata.aprovada === true) return true
   return false
 }
