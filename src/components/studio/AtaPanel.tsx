@@ -90,6 +90,22 @@ function clearCachedAta(id?: string) {
   }
 }
 
+/**
+ * Constrói uma mensagem de encerramento padrão se o usuário não escreveu uma.
+ * Resumo curto baseado em decisões + agradecimento.
+ */
+function buildDefaultEncerramento(ata: Ata): string {
+  const parts: string[] = []
+  if (ata.decisoes && ata.decisoes.length > 0) {
+    const top = ata.decisoes.slice(0, 3).join("; ")
+    parts.push(`Resumo: ${top}.`)
+  } else if (ata.objetivo) {
+    parts.push(`Resumo: ${ata.objetivo}`)
+  }
+  parts.push("Obrigado a todos pela participação.")
+  return parts.join(" ")
+}
+
 /* ────────────────────────────────────────────────────────────────
    Inline editable primitives
    ──────────────────────────────────────────────────────────────── */
@@ -976,85 +992,117 @@ export function AtaPanel({
           />
         </section>
 
-        {/* 10. Próxima reunião */}
-        <section>
-          <SectionHeader number="10" title="Próxima reunião" />
-          <div className="border-border bg-muted/40 rounded-xl border p-5">
-            <FieldRow label="Data prevista">
-              <EditableText
-                value={ata.proximaReuniao?.data}
-                onChange={(v) =>
-                  update("proximaReuniao", {
-                    ...(ata.proximaReuniao ?? {}),
-                    data: v,
-                  })
-                }
-                placeholder="dd/mm/aaaa"
-              />
-            </FieldRow>
-            <FieldRow label="Horário">
-              <EditableText
-                value={ata.proximaReuniao?.horario}
-                onChange={(v) =>
-                  update("proximaReuniao", {
-                    ...(ata.proximaReuniao ?? {}),
-                    horario: v,
-                  })
-                }
-                placeholder="hh:mm"
-              />
-            </FieldRow>
-            <FieldRow label="Local / Plataforma">
-              <EditableText
-                value={ata.proximaReuniao?.local}
-                onChange={(v) =>
-                  update("proximaReuniao", {
-                    ...(ata.proximaReuniao ?? {}),
-                    local: v,
-                  })
-                }
-                placeholder="Sala / Google Meet / Zoom"
-              />
-            </FieldRow>
-            <FieldRow label="Objetivo">
-              <EditableText
-                value={ata.proximaReuniao?.objetivo}
-                onChange={(v) =>
-                  update("proximaReuniao", {
-                    ...(ata.proximaReuniao ?? {}),
-                    objetivo: v,
-                  })
-                }
-                placeholder="Propósito da próxima reunião"
-              />
-            </FieldRow>
-          </div>
-        </section>
+        {/* 10. Próxima reunião — opcional */}
+        {(() => {
+          const proxima = ata.proximaReuniao
+          const hasContent = !!(
+            proxima?.data ||
+            proxima?.horario ||
+            proxima?.local ||
+            proxima?.objetivo
+          )
+          if (!hasContent) {
+            return (
+              <section>
+                <SectionHeader number="10" title="Próxima reunião" />
+                <button
+                  type="button"
+                  onClick={() =>
+                    update("proximaReuniao", {
+                      data: "",
+                      horario: "",
+                      local: "",
+                      objetivo: "",
+                    })
+                  }
+                  className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Adicionar próxima reunião
+                </button>
+              </section>
+            )
+          }
+          return (
+            <section>
+              <SectionHeader number="10" title="Próxima reunião" />
+              <div className="border-border bg-muted/40 rounded-xl border p-5">
+                <FieldRow label="Data prevista">
+                  <EditableText
+                    value={proxima.data}
+                    onChange={(v) =>
+                      update("proximaReuniao", { ...proxima, data: v })
+                    }
+                    placeholder="dd/mm/aaaa"
+                  />
+                </FieldRow>
+                <FieldRow label="Horário">
+                  <EditableText
+                    value={proxima.horario}
+                    onChange={(v) =>
+                      update("proximaReuniao", { ...proxima, horario: v })
+                    }
+                    placeholder="hh:mm"
+                  />
+                </FieldRow>
+                <FieldRow label="Local / Plataforma">
+                  <EditableText
+                    value={proxima.local}
+                    onChange={(v) =>
+                      update("proximaReuniao", { ...proxima, local: v })
+                    }
+                    placeholder="Sala / Google Meet / Zoom"
+                  />
+                </FieldRow>
+                <FieldRow label="Objetivo">
+                  <EditableText
+                    value={proxima.objetivo}
+                    onChange={(v) =>
+                      update("proximaReuniao", { ...proxima, objetivo: v })
+                    }
+                    placeholder="Propósito da próxima reunião"
+                  />
+                </FieldRow>
+                <button
+                  type="button"
+                  onClick={() => update("proximaReuniao", undefined)}
+                  className="text-muted-foreground hover:text-destructive mt-3 inline-flex items-center gap-1.5 text-xs transition-colors"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Remover seção
+                </button>
+              </div>
+            </section>
+          )
+        })()}
 
-        {/* 11. Encerramento */}
+        {/* 11. Encerramento — resumo + agradecimento */}
         <section>
           <SectionHeader number="11" title="Encerramento" />
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Nada mais havendo a tratar, a reunião foi encerrada às{" "}
-            <span className="text-foreground">
+          <div className="border-border bg-muted/40 rounded-xl border p-5 space-y-4">
+            <FieldRow label="Encerrada às">
               <EditableText
                 value={ata.horarioEncerramento}
                 onChange={(v) => update("horarioEncerramento", v)}
                 placeholder="hh:mm"
-                className="inline-block w-20 text-sm"
               />
-            </span>
-            , e esta ata foi registrada por{" "}
-            <span className="text-foreground">
+            </FieldRow>
+            <div>
+              <p className="text-muted-foreground mb-1.5 text-xs font-medium uppercase tracking-wider">
+                Mensagem
+              </p>
               <EditableText
-                value={ata.responsavelAta}
-                onChange={(v) => update("responsavelAta", v)}
-                placeholder="Nome"
-                className="inline-block w-40 text-sm"
+                value={
+                  ata.mensagemEncerramento ?? buildDefaultEncerramento(ata)
+                }
+                onChange={(v) => update("mensagemEncerramento", v)}
+                placeholder="Obrigado a todos pela participação. Em resumo..."
+                multiline
+                rows={4}
+                className="text-sm"
               />
-            </span>
-            .
-          </p>
+            </div>
+          </div>
         </section>
 
         <footer className="border-border text-muted-foreground border-t pt-4 text-xs">

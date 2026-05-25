@@ -158,6 +158,9 @@ export interface Ata {
   proximosPassos: string[]
   proximaReuniao?: AtaProximaReuniao
   horarioEncerramento?: string
+  /** Mensagem livre de encerramento (resumo + agradecimento). Editável.
+   *  Default gerado a partir das decisões se não preenchido. */
+  mensagemEncerramento?: string
 
   // Meta
   geradaEm: string
