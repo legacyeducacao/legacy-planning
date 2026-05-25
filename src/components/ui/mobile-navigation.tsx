@@ -1,17 +1,7 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
-import {
-  BookOpen,
-  Bug,
-  Clock,
-  ExternalLink,
-  FileText,
-  Lightbulb,
-  Menu,
-  MessageCircle,
-  X,
-} from "lucide-react"
+import { BookOpen, Clock, ExternalLink, FileText, Menu, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { Button } from "./button"

@@ -7,7 +7,6 @@ import {
   ExternalLink,
   Heart,
   Home,
-  MessageCircle,
   MoreHorizontal,
   ScrollText,
 } from "lucide-react"
