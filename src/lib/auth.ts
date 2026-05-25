@@ -17,8 +17,7 @@ import type { AuthUser, Role } from "@/types/auth"
  * feito direto no console do Firestore em users/{uid}.role.
  */
 const MASTER_EMAILS = new Set<string>([
-  "educacaolegacy@gmail.com",
-  // Adicione outros e-mails de admin aqui se precisar.
+  // Adicione e-mails de admin aqui pra eles virarem master no primeiro login.
 ])
 
 function deriveInitials(name: string, email: string): string {
