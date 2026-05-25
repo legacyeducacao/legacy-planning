@@ -16,6 +16,11 @@ export interface AtaGenerationInput {
    *  usa a data de hoje como fallback. Normalmente derivada do
    *  `audioSource.recordedAt` (file.lastModified). */
   meetingDate?: string
+  /** Lista de nomes confirmados pelo usuário como participantes da reunião.
+   *  Quando passada, a IA usa APENAS estes nomes (cruzando com organograma
+   *  pra cargo) em vez de inferir das menções na transcrição (que costuma
+   *  alucinar). */
+  confirmedParticipants?: string[]
 }
 
 export interface AtaGenerationResult {
@@ -66,6 +71,7 @@ export async function generateAta(
         segments: input.segments,
         currentUserName: input.currentUser?.displayName,
         data: input.meetingDate,
+        confirmedParticipants: input.confirmedParticipants,
       }),
     })
 

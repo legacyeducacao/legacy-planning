@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation"
 import { use, useCallback, useEffect, useRef, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
+import { ConfirmParticipantesModal } from "@/components/transcribe/ConfirmParticipantesModal"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { generateAta } from "@/lib/ata-service"
@@ -96,6 +97,7 @@ export default function TranscribePage({
   const [error, setError] = useState<string | null>(null)
   const [copySuccess, setCopySuccess] = useState(false)
   const [isGeneratingAta, setIsGeneratingAta] = useState(false)
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false)
   const pollRef = useRef<NodeJS.Timeout | null>(null)
   const attemptsRef = useRef(0)
   const patchHistory = useHistoryStore((s) => s.patch)
@@ -217,7 +219,12 @@ export default function TranscribePage({
     toast.success("Download iniciado!")
   }
 
-  const handleGerarAta = async () => {
+  const handleGerarAta = () => {
+    if (!result?.transcription) return
+    setConfirmModalOpen(true)
+  }
+
+  const runAtaGeneration = async (confirmedParticipants: string[]) => {
     if (!result?.transcription) return
     setIsGeneratingAta(true)
     try {
@@ -236,12 +243,15 @@ export default function TranscribePage({
           ? { uid: user.uid, displayName: user.displayName }
           : undefined,
         meetingDate,
+        confirmedParticipants:
+          confirmedParticipants.length > 0 ? confirmedParticipants : undefined,
       })
       try {
         localStorage.setItem(`ata_${id}`, JSON.stringify(gen.ata))
       } catch {
         // ignore quota
       }
+      setConfirmModalOpen(false)
       if (gen.source === "llm") {
         toast.success("Ata gerada com IA. Abrindo...")
       } else {
@@ -474,6 +484,15 @@ export default function TranscribePage({
           )}
         </div>
       </main>
+
+      <ConfirmParticipantesModal
+        open={confirmModalOpen}
+        onOpenChange={(open) => {
+          if (!isGeneratingAta) setConfirmModalOpen(open)
+        }}
+        onConfirm={runAtaGeneration}
+        isGenerating={isGeneratingAta}
+      />
 
       <Toaster />
     </div>

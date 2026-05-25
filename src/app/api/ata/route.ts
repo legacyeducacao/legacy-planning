@@ -204,6 +204,9 @@ interface AtaRequestBody {
   horarioInicio?: string
   horarioTermino?: string
   currentUserName?: string
+  /** Lista de nomes confirmados pelo usuário como participantes. Quando
+   *  passada, força o LLM a usar APENAS estes nomes na seção participantes. */
+  confirmedParticipants?: string[]
 }
 
 function buildUserPrompt(body: AtaRequestBody, contexto: string): string {
@@ -247,9 +250,23 @@ function buildUserPrompt(body: AtaRequestBody, contexto: string): string {
     content = `${content.slice(0, MAX_CHARS)}\n\n[... transcrição truncada — ${content.length - MAX_CHARS} caracteres adicionais não incluídos ...]`
   }
 
+  const confirmadosBlock =
+    body.confirmedParticipants && body.confirmedParticipants.length > 0
+      ? `
+
+---
+
+## PARTICIPANTES CONFIRMADOS PELO USUÁRIO
+
+O usuário CONFIRMOU que SÓ as pessoas abaixo estavam na reunião. Use APENAS estes nomes no campo \`participantes\` da ata, ainda que outros nomes apareçam mencionados na transcrição (eles podem ter sido citados em discussão sem estarem presentes). Cruze cada nome com o organograma (seção EQUIPE do contexto) pra atribuir o cargo correto. Se algum nome não estiver no organograma, mantém o nome como dado e deixa cargo null.
+
+${body.confirmedParticipants.map((n) => `- ${n}`).join("\n")}`
+      : ""
+
   return `## CONTEXTO DA EMPRESA (Legacy Educação)
 
 ${contexto}
+${confirmadosBlock}
 
 ---
 
