@@ -12,7 +12,6 @@ import {
   Globe2,
   History,
   Languages,
-  MessageSquareMore,
   Settings2,
   ShieldCheck,
   Wrench,
