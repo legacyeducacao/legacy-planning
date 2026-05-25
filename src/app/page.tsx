@@ -30,6 +30,7 @@ import {
   type SavedRecording,
   saveRecording,
 } from "@/lib/recording-store"
+import { upsertTranscription } from "@/lib/transcriptions-sync"
 import { uploadAudio } from "@/lib/upload-audio"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
@@ -186,7 +187,7 @@ export default function HomePage() {
         } catch {
           // ignore
         }
-        addToHistory({
+        const newEntry = {
           predictionId: resultData.id,
           audioSource: {
             name: audioSourceName,
@@ -199,6 +200,14 @@ export default function HomePage() {
           status: "processing",
           createdAt: Date.now(),
           ownerUid: user?.uid,
+        }
+        addToHistory(newEntry)
+        // Sync best-effort pro Supabase (replicação pra visão master).
+        // Não bloqueia o redirect — se falhar, IDB local continua funcionando.
+        upsertTranscription({
+          entry: newEntry,
+          ownerEmail: user?.email,
+          ownerDisplayName: user?.displayName,
         })
         router.push(`/transcribe/${resultData.id}`)
       } catch (err) {

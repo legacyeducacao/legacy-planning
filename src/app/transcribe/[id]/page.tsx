@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { generateAta } from "@/lib/ata-service"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
+import { patchTranscriptionStatus } from "@/lib/transcriptions-sync"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
 import type {
@@ -128,6 +129,8 @@ export default function TranscribePage({
         status: "succeeded",
         result: transcription.slice(0, 200),
       })
+      // Sync best-effort do status final pro Supabase
+      patchTranscriptionStatus(id, "succeeded")
     },
     [id, stopPolling, patchHistory],
   )
@@ -160,6 +163,7 @@ export default function TranscribePage({
         setStatus("failed")
         setError(data.error || "Transcrição falhou")
         patchHistory(id, { status: "failed" })
+        patchTranscriptionStatus(id, "failed")
       }
 
       if (attemptsRef.current >= 120) {
@@ -167,6 +171,7 @@ export default function TranscribePage({
         setStatus("failed")
         setError("Tempo limite da transcrição esgotado")
         patchHistory(id, { status: "failed" })
+        patchTranscriptionStatus(id, "failed")
       }
     } catch (err) {
       if (attemptsRef.current >= 5) {
@@ -175,6 +180,7 @@ export default function TranscribePage({
         setStatus("failed")
         setError(errorInfo.userMessage)
         patchHistory(id, { status: "failed" })
+        patchTranscriptionStatus(id, "failed")
       }
     }
   }, [id, stopPolling, patchHistory, handleTranscriptionSuccess])
