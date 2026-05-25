@@ -115,15 +115,9 @@ export function TopBar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuItem asChild>
-              <Link href="/about">
+              <Link href="/settings">
                 <User className="h-4 w-4" />
                 Meu perfil
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings">
-                <Settings className="h-4 w-4" />
-                Configurações
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
