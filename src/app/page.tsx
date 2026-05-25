@@ -23,6 +23,7 @@ import {
 } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
+import { getAudioRecordedDate } from "@/lib/audio-metadata"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
 import {
   clearRecording,
@@ -138,9 +139,12 @@ export default function HomePage() {
           audioSourceName = file.name
           audioSourceSize = file.size
           audioSourceType = "file"
-          // lastModified do arquivo de áudio = aproximação razoável da data
-          // da reunião. Vira o campo "data" da ata depois.
-          audioSourceRecordedAt = file.lastModified || undefined
+          // Tenta extrair a data REAL de gravação dos metadados do áudio
+          // (creation_time do átomo M4A, TDRC do MP3, etc.). Se não rolar,
+          // cai pra file.lastModified como fallback.
+          const recordedDate = await getAudioRecordedDate(file)
+          audioSourceRecordedAt =
+            recordedDate?.getTime() || file.lastModified || undefined
           toast.info("Enviando arquivo...")
           // Upload direto pro Supabase Storage — evita o limite de 4.5MB
           // das Vercel Functions que rebatia 413 antes do server rodar.
