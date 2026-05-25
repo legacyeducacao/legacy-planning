@@ -132,10 +132,6 @@ async function generateAtaWithFallback(args: {
     : new Error("Todos os modelos falharam")
 }
 
-function formatTime(d: Date): string {
-  return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
-}
-
 export const maxDuration = 60
 
 const SYSTEM_PROMPT = `Você é um analista de produto da Legacy Educação responsável por gerar atas de reuniões internas em português brasileiro. Vai receber: (1) o CONTEXTO da empresa (organograma, catálogo de produtos, glossário) e (2) uma TRANSCRIÇÃO automática que pode conter erros de reconhecimento de fala.
@@ -346,7 +342,11 @@ export async function POST(req: NextRequest) {
     if (!ata.responsavelAta && body.currentUserName) {
       ata.responsavelAta = body.currentUserName
     }
-    if (!ata.horarioEncerramento) ata.horarioEncerramento = formatTime(now)
+    // horarioEncerramento NÃO é preenchido com a hora de agora — pra upload de
+    // arquivo isso seria mentira (não sabemos quando a reunião terminou).
+    // Quando vier do LLM (extraído da transcrição), preserva; senão, vazio
+    // e o usuário preenche manualmente. Pra gravação ao vivo, o client pode
+    // passar body.horarioEncerramento computado de startTime + duração.
 
     return NextResponse.json({ ata })
   } catch (error) {
