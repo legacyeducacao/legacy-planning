@@ -27,7 +27,6 @@ function breadcrumbLabel(path: string): string {
     transcribe: "Transcrição",
     documentation: "Documentação",
     settings: "Configurações",
-    about: "Sobre",
     changelog: "Novidades",
     terms: "Termos",
     privacy: "Privacidade",
@@ -91,15 +90,24 @@ export function TopBar() {
                 e.currentTarget.style.background = "transparent"
               }}
             >
-              <span
-                className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-semibold"
-                style={{
-                  background: "var(--r-primary)",
-                  color: "var(--r-on-dark)",
-                }}
-              >
-                {user?.initials ?? "?"}
-              </span>
+              {user?.photoURL ? (
+                // biome-ignore lint/performance/noImgElement: external avatar URL
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName}
+                  className="h-7 w-7 rounded-full object-cover"
+                />
+              ) : (
+                <span
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-semibold"
+                  style={{
+                    background: "var(--r-primary)",
+                    color: "var(--r-on-dark)",
+                  }}
+                >
+                  {user?.initials ?? "?"}
+                </span>
+              )}
               <span
                 className="text-[13px] font-medium"
                 style={{ color: "var(--r-ink)" }}

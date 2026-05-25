@@ -25,7 +25,6 @@ import { cn } from "@/lib/utils"
 const NAV_ITEMS = [
   { href: "/planner", label: "Planner" },
   { href: "/history", label: "Transcrições" },
-  { href: "/about", label: "Sobre" },
   { href: "/documentation", label: "Docs" },
   { href: "/changelog", label: "Novidades" },
 ]
@@ -38,7 +37,6 @@ const MOBILE_TABS = [
 
 const MOBILE_MENU_ITEMS = [
   { href: "/documentation", label: "Docs", icon: BookOpen },
-  { href: "/about", label: "Sobre", icon: ScrollText },
   { href: "/changelog", label: "Novidades", icon: ScrollText },
   { href: "/terms", label: "Termos", icon: ScrollText },
   { href: "/privacy", label: "Privacidade", icon: ScrollText },

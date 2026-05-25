@@ -1,22 +1,35 @@
 "use client"
 
-import { Loader2, LogOut, ShieldCheck, User as UserIcon } from "lucide-react"
+import {
+  Camera,
+  Loader2,
+  LogOut,
+  ShieldCheck,
+  User as UserIcon,
+} from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { type ChangeEvent, useEffect, useRef, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { Button } from "@/components/ui/button"
-import { signOut, updateUserDisplayName } from "@/lib/auth"
+import { signOut, updateUserDisplayName, updateUserPhotoURL } from "@/lib/auth"
+import { uploadAvatar } from "@/lib/upload-avatar"
 
 export default function SettingsPage() {
   const router = useRouter()
   const { user, isLoading } = useAuth()
   const [name, setName] = useState("")
+  const [photoURL, setPhotoURL] = useState<string | undefined>(undefined)
   const [saving, setSaving] = useState(false)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (user) setName(user.displayName)
+    if (user) {
+      setName(user.displayName)
+      setPhotoURL(user.photoURL)
+    }
   }, [user])
 
   if (isLoading || !user) {
@@ -51,6 +64,26 @@ export default function SettingsPage() {
     }
   }
 
+  const handlePhotoChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !user) return
+    setUploadingPhoto(true)
+    try {
+      const { url } = await uploadAvatar(file, user.uid)
+      await updateUserPhotoURL(url)
+      setPhotoURL(url)
+      toast.success("Foto atualizada")
+      router.refresh()
+    } catch (err) {
+      console.error(err)
+      toast.error(err instanceof Error ? err.message : "Falha ao subir foto")
+    } finally {
+      setUploadingPhoto(false)
+      // Reset do input pra permitir re-upload do mesmo arquivo
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
   const handleSignOut = async () => {
     setSigningOut(true)
     try {
@@ -68,7 +101,7 @@ export default function SettingsPage() {
       <div className="container mx-auto max-w-2xl px-6 py-12 sm:py-16">
         <header className="mb-10">
           <h1 className="text-foreground text-4xl font-semibold tracking-[-0.03em] sm:text-5xl">
-            Configurações
+            Meu perfil
           </h1>
           <p className="text-muted-foreground mt-2 text-base">
             Tua conta e preferências.
@@ -78,10 +111,56 @@ export default function SettingsPage() {
         <section className="border-border bg-card mb-6 rounded-2xl border p-6">
           <h2 className="text-foreground mb-1 text-lg font-semibold">Perfil</h2>
           <p className="text-muted-foreground mb-6 text-sm">
-            Como você aparece pra você mesmo e (futuramente) pros outros.
+            Como você aparece pra você mesmo e pros outros.
           </p>
 
           <div className="space-y-5">
+            {/* Foto de perfil */}
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingPhoto}
+                aria-label="Trocar foto de perfil"
+                className="group relative flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-muted transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {photoURL ? (
+                  // biome-ignore lint/performance/noImgElement: external URL, next/image needs config
+                  <img
+                    src={photoURL}
+                    alt="Foto de perfil"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="text-2xl font-semibold text-muted-foreground">
+                    {user.initials.slice(0, 1)}
+                  </span>
+                )}
+                <span className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                  {uploadingPhoto ? (
+                    <Loader2 className="h-5 w-5 animate-spin text-white" />
+                  ) : (
+                    <Camera className="h-5 w-5 text-white" />
+                  )}
+                </span>
+              </button>
+              <div className="flex-1">
+                <p className="text-foreground text-sm font-medium">
+                  Foto de perfil
+                </p>
+                <p className="text-muted-foreground mt-0.5 text-xs">
+                  Clique pra trocar. JPG, PNG ou WebP, até 5MB.
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handlePhotoChange}
+                  className="hidden"
+                />
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor="displayName"

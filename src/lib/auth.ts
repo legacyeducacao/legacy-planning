@@ -166,3 +166,16 @@ export async function updateUserDisplayName(
   const db = getFirestore()
   await updateDoc(doc(db, "users", fbUser.uid), { displayName: trimmed })
 }
+
+/**
+ * Atualiza a foto de perfil — Firebase Auth photoURL + doc Firestore.
+ * Recebe a URL pública já gerada (geralmente vem do uploadAvatar).
+ */
+export async function updateUserPhotoURL(photoURL: string): Promise<void> {
+  const auth = getAuth()
+  const fbUser = auth.currentUser
+  if (!fbUser) throw new Error("Sem usuário autenticado")
+  await updateProfile(fbUser, { photoURL })
+  const db = getFirestore()
+  await updateDoc(doc(db, "users", fbUser.uid), { photoURL })
+}

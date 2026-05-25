@@ -9,7 +9,6 @@ import {
   Home,
   ListTodo,
   LogOut,
-  Settings,
   Users,
 } from "lucide-react"
 import Image from "next/image"
@@ -74,7 +73,8 @@ export function Sidebar() {
 
   const bottomNav: NavItem[] = [
     { name: "Documentação", href: "/documentation", icon: BookOpen },
-    { name: "Configurações", href: "/settings", icon: Settings },
+    // "Configurações" removido — acesso via dropdown do avatar no TopBar
+    // (item "Meu perfil"). Evita duplicidade com mesma URL /settings.
   ]
 
   function isActive(href: string) {
@@ -240,15 +240,24 @@ export function Sidebar() {
           {/* User card */}
           {user && (
             <div className="flex items-center gap-2.5 rounded-full px-3 py-2">
-              <span
-                className="flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
-                style={{
-                  background: "var(--r-surface-dark)",
-                  color: "var(--r-on-dark)",
-                }}
-              >
-                {user.initials.slice(0, 1)}
-              </span>
+              {user.photoURL ? (
+                // biome-ignore lint/performance/noImgElement: external avatar URL, next/image needs domain config
+                <img
+                  src={user.photoURL}
+                  alt={user.displayName}
+                  className="h-[26px] w-[26px] flex-shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <span
+                  className="flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
+                  style={{
+                    background: "var(--r-surface-dark)",
+                    color: "var(--r-on-dark)",
+                  }}
+                >
+                  {user.initials.slice(0, 1)}
+                </span>
+              )}
               <div className="flex min-w-0 flex-1 flex-col leading-tight">
                 <span
                   className="truncate text-[13px] font-semibold"
