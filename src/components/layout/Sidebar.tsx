@@ -9,6 +9,7 @@ import {
   Home,
   ListTodo,
   LogOut,
+  Settings,
   Users,
 } from "lucide-react"
 import Image from "next/image"
@@ -73,8 +74,7 @@ export function Sidebar() {
 
   const bottomNav: NavItem[] = [
     { name: "Documentação", href: "/documentation", icon: BookOpen },
-    // Configurações removido — rota /settings ainda não existe, gerava 404
-    // nos prefetches de RSC do Sidebar. Reintroduzir quando a página for criada.
+    { name: "Configurações", href: "/settings", icon: Settings },
   ]
 
   function isActive(href: string) {

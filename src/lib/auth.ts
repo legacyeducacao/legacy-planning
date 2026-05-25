@@ -6,8 +6,15 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth"
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore"
+import {
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore"
 import { getAuth, getFirestore } from "@/lib/firebase"
 import type { AuthUser, Role } from "@/types/auth"
 
@@ -17,7 +24,8 @@ import type { AuthUser, Role } from "@/types/auth"
  * feito direto no console do Firestore em users/{uid}.role.
  */
 const MASTER_EMAILS = new Set<string>([
-  // Adicione e-mails de admin aqui pra eles virarem master no primeiro login.
+  "lair.lopes@legacyeducacaocorp.com.br",
+  // Adicione outros e-mails de admin aqui se precisar.
 ])
 
 function deriveInitials(name: string, email: string): string {
@@ -131,4 +139,21 @@ export async function signUpWithEmail(
 
 export async function signOut(): Promise<void> {
   await firebaseSignOut(getAuth())
+}
+
+/**
+ * Atualiza o nome de exibição do usuário em ambos Firebase Auth e o doc
+ * em users/{uid} do Firestore (mantém em sync).
+ */
+export async function updateUserDisplayName(
+  displayName: string,
+): Promise<void> {
+  const auth = getAuth()
+  const fbUser = auth.currentUser
+  if (!fbUser) throw new Error("Sem usuário autenticado")
+  const trimmed = displayName.trim()
+  if (!trimmed) throw new Error("Nome não pode ficar vazio")
+  await updateProfile(fbUser, { displayName: trimmed })
+  const db = getFirestore()
+  await updateDoc(doc(db, "users", fbUser.uid), { displayName: trimmed })
 }
