@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, ChevronDown, LogOut, Search, Settings, User } from "lucide-react"
+import { Bell, ChevronDown, LogOut, Search, User } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useCallback } from "react"
