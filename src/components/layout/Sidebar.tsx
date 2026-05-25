@@ -8,12 +8,15 @@ import {
   FileText,
   Home,
   ListTodo,
+  LogOut,
+  Users,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useAuth } from "@/components/auth/AuthProvider"
+import { signOut } from "@/lib/auth"
 import { useTodosStore } from "@/stores/todos-store"
 
 type NavItem = {
@@ -25,6 +28,7 @@ type NavItem = {
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const { user } = useAuth()
   const todos = useTodosStore((s) => s.todos)
   const loadTodos = useTodosStore((s) => s.load)
@@ -46,7 +50,26 @@ export function Sidebar() {
       badge: openTodosCount > 0 ? openTodosCount : undefined,
     },
     { name: "Transcrições", href: "/history", icon: FileAudio },
+    // Tab exclusiva do master — mostra transcrições dos OUTROS usuários
+    ...(user?.role === "master"
+      ? [
+          {
+            name: "Equipe",
+            href: "/history/equipe",
+            icon: Users,
+          } satisfies NavItem,
+        ]
+      : []),
   ]
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      router.replace("/login")
+    } catch (err) {
+      console.error("Falha ao sair:", err)
+    }
+  }
 
   const bottomNav: NavItem[] = [
     { name: "Documentação", href: "/documentation", icon: BookOpen },
@@ -226,7 +249,7 @@ export function Sidebar() {
               >
                 {user.initials.slice(0, 1)}
               </span>
-              <div className="flex min-w-0 flex-col leading-tight">
+              <div className="flex min-w-0 flex-1 flex-col leading-tight">
                 <span
                   className="truncate text-[13px] font-semibold"
                   style={{ color: "var(--r-ink)" }}
@@ -234,6 +257,16 @@ export function Sidebar() {
                   {user.displayName.split(" ")[0]}
                 </span>
               </div>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                aria-label="Sair"
+                title="Sair"
+                className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full transition-colors hover:bg-[rgba(32,32,32,0.06)]"
+                style={{ color: "var(--r-charcoal)" }}
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
             </div>
           )}
         </div>

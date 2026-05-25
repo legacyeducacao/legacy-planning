@@ -198,6 +198,7 @@ export default function HomePage() {
           options,
           status: "processing",
           createdAt: Date.now(),
+          ownerUid: user?.uid,
         })
         router.push(`/transcribe/${resultData.id}`)
       } catch (err) {

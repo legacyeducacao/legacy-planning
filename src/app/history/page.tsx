@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { useAuth } from "@/components/auth/AuthProvider"
 import { Footer } from "@/components/layout/Footer"
 import { Header } from "@/components/layout/Header"
 import { Button } from "@/components/ui/button"
@@ -19,6 +20,7 @@ import { type HistoryEntry, useHistoryStore } from "@/stores/history-store"
 
 export default function HistoryPage() {
   const router = useRouter()
+  const { user } = useAuth()
   const { entries, isLoaded, load, remove, clear } = useHistoryStore()
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -27,6 +29,9 @@ export default function HistoryPage() {
   }, [load])
 
   const filtered = entries.filter((entry) => {
+    // Scope por usuário: só mostra entradas do próprio usuário OU legadas
+    // (sem ownerUid, criadas antes da feature de scope) pra não sumirem.
+    if (user && entry.ownerUid && entry.ownerUid !== user.uid) return false
     if (!searchTerm) return true
     const term = searchTerm.toLowerCase()
     return (
@@ -97,7 +102,9 @@ export default function HistoryPage() {
         <div className="container mx-auto max-w-4xl">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-foreground text-2xl font-bold">Transcrições</h1>
+              <h1 className="text-foreground text-2xl font-bold">
+                Transcrições
+              </h1>
               <p className="text-muted-foreground text-sm">
                 Tuas transcrições anteriores
               </p>

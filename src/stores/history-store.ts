@@ -8,6 +8,10 @@ export interface HistoryEntry {
   status: string
   createdAt: number
   result?: string
+  /** UID do usuário Firebase que criou a transcrição.
+   *  Entradas sem este campo são "legadas" (antes da feature) — tratadas
+   *  como visíveis ao usuário atual pra não sumirem da UI. */
+  ownerUid?: string
 }
 
 interface HistoryStore {
