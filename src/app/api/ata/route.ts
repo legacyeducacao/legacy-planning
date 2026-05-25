@@ -1,11 +1,19 @@
 import { anthropic } from "@ai-sdk/anthropic"
 import { google } from "@ai-sdk/google"
 import { createOpenAI } from "@ai-sdk/openai"
-import { generateText } from "ai"
+import { generateText, type ModelMessage } from "ai"
 import { type NextRequest, NextResponse } from "next/server"
 import { normalizeAta } from "@/lib/ata-format"
 import { formatContextoForPrompt, loadContexto } from "@/lib/contexto-loader"
 import type { TranscriptionSegment } from "@/types/transcription"
+
+interface MaterialPayload {
+  name: string
+  kind: "text" | "image"
+  mimeType: string
+  text?: string
+  dataUrl?: string
+}
 
 const PRIMARY_GEMINI = process.env.GEMINI_MODEL ?? "gemini-2.5-flash"
 const FALLBACK_CLAUDE = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-6"
@@ -58,7 +66,7 @@ interface ModelAttempt {
  *    chain pra paid users, ignorado rápido em free tier (429 imediato)
  * 7. Claude Sonnet — só se ANTHROPIC_API_KEY estiver configurada (paid)
  */
-function buildFallbackChain(): ModelAttempt[] {
+function buildFallbackChain(opts: { hasImages: boolean }): ModelAttempt[] {
   const chain: ModelAttempt[] = [
     { provider: "gemini", id: PRIMARY_GEMINI },
     { provider: "gemini", id: PRIMARY_GEMINI, delayMs: 3000 },
@@ -69,7 +77,9 @@ function buildFallbackChain(): ModelAttempt[] {
   if (PRIMARY_GEMINI !== "gemini-2.5-flash-lite") {
     chain.push({ provider: "gemini", id: "gemini-2.5-flash-lite" })
   }
-  if (openrouter) {
+  // OpenRouter chain free-tier não garante suporte a multimodal; pula quando
+  // tem imagem pra não estourar erro de "model doesn't support images".
+  if (openrouter && !opts.hasImages) {
     for (const id of FALLBACK_OPENROUTER_MODELS) {
       chain.push({ provider: "openrouter", id })
     }
@@ -89,9 +99,37 @@ const RETRYABLE_RE =
 async function generateAtaWithFallback(args: {
   system: string
   prompt: string
+  imageParts?: Array<{ dataUrl: string; mimeType: string }>
 }): Promise<{ text: string; modelUsed: string }> {
-  const chain = buildFallbackChain()
+  const hasImages = (args.imageParts?.length ?? 0) > 0
+  const chain = buildFallbackChain({ hasImages })
   let lastErr: unknown
+
+  // Quando tem imagem, monta `messages` multimodal; senão usa `prompt` string
+  // (caminho rápido, sem mudança de comportamento pro flow antigo).
+  const messages: ModelMessage[] | undefined = hasImages
+    ? [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: args.prompt },
+            ...(args.imageParts ?? []).map(
+              (img) =>
+                ({
+                  type: "image" as const,
+                  image: img.dataUrl,
+                  mediaType: img.mimeType,
+                }) satisfies {
+                  type: "image"
+                  image: string
+                  mediaType: string
+                },
+            ),
+          ],
+        },
+      ]
+    : undefined
+
   for (const attempt of chain) {
     if (attempt.delayMs) {
       await new Promise((r) => setTimeout(r, attempt.delayMs))
@@ -108,7 +146,7 @@ async function generateAtaWithFallback(args: {
       const { text } = await generateText({
         model,
         system: args.system,
-        prompt: args.prompt,
+        ...(messages ? { messages } : { prompt: args.prompt }),
         // responseMimeType só funciona pro Gemini; Anthropic e OpenRouter
         // ignoram e devolvem text/markdown que stripFences resolve
         providerOptions:
@@ -207,6 +245,9 @@ interface AtaRequestBody {
   /** Lista de nomes confirmados pelo usuário como participantes. Quando
    *  passada, força o LLM a usar APENAS estes nomes na seção participantes. */
   confirmedParticipants?: string[]
+  /** Materiais de apoio anexados (rascunhos, fotos, notas). Texto vira bloco
+   *  no prompt; imagem vira message part multimodal. */
+  materials?: MaterialPayload[]
 }
 
 function buildUserPrompt(body: AtaRequestBody, contexto: string): string {
@@ -263,10 +304,38 @@ O usuário CONFIRMOU que SÓ as pessoas abaixo estavam na reunião. Use APENAS e
 ${body.confirmedParticipants.map((n) => `- ${n}`).join("\n")}`
       : ""
 
+  const textMateriais = (body.materials ?? []).filter(
+    (m) => m.kind === "text" && m.text && m.text.trim().length > 0,
+  )
+  const imageMateriais = (body.materials ?? []).filter(
+    (m) => m.kind === "image" && m.dataUrl,
+  )
+  const materiaisBlock =
+    textMateriais.length > 0 || imageMateriais.length > 0
+      ? `
+
+---
+
+## MATERIAIS DE APOIO ANEXADOS PELO USUÁRIO
+
+São rascunhos, notas ou imagens (fotos de quadro, post-its, prints) que o usuário anexou pra complementar a transcrição. Use como contexto pra enriquecer a ata — especialmente decisões, plano de ação e tópicos que ficaram pouco claros na transcrição falada. Se houver conflito entre o material e a fala, o material escrito tem precedência (foi revisado pelo usuário).
+${
+  textMateriais.length > 0
+    ? `\n### Textos (${textMateriais.length})\n${textMateriais
+        .map((m) => `\n**${m.name}**\n\`\`\`\n${m.text}\n\`\`\``)
+        .join("\n")}`
+    : ""
+}${
+  imageMateriais.length > 0
+    ? `\n\n### Imagens (${imageMateriais.length})\nForam anexadas ${imageMateriais.length} imagem(ns) — analisa elas como parte do contexto da reunião. Nomes: ${imageMateriais.map((m) => m.name).join(", ")}.`
+    : ""
+}`
+      : ""
+
   return `## CONTEXTO DA EMPRESA (Legacy Educação)
 
 ${contexto}
-${confirmadosBlock}
+${confirmadosBlock}${materiaisBlock}
 
 ---
 
@@ -318,11 +387,21 @@ export async function POST(req: NextRequest) {
     const ctx = await loadContexto()
     const contextoFormatado = formatContextoForPrompt(ctx, "ata")
 
+    const imageParts = (body.materials ?? [])
+      .filter(
+        (m): m is MaterialPayload & { dataUrl: string } =>
+          m.kind === "image" && typeof m.dataUrl === "string",
+      )
+      .map((m) => ({ dataUrl: m.dataUrl, mimeType: m.mimeType }))
+
     const { text, modelUsed } = await generateAtaWithFallback({
       system: SYSTEM_PROMPT,
       prompt: buildUserPrompt(body, contextoFormatado),
+      imageParts,
     })
-    console.log(`[ata] gerada via ${modelUsed}`)
+    console.log(
+      `[ata] gerada via ${modelUsed}${imageParts.length > 0 ? ` (${imageParts.length} imagem(ns))` : ""}`,
+    )
 
     const cleaned = stripFences(text)
     let parsed: unknown

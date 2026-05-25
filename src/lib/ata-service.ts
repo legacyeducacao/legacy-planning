@@ -1,5 +1,6 @@
 import { normalizeAta } from "@/lib/ata-format"
 import { generateAtaLocal } from "@/lib/ata-generator"
+import type { MaterialItem } from "@/lib/material-extract"
 import type {
   Ata,
   TranscriptionIntelligence,
@@ -21,6 +22,10 @@ export interface AtaGenerationInput {
    *  pra cargo) em vez de inferir das menções na transcrição (que costuma
    *  alucinar). */
   confirmedParticipants?: string[]
+  /** Materiais de apoio (rascunhos, fotos de quadro, notas) anexados pelo
+   *  usuário. Texto vai no prompt; imagens viram parts multimodais quando o
+   *  modelo suportar. */
+  materials?: MaterialItem[]
 }
 
 export interface AtaGenerationResult {
@@ -72,6 +77,13 @@ export async function generateAta(
         currentUserName: input.currentUser?.displayName,
         data: input.meetingDate,
         confirmedParticipants: input.confirmedParticipants,
+        materials: input.materials?.map((m) => ({
+          name: m.name,
+          kind: m.kind,
+          mimeType: m.mimeType,
+          text: m.text,
+          dataUrl: m.dataUrl,
+        })),
       }),
     })
 

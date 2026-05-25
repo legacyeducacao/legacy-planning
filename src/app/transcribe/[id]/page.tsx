@@ -18,10 +18,12 @@ import { use, useCallback, useEffect, useRef, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { ConfirmParticipantesModal } from "@/components/transcribe/ConfirmParticipantesModal"
+import { MateriaisUploader } from "@/components/transcribe/MateriaisUploader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { generateAta } from "@/lib/ata-service"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
+import type { MaterialItem } from "@/lib/material-extract"
 import { patchTranscriptionStatus } from "@/lib/transcriptions-sync"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
@@ -98,6 +100,7 @@ export default function TranscribePage({
   const [copySuccess, setCopySuccess] = useState(false)
   const [isGeneratingAta, setIsGeneratingAta] = useState(false)
   const [confirmModalOpen, setConfirmModalOpen] = useState(false)
+  const [materials, setMaterials] = useState<MaterialItem[]>([])
   const pollRef = useRef<NodeJS.Timeout | null>(null)
   const attemptsRef = useRef(0)
   const patchHistory = useHistoryStore((s) => s.patch)
@@ -245,6 +248,7 @@ export default function TranscribePage({
         meetingDate,
         confirmedParticipants:
           confirmedParticipants.length > 0 ? confirmedParticipants : undefined,
+        materials: materials.length > 0 ? materials : undefined,
       })
       try {
         localStorage.setItem(`ata_${id}`, JSON.stringify(gen.ata))
@@ -403,6 +407,17 @@ export default function TranscribePage({
                       {result.transcription.length > 2000 && "..."}
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Materiais de apoio */}
+              <Card>
+                <CardContent className="p-6">
+                  <MateriaisUploader
+                    materials={materials}
+                    onChange={setMaterials}
+                    disabled={isGeneratingAta}
+                  />
                 </CardContent>
               </Card>
 
