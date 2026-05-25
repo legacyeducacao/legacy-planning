@@ -47,14 +47,20 @@ export async function hydrateUser(fbUser: FirebaseUser): Promise<AuthUser> {
   let role: Role = "padrao"
   let displayName =
     fbUser.displayName || fbUser.email?.split("@")[0] || "Usuário"
+  let discordWebhookUrl: string | undefined
 
   const emailLower = (fbUser.email ?? "").toLowerCase()
   const isWhitelisted = MASTER_EMAILS.has(emailLower)
 
   if (snap.exists()) {
-    const data = snap.data() as { role?: Role; displayName?: string }
+    const data = snap.data() as {
+      role?: Role
+      displayName?: string
+      discordWebhookUrl?: string
+    }
     if (data.role === "master" || data.role === "padrao") role = data.role
     if (data.displayName) displayName = data.displayName
+    if (data.discordWebhookUrl) discordWebhookUrl = data.discordWebhookUrl
 
     // Auto-promove: se email entrou no whitelist depois do signup, atualiza
     // o role pra master. Nunca rebaixa (master fica master mesmo fora do
@@ -81,6 +87,7 @@ export async function hydrateUser(fbUser: FirebaseUser): Promise<AuthUser> {
     initials: deriveInitials(displayName, fbUser.email ?? ""),
     role,
     photoURL: fbUser.photoURL ?? undefined,
+    discordWebhookUrl,
   }
 }
 
@@ -178,4 +185,25 @@ export async function updateUserPhotoURL(photoURL: string): Promise<void> {
   await updateProfile(fbUser, { photoURL })
   const db = getFirestore()
   await updateDoc(doc(db, "users", fbUser.uid), { photoURL })
+}
+
+/**
+ * Atualiza o webhook URL do Discord no Firestore. String vazia limpa o campo.
+ * Valida formato básico (precisa começar com https://discord.com/api/webhooks/).
+ */
+export async function updateUserDiscordWebhook(url: string): Promise<void> {
+  const auth = getAuth()
+  const fbUser = auth.currentUser
+  if (!fbUser) throw new Error("Sem usuário autenticado")
+  const trimmed = url.trim()
+  if (trimmed && !trimmed.startsWith("https://discord.com/api/webhooks/")) {
+    throw new Error(
+      "URL inválida — deve começar com https://discord.com/api/webhooks/",
+    )
+  }
+  const db = getFirestore()
+  // Salva null/vazio se string vazia, pra limpar
+  await updateDoc(doc(db, "users", fbUser.uid), {
+    discordWebhookUrl: trimmed || null,
+  })
 }

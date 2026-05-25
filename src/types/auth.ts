@@ -16,4 +16,7 @@ export interface AuthUser {
   initials: string
   role: Role
   photoURL?: string
+  /** URL de webhook do Discord pra enviar atas direto pra um canal.
+   *  Configurado por usuário em /settings. Opcional. */
+  discordWebhookUrl?: string
 }

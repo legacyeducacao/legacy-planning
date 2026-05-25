@@ -12,7 +12,12 @@ import { type ChangeEvent, useEffect, useRef, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { Button } from "@/components/ui/button"
-import { signOut, updateUserDisplayName, updateUserPhotoURL } from "@/lib/auth"
+import {
+  signOut,
+  updateUserDiscordWebhook,
+  updateUserDisplayName,
+  updateUserPhotoURL,
+} from "@/lib/auth"
 import { uploadAvatar } from "@/lib/upload-avatar"
 
 export default function SettingsPage() {
@@ -20,7 +25,9 @@ export default function SettingsPage() {
   const { user, isLoading } = useAuth()
   const [name, setName] = useState("")
   const [photoURL, setPhotoURL] = useState<string | undefined>(undefined)
+  const [discordWebhook, setDiscordWebhook] = useState("")
   const [saving, setSaving] = useState(false)
+  const [savingDiscord, setSavingDiscord] = useState(false)
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -29,6 +36,7 @@ export default function SettingsPage() {
     if (user) {
       setName(user.displayName)
       setPhotoURL(user.photoURL)
+      setDiscordWebhook(user.discordWebhookUrl ?? "")
     }
   }, [user])
 
@@ -81,6 +89,28 @@ export default function SettingsPage() {
       setUploadingPhoto(false)
       // Reset do input pra permitir re-upload do mesmo arquivo
       if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
+  const handleSaveDiscord = async () => {
+    if (discordWebhook.trim() === (user.discordWebhookUrl ?? "")) {
+      toast.info("Sem mudanças pra salvar")
+      return
+    }
+    setSavingDiscord(true)
+    try {
+      await updateUserDiscordWebhook(discordWebhook)
+      toast.success(
+        discordWebhook.trim()
+          ? "Webhook do Discord salvo"
+          : "Webhook do Discord removido",
+      )
+      router.refresh()
+    } catch (err) {
+      console.error(err)
+      toast.error(err instanceof Error ? err.message : "Falha ao salvar")
+    } finally {
+      setSavingDiscord(false)
     }
   }
 
@@ -228,6 +258,55 @@ export default function SettingsPage() {
                 className="gap-2"
               >
                 {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+                Salvar
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-border bg-card mb-6 rounded-2xl border p-6">
+          <h2 className="text-foreground mb-1 text-lg font-semibold">
+            Integrações
+          </h2>
+          <p className="text-muted-foreground mb-6 text-sm">
+            Envia atas direto pra outros lugares.
+          </p>
+
+          <div className="space-y-5">
+            <div>
+              <label
+                htmlFor="discordWebhook"
+                className="text-foreground mb-1.5 block text-sm font-medium"
+              >
+                Webhook do Discord
+              </label>
+              <input
+                id="discordWebhook"
+                type="url"
+                value={discordWebhook}
+                onChange={(e) => setDiscordWebhook(e.target.value)}
+                disabled={savingDiscord}
+                placeholder="https://discord.com/api/webhooks/..."
+                className="border-border bg-background text-foreground focus:ring-primary w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 disabled:opacity-50"
+              />
+              <p className="text-muted-foreground mt-1.5 text-xs leading-relaxed">
+                Pega no Discord: clica na engrenagem de um canal de texto →
+                Integrações → Criar Webhook → Copiar URL. Quando configurado, o
+                botão "Discord" aparece na ata.
+              </p>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <Button
+                type="button"
+                onClick={handleSaveDiscord}
+                disabled={
+                  savingDiscord ||
+                  discordWebhook.trim() === (user.discordWebhookUrl ?? "")
+                }
+                className="gap-2"
+              >
+                {savingDiscord && <Loader2 className="h-4 w-4 animate-spin" />}
                 Salvar
               </Button>
             </div>

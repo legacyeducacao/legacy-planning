@@ -9,6 +9,7 @@ import {
   FileText,
   Loader2,
   Mail,
+  MessageSquare,
   Plus,
   RefreshCw,
   Sparkles,
@@ -26,6 +27,7 @@ import { useAuth } from "@/components/auth/AuthProvider"
 import { buildAtaDocx } from "@/lib/ata-docx"
 import { ataToMarkdown, normalizeAta } from "@/lib/ata-format"
 import { generateAta as generateAtaService } from "@/lib/ata-service"
+import { sendAtaToDiscord } from "@/lib/discord-sync"
 import { canDelete, canEdit } from "@/lib/permissions"
 import { useHistoryStore } from "@/stores/history-store"
 import type {
@@ -245,6 +247,7 @@ export function AtaPanel({
   const [lastReason, setLastReason] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [emailOpen, setEmailOpen] = useState(false)
+  const [sendingDiscord, setSendingDiscord] = useState(false)
 
   const editable = ata ? canEdit(ata, user) : true
   const deletable = ata ? canDelete(ata, user) : false
@@ -484,6 +487,44 @@ export function AtaPanel({
           <Mail className="h-4 w-4" />
           <span className="hidden sm:inline">Enviar email</span>
         </Button>
+        {user?.discordWebhookUrl && ata && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={async () => {
+              if (!ata || !user?.discordWebhookUrl) return
+              setSendingDiscord(true)
+              try {
+                await sendAtaToDiscord(
+                  ata,
+                  user.discordWebhookUrl,
+                  user.displayName,
+                )
+                toast.success("Ata enviada pro Discord")
+              } catch (err) {
+                console.error(err)
+                toast.error(
+                  err instanceof Error
+                    ? err.message
+                    : "Falha ao enviar pro Discord",
+                )
+              } finally {
+                setSendingDiscord(false)
+              }
+            }}
+            disabled={sendingDiscord}
+            className="gap-2"
+          >
+            {sendingDiscord ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <MessageSquare className="h-4 w-4" />
+            )}
+            <span className="hidden sm:inline">
+              {sendingDiscord ? "Enviando..." : "Discord"}
+            </span>
+          </Button>
+        )}
         {editable && (
           <Button
             variant="ghost"
