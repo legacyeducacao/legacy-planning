@@ -19,14 +19,12 @@ import { Button } from "./button"
 interface MobileNavigationProps {
   onOpenChangelog: () => void
   onShowHistory?: () => void
-  onOpenFeedbackModal: (type: "general" | "issue" | "feature") => void
   onShowV3?: () => void
 }
 
 export function MobileNavigation({
   onOpenChangelog,
   onShowHistory,
-  onOpenFeedbackModal,
   onShowV3,
 }: MobileNavigationProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -79,11 +77,6 @@ export function MobileNavigation({
 
   const handleChangelogClick = () => {
     onOpenChangelog()
-    closeMenu()
-  }
-
-  const handleFeedbackClick = (type: "general" | "issue" | "feature") => {
-    onOpenFeedbackModal(type)
     closeMenu()
   }
 
@@ -187,51 +180,6 @@ export function MobileNavigation({
                   >
                     <FileText className="mr-3 h-5 w-5" />
                     Changelog
-                  </Button>
-                </motion.div>
-
-                {/* Divider */}
-                <motion.div variants={itemVariants} className="my-2">
-                  <hr className="border-gray-200 dark:border-gray-700" />
-                </motion.div>
-
-                {/* Feedback Section */}
-                <motion.div variants={itemVariants} className="mb-2">
-                  <p className="mb-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Feedback
-                  </p>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleFeedbackClick("general")}
-                    className="mb-3 w-full justify-start p-4 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  >
-                    <MessageCircle className="mr-3 h-5 w-5" />
-                    Provide Feedback
-                  </Button>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleFeedbackClick("issue")}
-                    className="mb-3 w-full justify-start p-4 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  >
-                    <Bug className="mr-3 h-5 w-5" />
-                    Report an Issue
-                  </Button>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleFeedbackClick("feature")}
-                    className="mb-3 w-full justify-start p-4 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  >
-                    <Lightbulb className="mr-3 h-5 w-5" />
-                    Suggest a Feature
                   </Button>
                 </motion.div>
 

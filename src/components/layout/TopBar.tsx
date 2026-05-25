@@ -31,7 +31,6 @@ function breadcrumbLabel(path: string): string {
     changelog: "Novidades",
     terms: "Termos",
     privacy: "Privacidade",
-    feedback: "Feedback",
   }
   return map[first] ?? first.charAt(0).toUpperCase() + first.slice(1)
 }

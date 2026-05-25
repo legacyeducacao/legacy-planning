@@ -58,12 +58,6 @@ export function Header() {
     isRouteActive(pathname, item.href),
   )
 
-  const openFeedback = () => {
-    if (globalThis.window?.openFeedbackModal) {
-      globalThis.window.openFeedbackModal("general")
-    }
-  }
-
   const mobileMenuContent = (
     <DropdownMenuContent align="end" className="w-48">
       {MOBILE_MENU_ITEMS.map((item) => {
@@ -87,15 +81,6 @@ export function Header() {
         )
       })}
       <DropdownMenuSeparator />
-      <DropdownMenuItem
-        onClick={() => {
-          openFeedback()
-          setMobileMenuOpen(false)
-        }}
-      >
-        <MessageCircle className="h-4 w-4" />
-        Feedback
-      </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <a
           href="https://github.com/aramb-dev/transcriptr"

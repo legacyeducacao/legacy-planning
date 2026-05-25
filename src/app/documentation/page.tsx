@@ -407,19 +407,8 @@ export default function DocumentationPage() {
                   >
                     novidades
                   </Link>{" "}
-                  pra mudanças recentes de comportamento, ou manda feedback pelo
-                  app.
+                  pra mudanças recentes de comportamento.
                 </p>
-                <button
-                  type="button"
-                  onClick={() =>
-                    globalThis.window?.openFeedbackModal?.("general")
-                  }
-                  className="border-border text-foreground hover:bg-background mt-4 inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium"
-                >
-                  <MessageSquareMore className="h-4 w-4" />
-                  Mandar feedback
-                </button>
               </div>
             </section>
           </article>

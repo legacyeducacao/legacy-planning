@@ -9,7 +9,6 @@ const PUBLIC_ROUTES = new Set<string>([
   "/login",
   "/terms",
   "/privacy",
-  "/feedback",
   "/offline",
 ])
 

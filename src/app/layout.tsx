@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next"
 import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google"
 import { VercelAnalytics } from "@/components/analytics/VercelAnalytics"
 import { AuthProvider } from "@/components/auth/AuthProvider"
-import { FeedbackModals } from "@/components/feedback/FeedbackModals"
 import { PWARegister } from "@/components/pwa/PWARegister"
 import "../index.css"
 import { AppShell } from "@/components/layout/AppShell"
@@ -104,7 +103,6 @@ export default function RootLayout({
       <body className="font-sans" suppressHydrationWarning>
         <AuthProvider>
           <AppShell>{children}</AppShell>
-          <FeedbackModals />
           <VercelAnalytics />
           <PWARegister />
         </AuthProvider>
