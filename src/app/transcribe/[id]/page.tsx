@@ -243,13 +243,13 @@ export default function TranscribePage({
         // ignore quota
       }
       if (gen.source === "llm") {
-        toast.success("Ata gerada com IA. Abrindo no Studio...")
+        toast.success("Ata gerada com IA. Abrindo...")
       } else {
-        toast.warning("Ata gerada localmente. Abrindo no Studio...", {
+        toast.warning("Ata gerada localmente. Abrindo...", {
           description: gen.reason ? `Sem IA: ${gen.reason}` : undefined,
         })
       }
-      router.push(`/studio/${id}`)
+      router.push(`/atas/${id}`)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha ao gerar a ata")
       setIsGeneratingAta(false)
