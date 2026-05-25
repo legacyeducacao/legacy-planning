@@ -233,12 +233,6 @@ export function Sidebar() {
                 >
                   {user.displayName.split(" ")[0]}
                 </span>
-                <span
-                  className="truncate text-[11px]"
-                  style={{ color: "var(--r-mute)" }}
-                >
-                  {user.role === "master" ? "Master" : "Plano gratuito"}
-                </span>
               </div>
             </div>
           )}
