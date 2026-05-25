@@ -797,8 +797,7 @@ function RecordCard({ onRecorded }: { onRecorded: (file: File) => void }) {
           className="text-[14px]"
           style={{ color: "var(--r-on-dark-mute)", lineHeight: 1.5 }}
         >
-          Clique pra capturar áudio do microfone. Para automaticamente em
-          silêncios longos.
+          Clique pra capturar áudio do microfone. Grava até você apertar parar.
         </p>
       </div>
 
@@ -1043,6 +1042,7 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
     "idle" | "requesting" | "recording" | "stopped"
   >("idle")
   const [duration, setDuration] = useState(0)
+  const [bytes, setBytes] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
@@ -1095,7 +1095,10 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
         setPreviewUrl(null)
       }
       recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data)
+        if (e.data.size > 0) {
+          chunksRef.current.push(e.data)
+          setBytes((b) => b + e.data.size)
+        }
       }
       recorder.onstop = () => {
         streamRef.current?.getTracks().forEach((t) => t.stop())
@@ -1118,6 +1121,7 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
       recorderRef.current = recorder
       startTimeRef.current = Date.now()
       setDuration(0)
+      setBytes(0)
       setState("recording")
       intervalRef.current = setInterval(() => {
         setDuration(Math.floor((Date.now() - startTimeRef.current) / 1000))
@@ -1151,7 +1155,14 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
     }
     recordedFileRef.current = null
     setDuration(0)
+    setBytes(0)
     setState("idle")
+  }
+
+  const formatBytes = (b: number): string => {
+    if (b < 1024) return `${b} B`
+    if (b < 1024 * 1024) return `${(b / 1024).toFixed(0)} KB`
+    return `${(b / 1024 / 1024).toFixed(1)} MB`
   }
 
   // Atalho de teclado: Espaço alterna idle ↔ recording. Ignora se o foco
@@ -1287,6 +1298,13 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
             {fmt(duration)}
           </p>
           <p
+            className="mono-eyebrow mt-0.5"
+            style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+            suppressHydrationWarning
+          >
+            {formatBytes(bytes)}
+          </p>
+          <p
             className="mono-eyebrow mt-1"
             style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
           >
@@ -1331,7 +1349,7 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
             className="mono-eyebrow mt-1"
             style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
           >
-            {fmt(duration)} capturado
+            {fmt(duration)} · {formatBytes(bytes)}
           </p>
           {previewUrl && (
             // biome-ignore lint/a11y/useMediaCaption: gravação ao vivo
