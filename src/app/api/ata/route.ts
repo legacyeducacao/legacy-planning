@@ -239,9 +239,15 @@ function buildUserPrompt(body: AtaRequestBody, contexto: string): string {
     content = transcription
   }
 
-  // Hard cap on context — gpt-4o-mini tem 128k mas atas longas ficam caras.
-  const MAX_CHARS = 60000
+  // Cap defensivo pra evitar request gigante. Gemini 2.5 Flash aceita ~1M tokens
+  // (~4M chars), Claude Sonnet aceita 200K tokens (~800K chars). 500K cobre
+  // reuniões de até ~8h em transcrição corrida sem truncar. Override via
+  // ATA_MAX_TRANSCRIPTION_CHARS se precisar mais.
+  const MAX_CHARS = Number(process.env.ATA_MAX_TRANSCRIPTION_CHARS) || 500_000
   if (content.length > MAX_CHARS) {
+    console.warn(
+      `[ata] transcrição truncada: ${content.length} → ${MAX_CHARS} chars`,
+    )
     content = `${content.slice(0, MAX_CHARS)}\n\n[... transcrição truncada — ${content.length - MAX_CHARS} caracteres adicionais não incluídos ...]`
   }
 
