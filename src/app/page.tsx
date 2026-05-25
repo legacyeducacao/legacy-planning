@@ -24,6 +24,12 @@ import {
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { getUserFriendlyErrorMessage } from "@/lib/error-utils"
+import {
+  clearRecording,
+  loadRecording,
+  type SavedRecording,
+  saveRecording,
+} from "@/lib/recording-store"
 import { uploadAudio } from "@/lib/upload-audio"
 import { getApiUrl } from "@/services/transcription"
 import { useHistoryStore } from "@/stores/history-store"
@@ -1045,21 +1051,43 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
   const [bytes, setBytes] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [recovery, setRecovery] = useState<SavedRecording | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const startTimeRef = useRef<number>(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const autosaveRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const mimeRef = useRef<string>("audio/webm")
   const recordedFileRef = useRef<File | null>(null)
 
   // Cleanup
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
+      if (autosaveRef.current) clearInterval(autosaveRef.current)
       streamRef.current?.getTracks().forEach((t) => t.stop())
       if (previewUrl) URL.revokeObjectURL(previewUrl)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Verifica recuperação ao montar (gravação anterior não enviada)
+  useEffect(() => {
+    let active = true
+    loadRecording().then((rec) => {
+      if (!active || !rec) return
+      // Só oferece recuperação se for de < 24h (evita lixo antigo)
+      const ageMs = Date.now() - rec.savedAt
+      if (ageMs > 24 * 60 * 60 * 1000) {
+        clearRecording()
+        return
+      }
+      setRecovery(rec)
+    })
+    return () => {
+      active = false
+    }
   }, [])
 
   const pickMime = (): string => {
@@ -1119,13 +1147,29 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
       }
       recorder.start(1000) // chunks de 1s
       recorderRef.current = recorder
+      mimeRef.current = mime
       startTimeRef.current = Date.now()
       setDuration(0)
       setBytes(0)
+      setRecovery(null)
       setState("recording")
       intervalRef.current = setInterval(() => {
         setDuration(Math.floor((Date.now() - startTimeRef.current) / 1000))
       }, 250)
+      // Auto-save a cada 30s pra sobreviver a refresh/crash
+      autosaveRef.current = setInterval(() => {
+        if (chunksRef.current.length === 0) return
+        const snapshot = new Blob(chunksRef.current, { type: mime })
+        const durationSec = Math.floor(
+          (Date.now() - startTimeRef.current) / 1000,
+        )
+        saveRecording({
+          blob: snapshot,
+          mime,
+          durationSec,
+          savedAt: Date.now(),
+        })
+      }, 30000)
     } catch (err) {
       console.error(err)
       const msg =
@@ -1145,6 +1189,10 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
       clearInterval(intervalRef.current)
       intervalRef.current = null
     }
+    if (autosaveRef.current) {
+      clearInterval(autosaveRef.current)
+      autosaveRef.current = null
+    }
     setState("stopped")
   }
 
@@ -1156,7 +1204,34 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
     recordedFileRef.current = null
     setDuration(0)
     setBytes(0)
+    clearRecording()
     setState("idle")
+  }
+
+  const recoverPrevious = () => {
+    if (!recovery) return
+    const file = new File(
+      [recovery.blob],
+      `gravacao-recuperada-${recovery.savedAt}.${
+        recovery.mime.includes("mp4")
+          ? "m4a"
+          : recovery.mime.includes("ogg")
+            ? "ogg"
+            : "webm"
+      }`,
+      { type: recovery.mime },
+    )
+    recordedFileRef.current = file
+    setPreviewUrl(URL.createObjectURL(recovery.blob))
+    setDuration(recovery.durationSec)
+    setBytes(recovery.blob.size)
+    setRecovery(null)
+    setState("stopped")
+  }
+
+  const dismissRecovery = () => {
+    clearRecording()
+    setRecovery(null)
   }
 
   const formatBytes = (b: number): string => {
@@ -1194,6 +1269,9 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
 
   const submit = () => {
     if (!recordedFileRef.current) return
+    // Limpa IDB porque a gravação agora vai pro upload → não precisa mais
+    // do snapshot de recuperação
+    clearRecording()
     onRecorded(recordedFileRef.current)
   }
 
@@ -1202,6 +1280,53 @@ function RecordTab({ onRecorded }: { onRecorded: (file: File) => void }) {
 
   return (
     <div className="flex flex-col items-center justify-center text-center">
+      {state === "idle" && recovery && (
+        <div
+          className="mb-4 w-full rounded-lg p-3 text-left"
+          style={{
+            background: "rgba(45,95,222,0.10)",
+            border: "1px solid rgba(45,95,222,0.30)",
+          }}
+        >
+          <p
+            className="mb-1 text-[12px]"
+            style={{ color: "var(--r-on-dark)", fontWeight: 600 }}
+          >
+            Gravação anterior não enviada
+          </p>
+          <p
+            className="mb-2 mono-eyebrow"
+            style={{ fontSize: "11px", color: "var(--r-on-dark-mute)" }}
+          >
+            {fmt(recovery.durationSec)} · {formatBytes(recovery.blob.size)}
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={recoverPrevious}
+              className="rounded-full px-3 py-1 text-[12px] font-semibold"
+              style={{
+                background: "var(--r-primary)",
+                color: "var(--r-on-dark)",
+              }}
+            >
+              Recuperar
+            </button>
+            <button
+              type="button"
+              onClick={dismissRecovery}
+              className="rounded-full px-3 py-1 text-[12px] font-semibold"
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(252,252,252,0.20)",
+                color: "var(--r-on-dark-mute)",
+              }}
+            >
+              Descartar
+            </button>
+          </div>
+        </div>
+      )}
       {state === "idle" && (
         <>
           <button
