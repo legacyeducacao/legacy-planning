@@ -48,15 +48,24 @@ export async function hydrateUser(fbUser: FirebaseUser): Promise<AuthUser> {
   let displayName =
     fbUser.displayName || fbUser.email?.split("@")[0] || "Usuário"
 
+  const emailLower = (fbUser.email ?? "").toLowerCase()
+  const isWhitelisted = MASTER_EMAILS.has(emailLower)
+
   if (snap.exists()) {
     const data = snap.data() as { role?: Role; displayName?: string }
     if (data.role === "master" || data.role === "padrao") role = data.role
     if (data.displayName) displayName = data.displayName
+
+    // Auto-promove: se email entrou no whitelist depois do signup, atualiza
+    // o role pra master. Nunca rebaixa (master fica master mesmo fora do
+    // whitelist — pra rebaixar tem que editar manualmente no Firestore).
+    if (role === "padrao" && isWhitelisted) {
+      role = "master"
+      await updateDoc(ref, { role: "master" })
+    }
   } else {
     // Bootstrap: cria o doc com role baseado no whitelist.
-    role = MASTER_EMAILS.has((fbUser.email ?? "").toLowerCase())
-      ? "master"
-      : "padrao"
+    role = isWhitelisted ? "master" : "padrao"
     await setDoc(ref, {
       email: fbUser.email,
       displayName,
