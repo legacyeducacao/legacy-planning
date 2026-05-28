@@ -53,13 +53,11 @@ async function readRequest(
       : {}
 
     console.log(
-      `Recebido arquivo "${file.name}" (${(file.size / 1024 / 1024).toFixed(2)}MB). Uploadando pro AssemblyAI...`,
+      `[transcribe] arquivo recebido (${(file.size / 1024 / 1024).toFixed(2)}MB), upload pro AssemblyAI`,
     )
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const uploadUrl = await assemblyai.files.upload(buffer)
-
-    console.log("Upload pro AssemblyAI concluído:", uploadUrl)
 
     return {
       input: { audioFileUrl: uploadUrl, audioUrlForClient: uploadUrl },
@@ -187,13 +185,12 @@ export async function POST(request: Request) {
       }
     }
 
-    console.log("Iniciando transcrição AssemblyAI via SDK...")
-    console.log("Params:", JSON.stringify(params, null, 2))
-
     // submit() retorna imediatamente com transcript queued (sem polling aqui)
     const transcript = await assemblyai.transcripts.submit(params)
 
-    console.log("AssemblyAI transcription submitted:", transcript.id)
+    console.log(
+      `[transcribe] submitted ${transcript.id} (lang=${params.language_code ?? "auto"}, diarize=${params.speaker_labels})`,
+    )
 
     return NextResponse.json(
       {

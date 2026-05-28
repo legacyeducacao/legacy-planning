@@ -2,9 +2,10 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronDown, X } from "lucide-react"
-import { marked } from "marked"
 import Link from "next/link"
 import { useState } from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { changelogItems } from "../data/changelog"
 import { Button } from "./ui/button"
 
@@ -29,12 +30,6 @@ export function Changelog({ isModal = false, onClose }: ChangelogProps) {
     )
   }
 
-  // Changelog content is from our own data file, not user input — safe for innerHTML
-  const parseMarkdown = (markdown: string) => {
-    const rawMarkup = marked(markdown, { breaks: true, gfm: true })
-    return { __html: rawMarkup as string }
-  }
-
   const renderChanges = (
     changes: string[],
     label: string,
@@ -50,10 +45,16 @@ export function Changelog({ isModal = false, onClose }: ChangelogProps) {
         </h3>
         <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground marker:text-primary">
           {changes.map((change) => (
-            <li
-              key={`${label}-${change.slice(0, 50)}`}
-              dangerouslySetInnerHTML={parseMarkdown(change)}
-            />
+            <li key={`${label}-${change.slice(0, 50)}`}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  p: ({ children }) => <span>{children}</span>,
+                }}
+              >
+                {change}
+              </ReactMarkdown>
+            </li>
           ))}
         </ul>
       </div>

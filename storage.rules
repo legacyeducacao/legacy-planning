@@ -1,14 +1,13 @@
 rules_version = '2';
+
+// Firebase Storage NAO e mais usado pelo app. Todo upload/download de audio
+// e avatar migrou pra Supabase Storage. Estas regras negam tudo por seguranca
+// — se algum dia voltar a usar Firebase Storage, abrir explicitamente o path
+// necessario com check de auth (request.auth != null) e ownership (UID).
 service firebase.storage {
   match /b/{bucket}/o {
-    match /temp_audio/{allPaths=**} {
-      allow read, write: if true;
-    }
-    match /test/{allPaths=**} {
-      allow read, write: if true;
-    }
-    match /transcriptions/{allPaths=**} {
-      allow read, write: if true;
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }
