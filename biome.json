@@ -296,6 +296,8 @@
         "rules": {
           "correctness": {
             "noUnusedVariables": "error",
+            "noUnusedImports": "error",
+            "noUnusedFunctionParameters": "warn",
             "useExhaustiveDependencies": "warn",
             "useHookAtTopLevel": "error"
           }
