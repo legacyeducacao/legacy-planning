@@ -66,6 +66,25 @@ function buildMailtoUrl(opts: {
   return `mailto:${opts.to ?? ""}?${query}`
 }
 
+// Gmail compose rejeita URLs muito grandes com 400 Bad Request. Limite
+// empírico em torno de 7-8KB de URL total; fica abaixo pra ter margem.
+const GMAIL_URL_LIMIT = 6500
+// mailto: tem limite mais agressivo em vários clientes; manter conservador.
+const MAILTO_URL_LIMIT = 2000
+
+/** Deriva o assunto direto da ata, sem chamar IA. Formato:
+ *  "Ata — Título — DD/MM/YYYY" (truncado em 80 chars). */
+function deriveSubject(ata: Ata): string {
+  const titulo = ata.titulo.replace(
+    /^Ata\s*(da Reunião|de Reunião)?\s*[—-]\s*/i,
+    "",
+  )
+  const parts = ["Ata", titulo]
+  if (ata.data) parts.push(ata.data)
+  const subject = parts.filter(Boolean).join(" — ")
+  return subject.length > 80 ? `${subject.slice(0, 77)}...` : subject
+}
+
 export function EmailComposeModal({
   ata,
   open,
@@ -102,6 +121,10 @@ export function EmailComposeModal({
 
   const generate = useCallback(async () => {
     setIsGenerating(true)
+    // Assunto é deterministico — calcula local pra não pagar latência de IA
+    setSubject(deriveSubject(ata))
+    setSummary("")
+    setBody("")
     try {
       const response = await fetch("/api/ata/email", {
         method: "POST",
@@ -111,7 +134,7 @@ export function EmailComposeModal({
           signature: user?.displayName,
         }),
       })
-      if (!response.ok) {
+      if (!response.ok || !response.body) {
         const err = await response.json().catch(() => ({}))
         if (err.error === "GOOGLE_GENERATIVE_AI_API_KEY_MISSING") {
           toast.error(
@@ -122,13 +145,21 @@ export function EmailComposeModal({
         }
         return
       }
-      const data = (await response.json()) as {
-        subject: string
-        body: string
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let acc = ""
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        acc += decoder.decode(value, { stream: true })
+        setSummary(acc)
+        setBody(composeBody(acc, mode))
       }
-      setSubject(data.subject)
-      setSummary(data.body)
-      setBody(composeBody(data.body, mode))
+      acc += decoder.decode()
+      if (acc) {
+        setSummary(acc)
+        setBody(composeBody(acc, mode))
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Falha ao gerar email")
     } finally {
@@ -161,14 +192,59 @@ export function EmailComposeModal({
     }
   }, [subject, body])
 
-  const handleOpenGmail = useCallback(() => {
+  const handleOpenGmail = useCallback(async () => {
     const url = buildGmailComposeUrl({ to, cc, subject, body })
-    window.open(url, "_blank", "noopener,noreferrer")
+    if (url.length <= GMAIL_URL_LIMIT) {
+      window.open(url, "_blank", "noopener,noreferrer")
+      return
+    }
+    // Email grande demais pro URL do Gmail — copia corpo, abre só com headers
+    try {
+      await navigator.clipboard.writeText(body)
+      toast.info(
+        "Email grande demais pra URL do Gmail. Corpo copiado — cola lá.",
+        { duration: 6000 },
+      )
+    } catch {
+      toast.warning(
+        "Email grande demais pra URL do Gmail. Use Copiar e cole no Gmail.",
+      )
+      return
+    }
+    const stubUrl = buildGmailComposeUrl({
+      to,
+      cc,
+      subject,
+      body: "(Corpo copiado pra área de transferência — cola aqui com Ctrl+V)",
+    })
+    window.open(stubUrl, "_blank", "noopener,noreferrer")
   }, [to, cc, subject, body])
 
-  const handleOpenMailto = useCallback(() => {
+  const handleOpenMailto = useCallback(async () => {
     const url = buildMailtoUrl({ to, cc, subject, body })
-    window.location.href = url
+    if (url.length <= MAILTO_URL_LIMIT) {
+      window.location.href = url
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(body)
+      toast.info(
+        "Email grande demais pro mailto. Corpo copiado — cola no cliente de email.",
+        { duration: 6000 },
+      )
+    } catch {
+      toast.warning(
+        "Email grande demais pro mailto. Use Copiar e cole manualmente.",
+      )
+      return
+    }
+    const stubUrl = buildMailtoUrl({
+      to,
+      cc,
+      subject,
+      body: "(Corpo copiado pra área de transferência — cola aqui com Ctrl+V)",
+    })
+    window.location.href = stubUrl
   }, [to, cc, subject, body])
 
   const handleDownloadDocx = useCallback(async () => {
@@ -340,12 +416,13 @@ export function EmailComposeModal({
               <span className="text-foreground font-medium">
                 Sobre anexar a ata:
               </span>{" "}
-              mailto e Gmail compose não suportam anexos via link. Use o modo{" "}
+              mailto e Gmail compose não suportam anexos via link. Use{" "}
               <span className="text-foreground font-medium">
                 Com ata completa
               </span>{" "}
-              pra incluir tudo no próprio email, ou baixe o .docx e anexe
-              manualmente no cliente.
+              pra incluir tudo no email (se ficar grande demais, o corpo é
+              copiado pra área de transferência automaticamente), ou baixe o
+              .docx e anexe manualmente.
             </p>
           </div>
         </div>

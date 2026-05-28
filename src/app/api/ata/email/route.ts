@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google"
-import { generateText } from "ai"
+import { streamText } from "ai"
 import { type NextRequest, NextResponse } from "next/server"
 import type { Ata } from "@/types/transcription"
 
@@ -7,27 +7,22 @@ export const maxDuration = 30
 
 const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-2.5-flash"
 
-const SYSTEM_PROMPT = `Você é um redator de emails corporativos em português brasileiro. Recebe uma ata estruturada de reunião e produz um email profissional para enviar aos participantes e stakeholders compartilhando os pontos-chave.
+const SYSTEM_PROMPT = `Você é um redator de emails corporativos em português brasileiro. Recebe uma ata estruturada de reunião e produz APENAS o corpo do email para enviar aos participantes e stakeholders compartilhando os pontos-chave. O assunto é gerado separadamente — não escreva "Assunto:" no email.
 
 REGRAS:
 1. Tom: cordial, direto, profissional. Sem floreios.
-2. Estrutura padrão:
+2. Estrutura:
    - Saudação curta ("Olá pessoal," ou "Time,")
    - 1 frase de contexto (que reunião foi, quando)
    - "Principais pontos:" + 3 a 6 bullets curtos com decisões e ações
    - 1 frase sobre próximos passos / próxima reunião (se houver)
    - Assinatura ("Abraço," + nome do redator)
 3. NÃO mencione anexos, arquivos em anexo ou "ata anexa". O conteúdo extra é tratado fora do email.
-4. Bullets devem destacar APENAS o que importa: decisões fechadas, responsáveis e prazos do plano de ação, e próximos passos relevantes.
+4. Bullets destacam APENAS o que importa: decisões fechadas, responsáveis e prazos do plano de ação, próximos passos relevantes.
 5. NÃO copie literalmente a transcrição. Reescreva em voz própria, conciso.
-6. Comprimento total: 150 a 350 palavras. Email curto vence email longo.
-7. Subject line: começa com "Ata —" seguido de tema + data. Máximo 80 chars.
+6. Comprimento: 150 a 350 palavras. Email curto vence email longo.
 
-SAÍDA: apenas JSON puro com o schema:
-{
-  "subject": "string",
-  "body": "string com quebras de linha \\n"
-}`
+SAÍDA: texto puro do email (UTF-8, com quebras de linha de verdade). Sem JSON, sem markdown além de bullets simples (- ou •), sem cabeçalho "Assunto:".`
 
 interface EmailRequestBody {
   ata: Ata
@@ -67,17 +62,6 @@ ATA (JSON):
 ${JSON.stringify(compact, null, 2)}`
 }
 
-function stripFences(text: string): string {
-  const t = text.trim()
-  if (t.startsWith("```")) {
-    return t
-      .replace(/^```(?:json)?\s*\n?/, "")
-      .replace(/\n?```\s*$/, "")
-      .trim()
-  }
-  return t
-}
-
 export async function POST(req: NextRequest) {
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     return NextResponse.json(
@@ -100,29 +84,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { text } = await generateText({
+    const result = streamText({
       model: google(MODEL_ID),
       system: SYSTEM_PROMPT,
       prompt: buildUserPrompt(
         body.ata,
         body.signature ?? body.ata.responsavelAta ?? "—",
       ),
-      providerOptions: {
-        google: { responseMimeType: "application/json" },
-      },
       temperature: 0.4,
     })
 
-    const cleaned = stripFences(text)
-    const parsed = JSON.parse(cleaned) as {
-      subject?: string
-      body?: string
-    }
-
-    return NextResponse.json({
-      subject: parsed.subject ?? `Ata — ${body.ata.titulo}`,
-      body: parsed.body ?? "",
-    })
+    return result.toTextStreamResponse()
   } catch (error) {
     console.error("[ata/email] generation error:", error)
     const message =
