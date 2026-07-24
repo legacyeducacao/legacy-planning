@@ -67,8 +67,12 @@ export function normalizeAta(input: unknown): Ata {
           typeof obj.responsavel === "string" ? obj.responsavel : undefined,
         prazo: typeof obj.prazo === "string" ? obj.prazo : undefined,
         status:
-          obj.status === "Em andamento" || obj.status === "Concluído"
-            ? obj.status
+          obj.status === "Em andamento" ||
+          obj.status === "Concluído" ||
+          obj.status === "Atrasada" ||
+          obj.status === "Bloqueada" ||
+          obj.status === "Aguardando validação"
+            ? (obj.status as AtaStatus)
             : "Não iniciado",
       }
     })

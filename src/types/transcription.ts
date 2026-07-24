@@ -105,7 +105,14 @@ export interface AudioSource {
   recordedAt?: number
 }
 
-export type AtaStatus = "Não iniciado" | "Em andamento" | "Concluído"
+export type AtaStatus =
+  | "Não iniciado"
+  | "Em andamento"
+  | "Concluído"
+  | "Atrasada"
+  | "Bloqueada"
+  | "Aguardando validação"
+
 
 export interface AtaParticipante {
   nome: string

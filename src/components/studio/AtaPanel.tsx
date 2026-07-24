@@ -247,6 +247,9 @@ const STATUS_OPTIONS: AtaStatus[] = [
   "Não iniciado",
   "Em andamento",
   "Concluído",
+  "Atrasada",
+  "Bloqueada",
+  "Aguardando validação",
 ]
 
 export function AtaPanel({
