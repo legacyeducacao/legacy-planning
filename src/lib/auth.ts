@@ -112,7 +112,7 @@ export function subscribeAuthState(
   // Escuta mudanças no estado de auth
   const {
     data: { subscription },
-  } = supabase.auth.onAuthStateChange(async (event, session) => {
+  } = supabase.auth.onAuthStateChange(async (_event, session) => {
     const sbUser = session?.user ?? null
     if (!sbUser) {
       onUser(null)
