@@ -11,44 +11,37 @@ import "./login.css"
 
 type TabMode = "entrar" | "solicitar"
 
-/* ───────────────── Firebase error → friendly PT-BR ───────────────── */
+/* ───────────────── Supabase/Firebase error → friendly PT-BR ───────────────── */
 function getAuthErrorMessage(err: unknown): string {
-  if (typeof err === "object" && err !== null && "code" in err) {
-    const code = (err as { code: string }).code
-    switch (code) {
-      case "auth/invalid-credential":
-      case "auth/user-not-found":
-      case "auth/wrong-password":
-        return "E-mail ou senha incorretos."
-      case "auth/email-already-in-use":
-        return "Este e-mail já está cadastrado."
-      case "auth/weak-password":
-        return "A senha deve ter pelo menos 6 caracteres."
-      case "auth/too-many-requests":
-        return "Acesso bloqueado temporariamente. Tente mais tarde."
-      case "auth/user-disabled":
-        return "Esta conta foi desativada por um administrador."
-      case "auth/invalid-email":
-        return "Formato de e-mail inválido."
-      default:
-        break
-    }
-  }
   if (err instanceof Error) {
     const msg = err.message
     if (
+      msg.includes("Invalid login credentials") ||
       msg.includes("auth/invalid-credential") ||
-      msg.includes("invalid-credential")
+      msg.includes("invalid-credential") ||
+      msg.includes("invalid_credentials")
     )
       return "E-mail ou senha incorretos."
-    if (msg.includes("auth/email-already-in-use"))
+    if (
+      msg.includes("User already registered") ||
+      msg.includes("auth/email-already-in-use") ||
+      msg.includes("email_already_in_use")
+    )
       return "Este e-mail já está cadastrado."
-    if (msg.includes("auth/too-many-requests"))
+    if (
+      msg.includes("auth/too-many-requests") ||
+      msg.includes("too_many_requests") ||
+      msg.includes("rate limit")
+    )
       return "Acesso bloqueado temporariamente. Tente mais tarde."
     return msg
   }
+  if (typeof err === "object" && err !== null && "message" in err) {
+    return (err as { message: string }).message
+  }
   return "Falha ao autenticar. Verifique suas credenciais."
 }
+
 
 /* ───────────────── Inline Google icon (official colors) ───────────── */
 function GoogleIcon({ size = 18 }: { size?: number }) {

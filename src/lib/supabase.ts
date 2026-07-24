@@ -12,11 +12,7 @@ export function getSupabase(): SupabaseClient {
     )
   }
   if (!client) {
-    client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: false,
-      },
-    })
+    client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   }
   return client
 }
