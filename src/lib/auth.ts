@@ -25,7 +25,7 @@ function deriveInitials(name: string, email: string): string {
  */
 export async function hydrateUser(sbUser: SupabaseUser): Promise<AuthUser> {
   const supabase = getSupabase()
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", sbUser.id)
