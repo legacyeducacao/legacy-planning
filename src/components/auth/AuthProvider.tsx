@@ -29,18 +29,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // Safety fallback: se o Supabase não responder em 3.5s, destrava o estado de loading
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 3500)
+
     const unsub = subscribeAuthState(
       (u) => {
+        clearTimeout(timer)
         setUser(u)
         setIsLoading(false)
         setError(null)
       },
       (err) => {
+        clearTimeout(timer)
         setError(err.message)
         setIsLoading(false)
       },
     )
-    return () => unsub()
+    return () => {
+      clearTimeout(timer)
+      unsub()
+    }
   }, [])
 
   const value = useMemo(

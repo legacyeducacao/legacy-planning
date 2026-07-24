@@ -24,12 +24,18 @@ function deriveInitials(name: string, email: string): string {
  * Retorna o AuthUser combinado (Supabase Auth + role da tabela profiles).
  */
 export async function hydrateUser(sbUser: SupabaseUser): Promise<AuthUser> {
-  const supabase = getSupabase()
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", sbUser.id)
-    .single()
+  let profile = null
+  try {
+    const supabase = getSupabase()
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", sbUser.id)
+      .maybeSingle()
+    profile = data
+  } catch (err) {
+    console.warn("[auth] profile fetch error (using fallback):", err)
+  }
 
   let role: Role = "padrao"
   const userMetadata = sbUser.user_metadata || {}
@@ -54,21 +60,31 @@ export async function hydrateUser(sbUser: SupabaseUser): Promise<AuthUser> {
     // o role pra master. Nunca rebaixa.
     if (role === "padrao" && isWhitelisted) {
       role = "master"
-      await supabase
-        .from("profiles")
-        .update({ role: "master" })
-        .eq("id", sbUser.id)
+      try {
+        const supabase = getSupabase()
+        await supabase
+          .from("profiles")
+          .update({ role: "master" })
+          .eq("id", sbUser.id)
+      } catch (err) {
+        console.warn("[auth] auto-promote update error:", err)
+      }
     }
   } else {
     // Bootstrap: cria o doc com role baseado no whitelist.
     role = isWhitelisted ? "master" : "padrao"
-    await supabase.from("profiles").insert({
-      id: sbUser.id,
-      email: sbUser.email,
-      display_name: displayName,
-      role,
-      photo_url: photoURL || null,
-    })
+    try {
+      const supabase = getSupabase()
+      await supabase.from("profiles").insert({
+        id: sbUser.id,
+        email: sbUser.email,
+        display_name: displayName,
+        role,
+        photo_url: photoURL || null,
+      })
+    } catch (err) {
+      console.warn("[auth] profile bootstrap insert error:", err)
+    }
   }
 
   return {
@@ -92,8 +108,8 @@ export function subscribeAuthState(
     // Busca inicial do usuário/sessão
     supabase.auth
       .getUser()
-      .then(({ data: { user } }) => {
-        if (!user) {
+      .then(({ data: { user }, error }) => {
+        if (error || !user) {
           onUser(null)
           return
         }

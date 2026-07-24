@@ -1,9 +1,9 @@
 "use client"
 
-import { ArrowRight, Check, Lock, Mail, Shield, User } from "lucide-react"
+import { ArrowRight, Check, Loader2, Lock, Mail, Shield, User } from "lucide-react"
 import Image from "next/image"
 import { useRouter, useSearchParams } from "next/navigation"
-import { type FormEvent, useEffect, useState } from "react"
+import { type FormEvent, Suspense, useEffect, useState } from "react"
 import { Toaster, toast } from "sonner"
 import { useAuth } from "@/components/auth/AuthProvider"
 import { signInWithEmail, signInWithGoogle, signUpWithEmail } from "@/lib/auth"
@@ -41,7 +41,6 @@ function getAuthErrorMessage(err: unknown): string {
   }
   return "Falha ao autenticar. Verifique suas credenciais."
 }
-
 
 /* ───────────────── Inline Google icon (official colors) ───────────── */
 function GoogleIcon({ size = 18 }: { size?: number }) {
@@ -107,9 +106,9 @@ function EyeIcon({ open, size = 18 }: { open: boolean; size?: number }) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   PAGE
+   PAGE CONTENT
    ═══════════════════════════════════════════════════════════════════ */
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
   const params = useSearchParams()
   const { user, isLoading } = useAuth()
@@ -583,5 +582,25 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="flex h-screen w-full items-center justify-center"
+          style={{ background: "var(--r-canvas)" }}
+        >
+          <Loader2
+            className="h-6 w-6 animate-spin"
+            style={{ color: "var(--r-mute)" }}
+          />
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   )
 }

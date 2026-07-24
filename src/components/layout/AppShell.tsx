@@ -9,7 +9,8 @@ import { TopBar } from "@/components/layout/TopBar"
 
 const FULL_BLEED_ROUTES = new Set<string>(["/login", "/offline"])
 
-function isFullBleed(pathname: string): boolean {
+function isFullBleed(pathname: string | null): boolean {
+  if (!pathname) return false
   return FULL_BLEED_ROUTES.has(pathname)
 }
 

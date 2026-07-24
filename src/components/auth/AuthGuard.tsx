@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
-import { type ReactNode, useEffect } from "react"
+import { type ReactNode, useEffect, useRef } from "react"
 import { useAuth } from "./AuthProvider"
 
 const PUBLIC_ROUTES = new Set<string>([
@@ -12,7 +12,8 @@ const PUBLIC_ROUTES = new Set<string>([
   "/offline",
 ])
 
-function isPublic(pathname: string): boolean {
+function isPublic(pathname: string | null): boolean {
+  if (!pathname) return false
   if (PUBLIC_ROUTES.has(pathname)) return true
   // /errors/* tambem é público
   if (pathname.startsWith("/errors/")) return true
@@ -24,11 +25,25 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
 
+  const redirectRef = useRef(false)
+
   useEffect(() => {
     if (isLoading) return
-    if (!user && !isPublic(pathname)) {
+    if (!user && !isPublic(pathname) && !redirectRef.current) {
+      redirectRef.current = true
       const next = encodeURIComponent(pathname || "/")
-      router.replace(`/login?next=${next}`)
+      const target = `/login?next=${next}`
+      router.replace(target)
+
+      setTimeout(() => {
+        if (
+          typeof window !== "undefined" &&
+          !window.location.pathname.startsWith("/login")
+        ) {
+          window.location.href = target
+        }
+      }, 1500)
+      // Do not clear the timer on cleanup to ensure it fires even if component re-renders
     }
   }, [user, isLoading, pathname, router])
 
