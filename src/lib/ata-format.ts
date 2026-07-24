@@ -1,4 +1,4 @@
-import type { Ata, AtaParticipante, AtaPlanoAcao } from "@/types/transcription"
+import type { Ata, AtaParticipante, AtaPlanoAcao, AtaStatus } from "@/types/transcription"
 
 /**
  * Normalize an unknown payload (possibly an old-shape cached ata) into the
