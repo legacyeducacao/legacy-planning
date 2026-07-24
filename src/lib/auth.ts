@@ -86,50 +86,57 @@ export function subscribeAuthState(
   onUser: (user: AuthUser | null) => void,
   onError?: (err: Error) => void,
 ) {
-  const supabase = getSupabase()
+  try {
+    const supabase = getSupabase()
 
-  // Busca inicial do usuário/sessão
-  supabase.auth
-    .getUser()
-    .then(({ data: { user } }) => {
-      if (!user) {
+    // Busca inicial do usuário/sessão
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }) => {
+        if (!user) {
+          onUser(null)
+          return
+        }
+        hydrateUser(user)
+          .then(onUser)
+          .catch((err) => {
+            console.error("[auth] initial hydrate failed:", err)
+            onError?.(err instanceof Error ? err : new Error("hydrate failed"))
+            onUser(null)
+          })
+      })
+      .catch((err) => {
+        console.error("[auth] getUser failed:", err)
+        onUser(null)
+      })
+
+    // Escuta mudanças no estado de auth
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const sbUser = session?.user ?? null
+      if (!sbUser) {
         onUser(null)
         return
       }
-      hydrateUser(user)
-        .then(onUser)
-        .catch((err) => {
-          console.error("[auth] initial hydrate failed:", err)
-          onError?.(err instanceof Error ? err : new Error("hydrate failed"))
-          onUser(null)
-        })
-    })
-    .catch((err) => {
-      console.error("[auth] getUser failed:", err)
-      onUser(null)
+      try {
+        const user = await hydrateUser(sbUser)
+        onUser(user)
+      } catch (err) {
+        console.error("[auth] hydrate failed:", err)
+        onError?.(err instanceof Error ? err : new Error("hydrate failed"))
+        onUser(null)
+      }
     })
 
-  // Escuta mudanças no estado de auth
-  const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange(async (_event, session) => {
-    const sbUser = session?.user ?? null
-    if (!sbUser) {
-      onUser(null)
-      return
+    return () => {
+      subscription.unsubscribe()
     }
-    try {
-      const user = await hydrateUser(sbUser)
-      onUser(user)
-    } catch (err) {
-      console.error("[auth] hydrate failed:", err)
-      onError?.(err instanceof Error ? err : new Error("hydrate failed"))
-      onUser(null)
-    }
-  })
-
-  return () => {
-    subscription.unsubscribe()
+  } catch (err) {
+    console.error("[auth] subscribeAuthState crash:", err)
+    onError?.(err instanceof Error ? err : new Error("subscribeAuthState failed"))
+    onUser(null)
+    return () => {}
   }
 }
 
