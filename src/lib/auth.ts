@@ -120,20 +120,26 @@ export function subscribeAuthState(
     // Escuta mudanças no estado de auth
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       const sbUser = session?.user ?? null
       if (!sbUser) {
         onUser(null)
         return
       }
-      try {
-        const user = await hydrateUser(sbUser)
-        onUser(user)
-      } catch (err) {
-        console.error("[auth] hydrate failed:", err)
-        onError?.(err instanceof Error ? err : new Error("hydrate failed"))
-        onUser(null)
-      }
+      // NUNCA usar await aqui. O supabase-js roda este callback segurando o
+      // lock interno do cliente de auth, e qualquer query chama getSession()
+      // por baixo — que espera o mesmo lock. Isso trava o login inteiro, já
+      // que signInWithPassword só resolve depois dos callbacks. O setTimeout
+      // devolve o controle antes de encostar no banco.
+      setTimeout(() => {
+        hydrateUser(sbUser)
+          .then(onUser)
+          .catch((err) => {
+            console.error("[auth] hydrate failed:", err)
+            onError?.(err instanceof Error ? err : new Error("hydrate failed"))
+            onUser(null)
+          })
+      }, 0)
     })
 
     return () => {
