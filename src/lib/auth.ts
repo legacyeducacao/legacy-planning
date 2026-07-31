@@ -12,6 +12,20 @@ const MASTER_EMAILS = new Set<string>([
   // Adicione outros e-mails de admin aqui se precisar.
 ])
 
+/**
+ * A tabela `profiles` é compartilhada com o Legacy Academy, que usa os papéis
+ * "student" | "collaborator" | "admin" | "master". Aqui só existem dois papéis,
+ * então traduzimos. Nunca escrevemos role na tabela: isso mudaria a permissão
+ * do usuário dentro do Academy também.
+ */
+const DB_ROLES_MASTER = new Set(["master", "admin"])
+
+function mapDbRole(dbRole: unknown): Role {
+  return typeof dbRole === "string" && DB_ROLES_MASTER.has(dbRole)
+    ? "master"
+    : "padrao"
+}
+
 function deriveInitials(name: string, email: string): string {
   const parts = (name || email.split("@")[0]).trim().split(/\s+/)
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase()
@@ -20,16 +34,23 @@ function deriveInitials(name: string, email: string): string {
 }
 
 /**
- * Lê (ou cria, no primeiro login) o doc do usuário no Supabase.
- * Retorna o AuthUser combinado (Supabase Auth + role da tabela profiles).
+ * Lê o perfil do usuário no Supabase e devolve o AuthUser combinado
+ * (Supabase Auth + role da tabela profiles).
+ *
+ * A linha em `profiles` é criada pelo trigger `handle_new_user` no signup —
+ * este app não insere nada lá (a policy de INSERT só permite producer).
  */
 export async function hydrateUser(sbUser: SupabaseUser): Promise<AuthUser> {
-  let profile = null
+  let profile: {
+    full_name?: string | null
+    role?: string | null
+    avatar_url?: string | null
+  } | null = null
   try {
     const supabase = getSupabase()
     const { data } = await supabase
       .from("profiles")
-      .select("*")
+      .select("full_name, role, avatar_url")
       .eq("id", sbUser.id)
       .maybeSingle()
     profile = data
@@ -37,55 +58,25 @@ export async function hydrateUser(sbUser: SupabaseUser): Promise<AuthUser> {
     console.warn("[auth] profile fetch error (using fallback):", err)
   }
 
-  let role: Role = "padrao"
   const userMetadata = sbUser.user_metadata || {}
-  let displayName =
+  const emailLower = (sbUser.email ?? "").toLowerCase()
+
+  // Whitelist promove só na sessão deste app — não escreve na tabela.
+  const role: Role = MASTER_EMAILS.has(emailLower)
+    ? "master"
+    : mapDbRole(profile?.role)
+
+  const displayName =
+    profile?.full_name ||
     userMetadata.display_name ||
     userMetadata.full_name ||
     sbUser.email?.split("@")[0] ||
     "Usuário"
-  let discordWebhookUrl: string | undefined
-  let photoURL: string | undefined = userMetadata.avatar_url
-
-  const emailLower = (sbUser.email ?? "").toLowerCase()
-  const isWhitelisted = MASTER_EMAILS.has(emailLower)
-
-  if (profile) {
-    if (profile.role === "master" || profile.role === "padrao") role = profile.role
-    if (profile.display_name) displayName = profile.display_name
-    if (profile.discord_webhook_url) discordWebhookUrl = profile.discord_webhook_url
-    if (profile.photo_url) photoURL = profile.photo_url
-
-    // Auto-promove: se email entrou no whitelist depois do signup, atualiza
-    // o role pra master. Nunca rebaixa.
-    if (role === "padrao" && isWhitelisted) {
-      role = "master"
-      try {
-        const supabase = getSupabase()
-        await supabase
-          .from("profiles")
-          .update({ role: "master" })
-          .eq("id", sbUser.id)
-      } catch (err) {
-        console.warn("[auth] auto-promote update error:", err)
-      }
-    }
-  } else {
-    // Bootstrap: cria o doc com role baseado no whitelist.
-    role = isWhitelisted ? "master" : "padrao"
-    try {
-      const supabase = getSupabase()
-      await supabase.from("profiles").insert({
-        id: sbUser.id,
-        email: sbUser.email,
-        display_name: displayName,
-        role,
-        photo_url: photoURL || null,
-      })
-    } catch (err) {
-      console.warn("[auth] profile bootstrap insert error:", err)
-    }
-  }
+  const photoURL: string | undefined =
+    profile?.avatar_url || userMetadata.avatar_url || undefined
+  // `profiles` é do Academy e não tem coluna pra isso, então mora no metadata.
+  const discordWebhookUrl: string | undefined =
+    userMetadata.discord_webhook_url || undefined
 
   return {
     uid: sbUser.id,
@@ -198,31 +189,27 @@ export async function signUpWithEmail(
     email,
     password,
     options: {
+      // `full_name` e `password_set` são lidos pelo trigger handle_new_user,
+      // que é quem cria a linha em profiles.
       data: {
+        full_name: displayName,
         display_name: displayName,
+        password_set: true,
       },
     },
   })
   if (error) throw error
   if (!user) throw new Error("Erro ao criar usuário")
 
-  const role = MASTER_EMAILS.has(email.toLowerCase()) ? "master" : "padrao"
-  const { error: profileError } = await supabase.from("profiles").insert({
-    id: user.id,
-    email,
-    display_name: displayName,
-    role,
-  })
-  if (profileError) {
-    console.error("[auth] profiles insert error:", profileError)
-  }
-
   return hydrateUser(user)
 }
 
 export async function signOut(): Promise<void> {
   const supabase = getSupabase()
-  const { error } = await supabase.auth.signOut()
+  // scope local: encerra só a sessão deste navegador. O default ('global')
+  // revoga TODAS as sessões do usuário — inclusive as do Legacy Academy, que
+  // compartilha este projeto Supabase — e derrubava o login aqui.
+  const { error } = await supabase.auth.signOut({ scope: "local" })
   if (error) throw error
 }
 
@@ -241,12 +228,12 @@ export async function updateUserDisplayName(
   if (!trimmed) throw new Error("Nome não pode ficar vazio")
 
   await supabase.auth.updateUser({
-    data: { display_name: trimmed },
+    data: { display_name: trimmed, full_name: trimmed },
   })
 
   const { error } = await supabase
     .from("profiles")
-    .update({ display_name: trimmed })
+    .update({ full_name: trimmed })
     .eq("id", user.id)
   if (error) throw error
 }
@@ -267,7 +254,7 @@ export async function updateUserPhotoURL(photoURL: string): Promise<void> {
 
   const { error } = await supabase
     .from("profiles")
-    .update({ photo_url: photoURL })
+    .update({ avatar_url: photoURL })
     .eq("id", user.id)
   if (error) throw error
 }
@@ -288,9 +275,10 @@ export async function updateUserDiscordWebhook(url: string): Promise<void> {
     )
   }
 
-  const { error } = await supabase
-    .from("profiles")
-    .update({ discord_webhook_url: trimmed || null })
-    .eq("id", user.id)
+  // Guardado no user_metadata do Auth: a tabela profiles é do Academy e não
+  // tem coluna pra isso.
+  const { error } = await supabase.auth.updateUser({
+    data: { discord_webhook_url: trimmed || null },
+  })
   if (error) throw error
 }
